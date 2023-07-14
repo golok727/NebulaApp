@@ -1,7 +1,11 @@
-# Tauri + React + Typescript
+![logo-nebula](/assets/logo-nebula.svg)
 
-This template should help get you started developing with Tauri, React and Typescript in Vite.
+Nebula is a markdown editor app using `tauri` 
 
-## Recommended IDE Setup
+> To build and run the app in dev mode
 
-- [VS Code](https://code.visualstudio.com/) + [Tauri](https://marketplace.visualstudio.com/items?itemName=tauri-apps.tauri-vscode) + [rust-analyzer](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer)
+```bash
+yarn tauri dev 
+```
+
+
