@@ -1,5 +1,5 @@
 .main__sidebar {
-  padding: var(--padding-2);
+  padding: var(--padding-1);
   padding-bottom: 4em;
   position: relative;
 }
@@ -12,6 +12,7 @@
   border: var(--editor-main-border);
   background-image: var(--grad-panes-gradient);
   border-radius: 0.2rem;
+  padding: var(--padding-1);
   height: 100%;
 }
 

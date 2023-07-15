@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { RootState } from '@/app/store'
 import './sidebar.css'
 import { useSelector, useDispatch } from 'react-redux'
@@ -9,7 +9,7 @@ const Sidebar = () => {
     showSidebar: app.sidebar.showSidebar,
   }))
   const dispatch = useDispatch()
-  console.log(sidebarWidth)
+
   const [isDragging, setIsDragging] = useState(false)
 
   const handleMouseDown = (ev: React.MouseEvent<HTMLDivElement>) => {
@@ -23,17 +23,20 @@ const Sidebar = () => {
     document.documentElement.style.cursor = 'default'
   }
 
-  const handleMouseMove = (ev: MouseEvent) => {
-    if (isDragging) {
-      const minSidebarWidth = 200
-      const maxSidebarWidth = 500
-      const newWidth = Math.max(
-        minSidebarWidth,
-        Math.min(maxSidebarWidth, ev.pageX)
-      )
-      dispatch(setSidebarWidth(newWidth))
-    }
-  }
+  const handleMouseMove = useCallback(
+    (ev: MouseEvent) => {
+      if (isDragging) {
+        const minSidebarWidth = 200
+        const maxSidebarWidth = 500
+        const newWidth = Math.max(
+          minSidebarWidth,
+          Math.min(maxSidebarWidth, ev.pageX)
+        )
+        dispatch(setSidebarWidth(newWidth))
+      }
+    },
+    [dispatch, isDragging]
+  )
 
   useEffect(() => {
     document.addEventListener('mousemove', handleMouseMove)

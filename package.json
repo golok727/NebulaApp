@@ -10,8 +10,6 @@
     "tauri": "tauri"
   },
   "dependencies": {
-    "@codemirror/state": "^6.2.1",
-    "@codemirror/theme-one-dark": "^6.1.2",
     "@heroicons/react": "^2.0.18",
     "@reduxjs/toolkit": "^1.9.5",
     "@tauri-apps/api": "^1.4.0",

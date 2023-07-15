@@ -1,0 +1,16 @@
+.editor__repl-container {
+  height: 100%;
+  flex: 1;
+  padding: var(--padding-1);
+
+  padding-bottom: 4em;
+}
+.editor__repl {
+  border: var(--editor-main-border);
+  background-image: var(--grad-panes-gradient);
+  border-radius: 0.2rem;
+  height: 100%;
+  max-height: 100%;
+  padding: var(--padding-1);
+  overflow-y: auto;
+}

@@ -1,16 +1,15 @@
-import "./main.css";
-import { useParams } from "react-router-dom";
-import Sidebar from "./sidebar";
+import './main.css'
+import { useParams } from 'react-router-dom'
+import Sidebar from './sidebar'
+import Repl from './repl'
 
 const Main = () => {
-	const { notebook } = useParams();
-	return (
-		<div className="editor__main">
-			<Sidebar />
+  return (
+    <div className="editor__main">
+      <Sidebar />
+      <Repl />
+    </div>
+  )
+}
 
-			{notebook}
-		</div>
-	);
-};
-
-export default Main;
+export default Main
