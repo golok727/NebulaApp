@@ -4,23 +4,26 @@ import './sidebar.css'
 import { useSelector, useDispatch } from 'react-redux'
 import { setSidebarWidth } from '@/features/appSlice'
 const Sidebar = () => {
-  const { sidebarWidth, showSidebar } = useSelector(({ app }: RootState) => ({
-    sidebarWidth: app.sidebar.sidebarWidth,
-    showSidebar: app.sidebar.showSidebar,
-  }))
+  const sidebarWidth = useSelector(
+    ({ app }: RootState) => app.sidebar.sidebarWidth
+  )
+  const showSidebar = useSelector(
+    ({ app }: RootState) => app.sidebar.showSidebar
+  )
+
   const dispatch = useDispatch()
 
   const [isDragging, setIsDragging] = useState(false)
 
   const handleMouseDown = (ev: React.MouseEvent<HTMLDivElement>) => {
     ev.preventDefault()
-    document.documentElement.style.cursor = 'w-resize'
+    // document.documentElement.style.cursor = 'w-resize'
     setIsDragging(true)
   }
 
   const handleMouseUp = () => {
     setIsDragging(false)
-    document.documentElement.style.cursor = 'default'
+    // document.documentElement.style.cursor = 'default'
   }
 
   const handleMouseMove = useCallback(

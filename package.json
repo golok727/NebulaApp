@@ -10,6 +10,17 @@
     "tauri": "tauri"
   },
   "dependencies": {
+    "@codemirror/commands": "^0.19.1",
+    "@codemirror/gutter": "^0.19.0",
+    "@codemirror/highlight": "^0.19.1",
+    "@codemirror/history": "^0.19.0",
+    "@codemirror/lang-javascript": "^0.19.1",
+    "@codemirror/lang-markdown": "^0.19.1",
+    "@codemirror/language": "^0.19.2",
+    "@codemirror/language-data": "^0.19.0",
+    "@codemirror/matchbrackets": "^0.19.1",
+    "@codemirror/state": "^0.19.0",
+    "@codemirror/theme-one-dark": "^0.19.0",
     "@heroicons/react": "^2.0.18",
     "@reduxjs/toolkit": "^1.9.5",
     "@tauri-apps/api": "^1.4.0",

@@ -1,5 +1,4 @@
 import './main.css'
-import { useParams } from 'react-router-dom'
 import Sidebar from './sidebar'
 import Repl from './repl'
 

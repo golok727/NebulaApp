@@ -14,3 +14,7 @@
   padding: var(--padding-1);
   overflow-y: auto;
 }
+
+/* .cm-gutters {
+  background-color: transparent !important;
+} */

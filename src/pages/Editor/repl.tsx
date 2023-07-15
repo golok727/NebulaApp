@@ -1,12 +1,17 @@
 import './repl.css'
+import useCodeMirror from '@/hooks/use-codemirror'
 import React from 'react'
-import { useParams } from 'react-router-dom'
+
 interface Props {}
 const Repl: React.FC<Props> = () => {
-  const { notebook } = useParams()
+  const [editorRef, view] = useCodeMirror({
+    initialDoc: '# Radhey Shyam',
+    onChange: () => {},
+  })
+
   return (
     <div className="editor__repl-container">
-      <div className="editor__repl"></div>
+      <div ref={editorRef} className="editor__repl" />
     </div>
   )
 }

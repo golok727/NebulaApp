@@ -18,9 +18,9 @@ import { toggleSidebar } from '@/features/appSlice'
 import { RootState } from '@/app/store'
 
 const TopBar = () => {
-  const { showSidebar } = useSelector(({ app }: RootState) => ({
-    showSidebar: app.sidebar.showSidebar,
-  }))
+  const showSidebar = useSelector(
+    ({ app }: RootState) => app.sidebar.showSidebar
+  )
   const dispatch = useDispatch()
 
   const handleToggleSidebar = () => {
