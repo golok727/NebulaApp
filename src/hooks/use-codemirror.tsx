@@ -26,7 +26,9 @@ const transparentTheme = EditorView.theme({
   // For the line numbers gutter
   '& .cm-gutters': {
     backgroundColor: 'transparent !important',
-    caretColor: 'red !important',
+    color: '#444 !important',
+    fontWeight: 'bold !important',
+    fontSize: '1.2em !important',
   },
 
   '& .cm-content': {

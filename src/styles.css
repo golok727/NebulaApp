@@ -52,10 +52,6 @@ html,
 }
 
 ::-webkit-scrollbar-thumb {
-  border: var(--editor-main-border);
+  border: 1px solid #43434380;
   border-radius: 10px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background-color: var(--clr-border);
 }
