@@ -7,6 +7,7 @@
 }
 .editor__repl {
   border: var(--editor-main-border);
+  padding-right: 0.2em;
   background-image: var(--grad-panes-gradient);
   border-radius: 0.2rem;
   height: 100%;

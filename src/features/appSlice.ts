@@ -7,6 +7,7 @@ export interface AppState {
     showSidebar: boolean
     sidebarWidth: number
   }
+  showPreview: boolean
 }
 
 const initialState: AppState = {
@@ -16,6 +17,7 @@ const initialState: AppState = {
     showSidebar: true,
     sidebarWidth: 200,
   },
+  showPreview: false,
 }
 
 const appSlice = createSlice({
