@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
-import { RootState } from '../../app/store'
+import { RootState } from '@/app/store'
 import './sidebar.css'
 import { useSelector, useDispatch } from 'react-redux'
-import { setSidebarWidth } from '../../features/appSlice'
+import { setSidebarWidth } from '@/features/appSlice'
 const Sidebar = () => {
   const { sidebarWidth, showSidebar } = useSelector(({ app }: RootState) => ({
     sidebarWidth: app.sidebar.sidebarWidth,

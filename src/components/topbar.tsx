@@ -1,5 +1,5 @@
 import './topbar.css'
-import AppLogo from '../assets/logo-nebula.svg'
+import AppLogo from '@/assets/logo-nebula.svg'
 import MenuButton from './Button'
 import {
   EllipsisHorizontalCircleIcon,
@@ -14,8 +14,8 @@ import {
 import { Link } from 'react-router-dom'
 import Button from './Button'
 import { useSelector, useDispatch } from 'react-redux'
-import { toggleSidebar } from '../features/appSlice'
-import { RootState } from '../app/store'
+import { toggleSidebar } from '@/features/appSlice'
+import { RootState } from '@/app/store'
 
 const TopBar = () => {
   const { showSidebar } = useSelector(({ app }: RootState) => ({
