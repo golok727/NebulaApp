@@ -1,14 +1,11 @@
-import React from "react";
 import "./editor.css";
-import { useParams } from "react-router-dom";
 import TopBar from "../../components/topbar";
+import Main from "./main";
 const Editor = () => {
-	const { notebook } = useParams();
-
 	return (
 		<div className="app__editor">
 			<TopBar />
-			{notebook}
+			<Main />
 		</div>
 	);
 };

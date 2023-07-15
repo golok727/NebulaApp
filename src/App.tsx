@@ -1,5 +1,4 @@
-import "./App.css";
-import TopBar from "./components/topbar";
+import "./app.css";
 import { Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Editor from "./pages/Editor";

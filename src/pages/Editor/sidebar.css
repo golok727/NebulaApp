@@ -1,0 +1,48 @@
+.main__sidebar {
+  padding: var(--padding-2);
+  padding-bottom: 4em;
+  position: relative;
+}
+
+.main__sidebar.hidden {
+  display: none;
+}
+
+.main__sidebar__modern {
+  border: var(--editor-main-border);
+  background-image: var(--grad-panes-gradient);
+  border-radius: 0.2rem;
+  height: 100%;
+}
+
+.main__sidebar > .resizer {
+  position: absolute;
+  height: 100%;
+  opacity: 0.2;
+  --resizer-width: 10px;
+  left: calc(100% - var(--resizer-width) / 2);
+  width: var(--resizer-width);
+  top: 0;
+  z-index: 100;
+  /* background-color: rgba(255, 0, 0, 0.2); */
+  transition: all 0.2s ease;
+  cursor: w-resize;
+}
+
+.main__sidebar > .resizer::after {
+  content: '';
+  position: absolute;
+  width: 1px;
+  top: 0;
+  left: calc(var(--resizer-width) / 2);
+  background-color: #434343;
+  height: 100%;
+}
+
+.main__sidebar > .resizer:hover {
+  opacity: 1;
+}
+
+.main__sidebar.dragging .resizer {
+  opacity: 1;
+}
