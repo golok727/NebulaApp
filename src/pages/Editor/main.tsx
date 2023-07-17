@@ -2,15 +2,26 @@ import './main.css'
 import Sidebar from './sidebar'
 import Repl from './repl'
 import Preview from './preview'
-import { useRef } from 'react'
+import { useCallback, useRef, useState } from 'react'
 
+const initialDoc = `# Radhey Shyam
+**Shrimati Radhika Rani**
+
+![image](/logo.svg)
+`
 const Main = () => {
   const replContainerRef = useRef<HTMLDivElement | null>(null)
+  const [doc, setDoc] = useState<string>(initialDoc)
+
+  const handleDocChange = useCallback((newDoc: string) => {
+    setDoc(newDoc)
+  }, [])
+
   return (
     <div className="editor__main">
       <Sidebar />
-      <Repl ref={replContainerRef} />
-      <Preview replRef={replContainerRef} />
+      <Repl onChange={handleDocChange} doc={doc} ref={replContainerRef} />
+      <Preview replRef={replContainerRef} doc={doc} />
     </div>
   )
 }

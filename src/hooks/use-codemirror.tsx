@@ -136,7 +136,7 @@ const useCodeMirror = (
       // Clean up the editor when the component is unmounted
       view?.destroy()
     }
-  }, [editorRef, props.initialDoc])
+  }, [editorRef])
 
   return [editorRef, editorView]
 }

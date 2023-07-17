@@ -1,15 +1,14 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
 import { RootState } from '@/app/store'
-import './sidebar.css'
-import { useSelector, useDispatch } from 'react-redux'
 import { setSidebarWidth } from '@/features/appSlice'
+import { isInView } from '@/hooks/selectors'
+import { useCallback, useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import './sidebar.css'
 const Sidebar = () => {
   const sidebarWidth = useSelector(
     ({ app }: RootState) => app.sidebar.sidebarWidth
   )
-  const showSidebar = useSelector(
-    ({ app }: RootState) => app.sidebar.showSidebar
-  )
+  const { sidebar: showSidebar } = useSelector(isInView)
 
   const dispatch = useDispatch()
 

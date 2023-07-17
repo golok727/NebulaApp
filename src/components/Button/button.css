@@ -1,40 +1,44 @@
 .app__button {
-	background-color: var(--clr-tool-bar-button);
-	border: 1px solid var(--clr-tool-bar-button-border);
-	border-radius: var(--tool-bar-button-border-radius);
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	color: var(--text-gray);
-	cursor: pointer;
-	padding: 0.2rem 0.6rem;
-	transition: all 0.2s ease;
+  background-color: var(--clr-tool-bar-button);
+  border: 1px solid var(--clr-tool-bar-button-border);
+  border-radius: var(--tool-bar-button-border-radius);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-gray);
+  cursor: pointer;
+  padding: 0.2rem 0.6rem;
+  transition: all 0.2s ease;
 
-	&.default {
-		padding: 0.2rem 0.6rem;
-	}
+  &.default {
+    padding: 0.2rem 0.6rem;
+  }
 
-	&.menu {
-		padding: 0.2rem 0.6rem;
-	}
+  &.menu {
+    padding: 0.2rem 0.6rem;
+  }
 
-	&.navigation {
-		padding: 0.5rem 0.6rem;
-	}
+  &.navigation {
+    padding: 0.5rem 0.6rem;
+  }
 
-	&.transparent {
-		padding: 0.2rem;
-		background-color: transparent;
-		color: var(--text-gray);
-	}
+  &.transparent {
+    padding: 0.2rem;
+    background-color: transparent;
+    color: var(--text-gray);
+  }
 
-	&.transparent:hover {
-		padding: 0.2rem;
-		background-color: transparent;
-		color: var(--clr-text-primary);
-	}
+  &.transparent:hover {
+    padding: 0.2rem;
+    background-color: transparent;
+    color: var(--clr-text-primary);
+  }
 
-	&:hover {
-		background-color: var(--clr-tool-bar-button-hover);
-	}
+  &:hover {
+    background-color: var(--clr-tool-bar-button-hover);
+  }
+  &:disabled {
+    color: #333;
+    cursor: not-allowed;
+  }
 }

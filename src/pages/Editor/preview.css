@@ -1,7 +1,7 @@
 .editor__preview-container {
   height: 100%;
   flex: 1;
-  padding: var(--padding-1);
+  padding: var(--padding-2);
   padding-bottom: 4em;
   position: relative;
 }
@@ -13,11 +13,21 @@
   border: var(--editor-main-border);
   padding-right: 0.2em;
   background-image: var(--grad-panes-gradient);
+  color: var(--clr-text-primary);
+  line-height: 1.9;
+  font-size: 0.9rem;
   border-radius: 0.2rem;
   height: 100%;
   max-height: 100%;
   padding: var(--padding-1);
   overflow-y: auto;
+}
+.editor__preview.markdown-body pre {
+  background-color: rgba(27, 31, 35, 0.45) !important;
+  border-radius: 6px;
+  padding: var(--padding-1);
+  margin: 0.2rem 0;
+  border: 1px solid #444;
 }
 
 .editor__preview-container > .resizer {

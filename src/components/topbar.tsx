@@ -1,31 +1,46 @@
-import './topbar.css'
 import AppLogo from '@/assets/logo-nebula.svg'
-import MenuButton from './Button'
 import {
-  EllipsisHorizontalCircleIcon,
-  HomeIcon,
-  CloudIcon,
-  UserCircleIcon,
-  ViewColumnsIcon,
   ChevronDoubleLeftIcon,
   ChevronDoubleRightIcon,
+  EllipsisHorizontalCircleIcon,
+  EyeIcon,
+  EyeSlashIcon,
+  HomeIcon,
+  UserCircleIcon,
+  ViewColumnsIcon,
 } from '@heroicons/react/24/outline'
+import MenuButton from './Button'
+import './topbar.css'
 
+import {
+  toggleNoDistractionsMode,
+  togglePreviewMode,
+  toggleSidebar,
+} from '@/features/appSlice'
+import { isInView } from '@/hooks/selectors'
+import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import Button from './Button'
-import { useSelector, useDispatch } from 'react-redux'
-import { toggleSidebar } from '@/features/appSlice'
-import { RootState } from '@/app/store'
 
 const TopBar = () => {
-  const showSidebar = useSelector(
-    ({ app }: RootState) => app.sidebar.showSidebar
-  )
+  const {
+    sidebar: showSidebar,
+    preview: showPreview,
+    appMode,
+  } = useSelector(isInView)
   const dispatch = useDispatch()
 
   const handleToggleSidebar = () => {
     dispatch(toggleSidebar())
   }
+  const handleToggleDistractionMode = () => {
+    dispatch(toggleNoDistractionsMode())
+  }
+
+  const handleTogglePreview = () => {
+    dispatch(togglePreviewMode())
+  }
+
   return (
     <div className="top-bar">
       <div className="top-bar__left">
@@ -38,20 +53,28 @@ const TopBar = () => {
           <HomeIcon width={19} />
         </Link>
 
-        <Button variant="transparent">
+        <Button
+          onClick={handleToggleSidebar}
+          disabled={appMode == 'no-distractions'}
+          variant={'transparent'}
+        >
           {showSidebar ? (
-            <ChevronDoubleLeftIcon onClick={handleToggleSidebar} width={19} />
+            <ChevronDoubleLeftIcon width={19} />
           ) : (
-            <ChevronDoubleRightIcon onClick={handleToggleSidebar} width={19} />
+            <ChevronDoubleRightIcon width={19} />
           )}
         </Button>
 
-        <Button variant="transparent">
+        <Button onClick={handleToggleDistractionMode} variant="transparent">
           <ViewColumnsIcon width={19} />
         </Button>
 
-        <Button variant="transparent">
-          <CloudIcon width={19} />
+        <Button
+          onClick={handleTogglePreview}
+          disabled={appMode == 'no-distractions'}
+          variant="transparent"
+        >
+          {!showPreview ? <EyeIcon width={19} /> : <EyeSlashIcon width={19} />}
         </Button>
 
         <Button variant="transparent">

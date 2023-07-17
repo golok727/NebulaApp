@@ -9,6 +9,7 @@ export interface AppState {
   }
 
   replWidth: number
+  prevMode: 'edit-only' | 'preview-only' | 'both' | 'no-distractions'
   mode: 'edit-only' | 'preview-only' | 'both' | 'no-distractions'
 }
 
@@ -20,7 +21,8 @@ const initialState: AppState = {
     sidebarWidth: 200,
   },
   replWidth: 0,
-  mode: 'both',
+  mode: 'edit-only',
+  prevMode: 'edit-only',
 }
 
 const appSlice = createSlice({
@@ -35,5 +37,9 @@ export const {
   showSidebar,
   setSidebarWidth,
   setReplWidth,
+  togglePreviewMode,
+  setView,
+  switchToPreviousView,
+  toggleNoDistractionsMode,
 } = appSlice.actions
 export default appSlice.reducer

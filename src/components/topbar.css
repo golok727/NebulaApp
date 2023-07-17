@@ -1,41 +1,40 @@
 .top-bar {
-	background-color: var(--clr-top-bar);
-	border-bottom: 1px solid var(--clr-border);
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	padding: var(--padding-3);
+  background-color: var(--clr-top-bar);
+  border-bottom: 1px solid var(--clr-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--padding-3);
 }
 .top-bar__left {
-	display: flex;
-	align-items: center;
-	gap: 0.2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
 }
 
 .top-bar__left .app-logo {
-	width: 5rem;
+  width: 5rem;
 }
 
 .top-bar__tray {
-	display: flex;
-	list-style-type: none;
-	gap: 0.4rem;
+  display: flex;
+  list-style-type: none;
+  gap: 0.4rem;
 }
 .top-bar__right {
-	display: flex;
-	align-items: center;
-	gap: 0.2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
 }
-
 .top-bar__link {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	color: #838383;
-	transition: all 0.2s ease;
-	padding: 0.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #838383;
+  transition: all 0.2s ease;
+  padding: 0.2rem;
 
-	&:hover {
-		color: #d8d8d8;
-	}
+  &:hover {
+    color: #d8d8d8;
+  }
 }

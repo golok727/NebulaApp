@@ -24,10 +24,17 @@
     "@heroicons/react": "^2.0.18",
     "@reduxjs/toolkit": "^1.9.5",
     "@tauri-apps/api": "^1.4.0",
+    "github-markdown-css": "^5.2.0",
+    "hast-util-sanitize": "^4.1.0",
+    "process": "^0.11.10",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-redux": "^8.1.1",
     "react-router-dom": "^6.14.1",
+    "remark-gfm": "^3.0.1",
+    "remark-parse": "^10.0.2",
+    "remark-react": "^9.0.1",
+    "unified": "^10.1.2",
     "uuid": "^9.0.0"
   },
   "devDependencies": {
