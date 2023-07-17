@@ -30,7 +30,7 @@ const Sidebar = () => {
     (ev: MouseEvent) => {
       if (isDragging) {
         const minSidebarWidth = 200
-        const maxSidebarWidth = 500
+        const maxSidebarWidth = 300
         const newWidth = Math.max(
           minSidebarWidth,
           Math.min(maxSidebarWidth, ev.pageX)

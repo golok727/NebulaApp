@@ -7,7 +7,9 @@ export interface AppState {
     showSidebar: boolean
     sidebarWidth: number
   }
-  showPreview: boolean
+
+  replWidth: number
+  mode: 'edit-only' | 'preview-only' | 'both' | 'no-distractions'
 }
 
 const initialState: AppState = {
@@ -17,7 +19,8 @@ const initialState: AppState = {
     showSidebar: true,
     sidebarWidth: 200,
   },
-  showPreview: false,
+  replWidth: 0,
+  mode: 'both',
 }
 
 const appSlice = createSlice({
@@ -26,6 +29,11 @@ const appSlice = createSlice({
   reducers,
 })
 
-export const { toggleSidebar, hideSidebar, showSidebar, setSidebarWidth } =
-  appSlice.actions
+export const {
+  toggleSidebar,
+  hideSidebar,
+  showSidebar,
+  setSidebarWidth,
+  setReplWidth,
+} = appSlice.actions
 export default appSlice.reducer

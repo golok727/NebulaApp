@@ -2,8 +2,11 @@
   height: 100%;
   flex: 1;
   padding: var(--padding-1);
-
   padding-bottom: 4em;
+  position: relative;
+}
+.editor__repl-container.hidden {
+  display: none;
 }
 .editor__repl {
   border: var(--editor-main-border);

@@ -5,6 +5,10 @@ const reducers = {
   setSidebarWidth: (state: AppState, action: PayloadAction<number>) => {
     state.sidebar.sidebarWidth = action.payload
   },
+
+  setReplWidth: (state: AppState, action: PayloadAction<number>) => {
+    state.replWidth = action.payload
+  },
   showSidebar: (state: AppState) => {
     state.sidebar.showSidebar = true
   },

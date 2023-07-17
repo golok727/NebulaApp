@@ -1,0 +1,53 @@
+.editor__preview-container {
+  height: 100%;
+  flex: 1;
+  padding: var(--padding-1);
+  padding-bottom: 4em;
+  position: relative;
+}
+
+.editor__preview-container.hidden {
+  display: none;
+}
+.editor__preview {
+  border: var(--editor-main-border);
+  padding-right: 0.2em;
+  background-image: var(--grad-panes-gradient);
+  border-radius: 0.2rem;
+  height: 100%;
+  max-height: 100%;
+  padding: var(--padding-1);
+  overflow-y: auto;
+}
+
+.editor__preview-container > .resizer {
+  position: absolute;
+  height: 100%;
+  opacity: 0.2;
+  --resizer-width: 10px;
+  left: calc(var(--resizer-width) / 2 * -1);
+  width: var(--resizer-width);
+  top: 0;
+  z-index: 100;
+  /* background-color: rgba(255, 0, 0); */
+  transition: all 0.2s ease;
+  cursor: w-resize;
+}
+
+.editor__preview-container > .resizer::after {
+  content: '';
+  position: absolute;
+  width: 1px;
+  top: 0;
+  left: calc(var(--resizer-width) / 2);
+  background-color: #434343;
+  height: 100%;
+}
+
+.editor__preview-container > .resizer:hover {
+  opacity: 1;
+}
+
+.editor__preview-container.dragging .resizer {
+  opacity: 1;
+}
