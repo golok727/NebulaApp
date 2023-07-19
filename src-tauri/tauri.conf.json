@@ -21,7 +21,7 @@
       "protocol": {
         "all": true,
         "asset": true,
-        "assetScope": ["$DOWNLOAD/*"]
+        "assetScope": ["$DATA/RadhikaSoftwares/Nebula/**/*", ""]
       },
       "path": {
         "all": true

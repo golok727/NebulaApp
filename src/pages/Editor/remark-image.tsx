@@ -1,7 +1,5 @@
-import React, { useCallback, useEffect, useState } from 'react'
-import { join, downloadDir } from '@tauri-apps/api/path'
-import { convertFileSrc } from '@tauri-apps/api/tauri'
-const NEBULA_PROTOCOL_REGEX = /nebula:\/\/assets\/?(?<file>.+\.\w+)/g
+import useNebulaProtocol from '@/hooks/use-nebula-protocol'
+import React from 'react'
 
 const RemarkImg: React.FC<
   React.DetailedHTMLProps<
@@ -9,27 +7,8 @@ const RemarkImg: React.FC<
     HTMLImageElement
   >
 > = (props) => {
-  const [imageSrc, setImgSrc] = useState('')
-  // Convert to tauri asset url
-  const convertToImageUrl = useCallback(async () => {
-    const src = props.src || ''
-    const isNebulaProtocol = NEBULA_PROTOCOL_REGEX.test(src)
-    NEBULA_PROTOCOL_REGEX.lastIndex = 0
-    if (isNebulaProtocol) {
-      const match = [...src.matchAll(NEBULA_PROTOCOL_REGEX)]
-      const fileName = match[0].groups ? match[0].groups['file'] ?? '' : ''
-      const downloadDirPath = await downloadDir()
-      const filePath = await join(downloadDirPath, fileName)
-      const url = convertFileSrc(filePath)
-      setImgSrc(url)
-    } else {
-      setImgSrc(src)
-    }
-  }, [props.src])
+  const imageSrc = useNebulaProtocol(props.src || '', false, 300)
 
-  useEffect(() => {
-    convertToImageUrl()
-  }, [convertToImageUrl])
   return <img alt={'image'} src={imageSrc} />
 }
 

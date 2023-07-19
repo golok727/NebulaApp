@@ -7,7 +7,7 @@ export interface AppState {
     showSidebar: boolean
     sidebarWidth: number
   }
-
+  imageUrlCache: Record<string, string>
   replWidth: number
   prevMode: 'edit-only' | 'preview-only' | 'both' | 'no-distractions'
   mode: 'edit-only' | 'preview-only' | 'both' | 'no-distractions'
@@ -20,6 +20,7 @@ const initialState: AppState = {
     showSidebar: true,
     sidebarWidth: 200,
   },
+  imageUrlCache: {},
   replWidth: 0,
   mode: 'edit-only',
   prevMode: 'edit-only',

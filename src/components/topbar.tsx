@@ -1,5 +1,6 @@
 import AppLogo from '@/assets/logo-nebula.svg'
 import {
+  ArchiveBoxIcon,
   ChevronDoubleLeftIcon,
   ChevronDoubleRightIcon,
   EllipsisHorizontalCircleIcon,
@@ -75,6 +76,10 @@ const TopBar = () => {
           variant="transparent"
         >
           {!showPreview ? <EyeIcon width={19} /> : <EyeSlashIcon width={19} />}
+        </Button>
+
+        <Button variant="transparent">
+          <ArchiveBoxIcon width={19} />
         </Button>
 
         <Button variant="transparent">
