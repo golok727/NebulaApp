@@ -7,7 +7,7 @@ import { useCallback, useRef, useState } from 'react'
 const initialDoc = `# Radhey Shyam
 **Shrimati Radhika Rani**
 
-![image](/logo.svg)
+![image](/nebula://assets/radha-krsna.png)
 `
 const Main = () => {
   const replContainerRef = useRef<HTMLDivElement | null>(null)

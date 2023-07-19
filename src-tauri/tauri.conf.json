@@ -1,4 +1,5 @@
 {
+  "$schema": "https://esm.sh/@tauri-apps/cli/schema.json",
   "build": {
     "beforeDevCommand": "yarn dev",
     "beforeBuildCommand": "yarn build",
@@ -16,6 +17,14 @@
       "shell": {
         "all": false,
         "open": true
+      },
+      "protocol": {
+        "all": true,
+        "asset": true,
+        "assetScope": ["$DOWNLOAD/*"]
+      },
+      "path": {
+        "all": true
       }
     },
     "bundle": {
@@ -31,14 +40,14 @@
       ]
     },
     "security": {
-      "csp": null
+      "csp": "default-src 'self'; img-src 'self' asset: https://asset.localhost"
     },
     "windows": [
       {
         "fullscreen": false,
         "resizable": true,
         "title": "Nebula",
-        "width": 1000,
+        "width": 1200,
         "height": 700
       }
     ]
