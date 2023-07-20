@@ -1,10 +1,10 @@
 [package]
 name = "nebula"
 version = "0.0.0"
-description = "A Tauri App"
-authors = ["you"]
-license = ""
-repository = ""
+description = "Markdown Notes taking app"
+authors = ["Radha", "Krsna"]
+license = "MIT"
+repository = "https://github.com/Radhe743/NebulaApp"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
