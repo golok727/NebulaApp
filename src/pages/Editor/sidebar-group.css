@@ -1,0 +1,11 @@
+.sidebar__group {
+  padding: var(--padding-2);
+}
+
+.sidebar__group__header {
+  color: var(--text-gray);
+  font-size: 0.7rem;
+  font-weight: bold;
+}
+.sidebar__group__content {
+}

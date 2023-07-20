@@ -18,7 +18,7 @@ const initialState: AppState = {
   fontSize: 16,
   sidebar: {
     showSidebar: true,
-    sidebarWidth: 200,
+    sidebarWidth: 300,
   },
   imageUrlCache: {},
   replWidth: 0,

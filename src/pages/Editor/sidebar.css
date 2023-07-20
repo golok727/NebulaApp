@@ -47,3 +47,20 @@
 .main__sidebar.dragging .resizer {
   opacity: 1;
 }
+.main__sidebar.dragging .resizer {
+  opacity: 1;
+}
+.sidebar-modern__header {
+  padding: 0.7rem 0.5rem;
+  display: flex;
+  justify-content: space-between;
+}
+
+.sidebar-modern__header__left {
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+}
+.sidebar-modern__header svg {
+  font-size: 1.5rem;
+}
