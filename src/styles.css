@@ -14,11 +14,13 @@
   --clr-border: rgba(255, 255, 255, 0.116);
   --clr-top-bar: #141414;
   --text-gray: #939393;
-  --padding-1: 0.6rem 0.6rem;
+
+  --sidebar-padding: 0.3rem 0 4rem 0.3rem;
+  --padding-1: 0.3rem 0.3rem;
   --padding-2: 0.6rem 0.7rem;
   --padding-3: 0.6rem 0.9rem;
   --tool-bar-button-border-radius: 0.125rem;
-  --editor-main-border: 1px solid #434343;
+  --editor-main-border: 1px solid #2e2e2e;
   --clr-tool-bar-button-border: 0.2px solid rgba(170, 170, 170, 0.2);
   --clr-tool-bar-button: #232323;
   --clr-tool-bar-button-hover: #383838;
