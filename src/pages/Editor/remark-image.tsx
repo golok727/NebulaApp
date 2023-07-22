@@ -9,7 +9,15 @@ const RemarkImg: React.FC<
 > = (props) => {
   const imageSrc = useNebulaProtocol(props.src || '', false, 300)
 
-  return <img {...props} src={imageSrc} />
+  return (
+    <img
+      loading="lazy"
+      style={{ maxWidth: '30em' }}
+      {...props}
+      alt=""
+      src={imageSrc}
+    />
+  )
 }
 
 export default RemarkImg

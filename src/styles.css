@@ -21,6 +21,7 @@
   --padding-3: 0.6rem 0.9rem;
   --tool-bar-button-border-radius: 0.125rem;
   --editor-main-border: 1px solid #2e2e2e;
+  --editor-main-border-hover: #414141;
   --clr-tool-bar-button-border: 0.2px solid rgba(170, 170, 170, 0.2);
   --clr-tool-bar-button: #232323;
   --clr-tool-bar-button-hover: #383838;
@@ -44,7 +45,12 @@ html,
 #root {
   height: 100%;
 }
-
+.editor__repl:focus-within {
+  border-color: var(--editor-main-border-hover);
+}
+.main__sidebar__modern:focus-within {
+  border-color: var(--editor-main-border-hover);
+}
 .p1 {
   padding: 0.4rem 0.6rem;
 }
