@@ -1,14 +1,17 @@
 import './home.css'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import NebulaLogo from '../../assets/logo-nebula.svg'
 import MenuButton from '../../components/Button'
 import { invoke } from '@tauri-apps/api/tauri'
 import { v4 as uuidv4 } from 'uuid'
 import { FormEvent, useEffect, useState } from 'react'
+import { pagesDummy } from '@/utils/constants'
 const disabled = false
 
 const Home = () => {
   const [noteName, setNoteName] = useState('')
+  const navigate = useNavigate()
+
   const [notebooks, setNotebooks] =
     useState<{ _id_: string; notebook_name: string }[]>()
   const handleCreateNewNotebook = async (ev: FormEvent) => {
@@ -18,10 +21,12 @@ const Home = () => {
       return
     }
     try {
-      const res = await invoke('create_notebook', {
+      const res = (await invoke('create_notebook', {
         notebookName: noteName,
-      })
+      })) as any
+      navigate(`/editor/${res._id_}/`)
       console.log(res)
+
       setNoteName('')
     } catch (error) {
       console.log(error)
@@ -42,10 +47,6 @@ const Home = () => {
   return (
     <div className="app__home">
       <img src={NebulaLogo} />
-      <Link to={`/editor/${uuidv4()}`}>
-        <MenuButton variant="navigation">Create Note</MenuButton>
-      </Link>
-
       <form onSubmit={handleCreateNewNotebook}>
         <input
           type="text"
@@ -67,7 +68,7 @@ const Home = () => {
           notebooks.length > 0 &&
           notebooks.map((notebook) => (
             <li key={notebook._id_}>
-              <Link to={`/editor/${notebook._id_}`}>
+              <Link to={`/editor/${notebook._id_}/new`}>
                 {notebook.notebook_name}
               </Link>
             </li>
