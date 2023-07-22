@@ -7,6 +7,7 @@ export interface AppEditorState {
 const initialState: AppEditorState = {
   currentDoc: `# Radhey Shyam
 **Shrimati Radhika Rani**
+
 ![image](nebula://assets/shriradha.png)
 `,
 }

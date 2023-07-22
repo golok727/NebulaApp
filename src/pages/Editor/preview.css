@@ -30,6 +30,11 @@
   border: 1px solid #444;
 }
 
+.editor__preview.markdown-body * p {
+  word-break: break-all !important;
+  white-space: pre-wrap !important;
+  word-wrap: break-word !important;
+}
 .editor__preview-container > .resizer {
   position: absolute;
   height: 100%;

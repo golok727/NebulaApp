@@ -6,9 +6,6 @@ const reducers = {
     state.sidebar.sidebarWidth = action.payload
   },
 
-  setReplWidth: (state: AppState, action: PayloadAction<number>) => {
-    state.replWidth = action.payload
-  },
   showSidebar: (state: AppState) => {
     if (state.mode === 'no-distractions') return
     state.sidebar.showSidebar = true

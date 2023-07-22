@@ -12,7 +12,6 @@ const initialDoc = `# Radhey Shyam
 ![image](nebula://assets/shriradha.png)
 `
 const Main = () => {
-  const replContainerRef = useRef<HTMLDivElement | null>(null)
   const doc = useSelector((state: RootState) => state.editor.currentDoc)
   const dispatch = useDispatch()
 
@@ -23,8 +22,8 @@ const Main = () => {
   return (
     <div className="editor__main">
       <Sidebar />
-      <Repl onChange={handleDocChange} doc={doc} ref={replContainerRef} />
-      <Preview replRef={replContainerRef} doc={doc} />
+      <Repl onChange={handleDocChange} doc={doc} />
+      <Preview doc={doc} />
     </div>
   )
 }

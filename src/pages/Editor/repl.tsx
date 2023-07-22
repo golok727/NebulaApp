@@ -1,7 +1,6 @@
-import { RootState } from '@/app/store'
 import { isInView } from '@/hooks/selectors'
 import useCodeMirror from '@/hooks/use-codemirror'
-import { forwardRef, useCallback, useEffect } from 'react'
+import { useCallback } from 'react'
 import { useSelector } from 'react-redux'
 import './repl.css'
 import { EditorState } from '@codemirror/state'
@@ -10,8 +9,7 @@ interface Props {
   doc: string
   onChange: (doc: string) => void
 }
-const Repl = forwardRef<HTMLDivElement | null, Props>((props, ref) => {
-  const replWidth = useSelector((state: RootState) => state.app.replWidth)
+const Repl = (props: Props) => {
   const { repl: showRepl } = useSelector(isInView)
   const { doc: initialDoc, onChange } = props
 
@@ -25,14 +23,10 @@ const Repl = forwardRef<HTMLDivElement | null, Props>((props, ref) => {
   })
 
   return (
-    <div
-      ref={ref}
-      style={{ minWidth: `${replWidth}px` }}
-      className={`editor__repl-container ${showRepl ? ' ' : 'hidden'}`}
-    >
-      <div ref={editorRef} className="editor__repl" />
+    <div className={`editor__repl-container ${showRepl ? ' ' : 'hidden'}`}>
+      <div ref={editorRef} className="editor__repl editor-hover" />
     </div>
   )
-})
+}
 
 export default Repl
