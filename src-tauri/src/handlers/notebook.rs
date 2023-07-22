@@ -1,9 +1,7 @@
 use crate::utils;
 use serde::{Deserialize, Serialize};
-use serde_json;
-use std::fs;
+use std::{fs, io::Read, path::PathBuf};
 use uuid::Uuid;
-
 #[derive(Serialize, Deserialize, Clone)]
 pub struct CreateNotebook {
     _id_: String,
@@ -11,13 +9,13 @@ pub struct CreateNotebook {
 }
 
 fn write_notebook_metadata(
-    notebook_json: &std::path::PathBuf,
+    notebook_meta_data_path: &PathBuf,
     data: &CreateNotebook,
 ) -> Result<(), String> {
-    let updated_notebooks_json = serde_json::to_string(&data)
-        .map_err(|err| format!("Failed to serialize updated notebooks data: {}", err))?;
+    let serialized =
+        bincode::serialize(&data).map_err(|err| format!("Error serializing data {}", err))?;
 
-    fs::write(&notebook_json, updated_notebooks_json)
+    fs::write(&notebook_meta_data_path, &serialized)
         .map_err(|err| format!("Failed to ass notebook metadata to notebooks.json: {}", err))
 }
 
@@ -37,14 +35,32 @@ pub fn create_notebook(notebook_name: String) -> Result<CreateNotebook, String> 
             notebook_name: notebook_name.clone(),
         };
 
-        let notebook_json_path = notebook_path.join("__meta_data__.json");
-        write_notebook_metadata(&notebook_json_path, &new_notebook)?;
+        let notebook_meta_data_path = notebook_path.join("__meta_data__.nb");
+        write_notebook_metadata(&notebook_meta_data_path, &new_notebook)?;
 
         Ok(new_notebook)
     } else {
         Err("Notebook data directory does not exist.".to_string())
     }
 }
+
+fn deserialize_notebook_metadata(file_path: &PathBuf) -> Result<CreateNotebook, String> {
+    // Open the file
+    let mut file =
+        fs::File::open(file_path).map_err(|err| format!("Error opening file: {}", err))?;
+
+    // Read the file into a buffer
+    let mut data_bytes = Vec::new();
+    file.read_to_end(&mut data_bytes)
+        .map_err(|err| format!("Error reading file: {}", err))?;
+
+    // Deserialize the buffer into CreateNotebook
+    match bincode::deserialize::<CreateNotebook>(&data_bytes) {
+        Ok(data) => Ok(data),
+        Err(err) => Err(format!("Error deserializing file\n\n Error = {}", err)),
+    }
+}
+
 #[tauri::command]
 pub fn get_notebooks() -> Result<Vec<CreateNotebook>, String> {
     let mut notebooks: Vec<CreateNotebook> = Vec::new();
@@ -58,13 +74,9 @@ pub fn get_notebooks() -> Result<Vec<CreateNotebook>, String> {
             let entry = entry.map_err(|_| "Error reading notebook".to_string())?;
             let path = entry.path();
             if path.is_dir() {
-                let meta_data_file = path.join("__meta_data__.json");
+                let meta_data_file = path.join("__meta_data__.nb");
                 if meta_data_file.exists() {
-                    let file_content = fs::read_to_string(meta_data_file).map_err(|err| {
-                        format!("Error reading metadata for notebook\n\n Error: {}", err)
-                    })?;
-                    let notebook: CreateNotebook = serde_json::from_str(&file_content)
-                        .map_err(|_| "Error converting data".to_string())?;
+                    let notebook = deserialize_notebook_metadata(&meta_data_file)?;
                     notebooks.push(notebook);
                 }
             }

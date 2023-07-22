@@ -22,6 +22,7 @@ const Home = () => {
         notebookName: noteName,
       })
       console.log(res)
+      setNoteName('')
     } catch (error) {
       console.log(error)
     }
@@ -31,7 +32,7 @@ const Home = () => {
     ;(async () => {
       try {
         const res = (await invoke('get_notebooks')) as any
-        console.log(notebooks)
+        console.log(res)
         setNotebooks(res)
       } catch (error) {
         console.log(error)
