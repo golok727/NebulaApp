@@ -6,13 +6,17 @@ mod handlers {
     pub mod notebook;
     pub mod pages;
 }
-use handlers::notebook::{create_notebook, get_notebooks};
+use handlers::notebook::{create_notebook, get_notebooks, load_notebook};
 use utils::initialize_app;
 
 fn main() {
     initialize_app();
     tauri::Builder::default()
-        .invoke_handler(tauri::generate_handler![create_notebook, get_notebooks])
+        .invoke_handler(tauri::generate_handler![
+            create_notebook,
+            get_notebooks,
+            load_notebook
+        ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application")
 }

@@ -1,16 +1,31 @@
 use crate::utils;
+use chrono::Utc;
 use serde::{Deserialize, Serialize};
 use std::{fs, io::Read, path::PathBuf};
 use uuid::Uuid;
+
 #[derive(Serialize, Deserialize, Clone)]
-pub struct CreateNotebook {
+pub struct Notebook {
+    __version__: String,
     _id_: String,
     notebook_name: String,
+    created_at: String,
+}
+impl Notebook {
+    // Create a new instance of Notebook with the given notebook_name
+    pub fn new(notebook_name: String) -> Self {
+        Notebook {
+            __version__: "1.0.0".to_string(),
+            _id_: Uuid::new_v4().to_string(),
+            notebook_name,
+            created_at: Utc::now().to_rfc3339(),
+        }
+    }
 }
 
 fn write_notebook_metadata(
     notebook_meta_data_path: &PathBuf,
-    data: &CreateNotebook,
+    data: &Notebook,
 ) -> Result<(), String> {
     let serialized =
         bincode::serialize(&data).map_err(|err| format!("Error serializing data {}", err))?;
@@ -20,7 +35,7 @@ fn write_notebook_metadata(
 }
 
 #[tauri::command]
-pub fn create_notebook(notebook_name: String) -> Result<CreateNotebook, String> {
+pub fn create_notebook(notebook_name: String) -> Result<Notebook, String> {
     let notebook_dir = utils::get_notebook_data_dir();
 
     if notebook_dir.exists() {
@@ -30,12 +45,9 @@ pub fn create_notebook(notebook_name: String) -> Result<CreateNotebook, String> 
         fs::create_dir(&notebook_path)
             .map_err(|err| format!("Failed to create a notebook directory: {}", err))?;
 
-        let new_notebook = CreateNotebook {
-            _id_: uuid_v4.clone(),
-            notebook_name: notebook_name.clone(),
-        };
+        let new_notebook = Notebook::new(notebook_name);
 
-        let notebook_meta_data_path = notebook_path.join("__meta_data__.nb");
+        let notebook_meta_data_path = notebook_path.join("__metadata__.nb");
         write_notebook_metadata(&notebook_meta_data_path, &new_notebook)?;
 
         Ok(new_notebook)
@@ -44,7 +56,7 @@ pub fn create_notebook(notebook_name: String) -> Result<CreateNotebook, String> 
     }
 }
 
-fn deserialize_notebook_metadata(file_path: &PathBuf) -> Result<CreateNotebook, String> {
+fn deserialize_notebook_metadata(file_path: &PathBuf) -> Result<Notebook, String> {
     // Open the file
     let mut file =
         fs::File::open(file_path).map_err(|err| format!("Error opening file: {}", err))?;
@@ -54,16 +66,17 @@ fn deserialize_notebook_metadata(file_path: &PathBuf) -> Result<CreateNotebook, 
     file.read_to_end(&mut data_bytes)
         .map_err(|err| format!("Error reading file: {}", err))?;
 
-    // Deserialize the buffer into CreateNotebook
-    match bincode::deserialize::<CreateNotebook>(&data_bytes) {
+    // Deserialize the buffer into Notebook
+
+    match bincode::deserialize(&data_bytes) {
         Ok(data) => Ok(data),
         Err(err) => Err(format!("Error deserializing file\n\n Error = {}", err)),
     }
 }
 
 #[tauri::command]
-pub fn get_notebooks() -> Result<Vec<CreateNotebook>, String> {
-    let mut notebooks: Vec<CreateNotebook> = Vec::new();
+pub fn get_notebooks() -> Result<Vec<Notebook>, String> {
+    let mut notebooks: Vec<Notebook> = Vec::new();
 
     let notebook_dir = utils::get_notebook_data_dir();
     if notebook_dir.exists() {
@@ -74,7 +87,7 @@ pub fn get_notebooks() -> Result<Vec<CreateNotebook>, String> {
             let entry = entry.map_err(|_| "Error reading notebook".to_string())?;
             let path = entry.path();
             if path.is_dir() {
-                let meta_data_file = path.join("__meta_data__.nb");
+                let meta_data_file = path.join("__metadata__.nb");
                 if meta_data_file.exists() {
                     let notebook = deserialize_notebook_metadata(&meta_data_file)?;
                     notebooks.push(notebook);
@@ -85,4 +98,53 @@ pub fn get_notebooks() -> Result<Vec<CreateNotebook>, String> {
     } else {
         Err("Error getting notebooks".to_string())
     }
+}
+
+#[derive(Serialize)]
+pub struct CreateNotebookResponse {
+    _id_: String,
+    notebook_name: String,
+    created_at: String,
+}
+
+#[derive(Serialize)]
+pub struct NotebookResponse {
+    notebook: CreateNotebookResponse,
+}
+
+#[tauri::command]
+pub fn load_notebook(notebook_id: String) -> Result<NotebookResponse, ErrorResponse> {
+    let notebooks_dir = utils::get_notebook_data_dir();
+
+    let notebook_dir = notebooks_dir.join(notebook_id);
+
+    if notebook_dir.exists() {
+        // Get the Notebook MetaData
+        let meta_data = deserialize_notebook_metadata(&notebook_dir.join("__metadata__.nb"))
+            .map_err(|err| ErrorResponse {
+                status: 500,
+                message: err.clone(),
+            })?;
+
+        // Make The Response
+        let response = NotebookResponse {
+            notebook: CreateNotebookResponse {
+                _id_: meta_data._id_,
+                notebook_name: meta_data.notebook_name,
+                created_at: meta_data.created_at,
+            },
+        };
+        Ok(response)
+    } else {
+        Err(ErrorResponse {
+            status: 404,
+            message: "Notebook Not Found".to_string(),
+        })
+    }
+}
+
+#[derive(Serialize)]
+pub struct ErrorResponse {
+    status: i32,
+    message: String,
 }

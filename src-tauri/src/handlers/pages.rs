@@ -6,7 +6,6 @@ pub struct PageContent {
     body: String,
     starred: bool,
     pinned: bool,
-    sub_pages: Vec<PageEntry>,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -14,4 +13,5 @@ pub struct PageEntry {
     _id_: String,
     title: String,
     content: PageContent,
+    sub_pages: Vec<PageEntry>,
 }

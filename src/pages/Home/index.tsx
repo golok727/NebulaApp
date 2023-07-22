@@ -1,11 +1,8 @@
 import './home.css'
 import { Link, useNavigate } from 'react-router-dom'
 import NebulaLogo from '../../assets/logo-nebula.svg'
-import MenuButton from '../../components/Button'
 import { invoke } from '@tauri-apps/api/tauri'
-import { v4 as uuidv4 } from 'uuid'
 import { FormEvent, useEffect, useState } from 'react'
-import { pagesDummy } from '@/utils/constants'
 const disabled = false
 
 const Home = () => {
@@ -22,7 +19,7 @@ const Home = () => {
     }
     try {
       const res = (await invoke('create_notebook', {
-        notebookName: noteName,
+        notebookName: noteName.trim(),
       })) as any
       navigate(`/editor/${res._id_}/`)
       console.log(res)
@@ -68,7 +65,7 @@ const Home = () => {
           notebooks.length > 0 &&
           notebooks.map((notebook) => (
             <li key={notebook._id_}>
-              <Link to={`/editor/${notebook._id_}/new`}>
+              <Link to={`/editor/${notebook._id_}/`}>
                 {notebook.notebook_name}
               </Link>
             </li>
