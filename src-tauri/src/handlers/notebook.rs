@@ -4,9 +4,10 @@ use serde::{Deserialize, Serialize};
 use std::{fs, io::Read, path::PathBuf};
 use uuid::Uuid;
 
+const CURRENT_VERSION: i32 = 1;
 #[derive(Serialize, Deserialize, Clone)]
 pub struct Notebook {
-    __version__: String,
+    __version__: i32,
     _id_: String,
     notebook_name: String,
     created_at: String,
@@ -15,7 +16,7 @@ impl Notebook {
     // Create a new instance of Notebook with the given notebook_name
     pub fn new(notebook_name: String) -> Self {
         Notebook {
-            __version__: "1.0.0".to_string(),
+            __version__: CURRENT_VERSION,
             _id_: Uuid::new_v4().to_string(),
             notebook_name,
             created_at: Utc::now().to_rfc3339(),
@@ -39,13 +40,10 @@ pub fn create_notebook(notebook_name: String) -> Result<Notebook, String> {
     let notebook_dir = utils::get_notebook_data_dir();
 
     if notebook_dir.exists() {
-        let uuid_v4 = Uuid::new_v4().to_string();
-        let notebook_id = uuid_v4.clone();
-        let notebook_path = notebook_dir.join(notebook_id);
+        let new_notebook = Notebook::new(notebook_name);
+        let notebook_path = notebook_dir.join(&new_notebook._id_);
         fs::create_dir(&notebook_path)
             .map_err(|err| format!("Failed to create a notebook directory: {}", err))?;
-
-        let new_notebook = Notebook::new(notebook_name);
 
         let notebook_meta_data_path = notebook_path.join("__metadata__.nb");
         write_notebook_metadata(&notebook_meta_data_path, &new_notebook)?;
@@ -117,7 +115,7 @@ pub fn load_notebook(notebook_id: String) -> Result<NotebookResponse, ErrorRespo
     let notebooks_dir = utils::get_notebook_data_dir();
 
     let notebook_dir = notebooks_dir.join(notebook_id);
-
+    println!("{}", notebook_dir.display());
     if notebook_dir.exists() {
         // Get the Notebook MetaData
         let meta_data = deserialize_notebook_metadata(&notebook_dir.join("__metadata__.nb"))

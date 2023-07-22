@@ -1,4 +1,6 @@
 use serde::{Deserialize, Serialize};
+use std::{io::Read, path::PathBuf};
+const CURRENT_VERSION: u32 = 1;
 
 #[derive(Serialize, Deserialize)]
 pub struct PageContent {
@@ -7,11 +9,34 @@ pub struct PageContent {
     starred: bool,
     pinned: bool,
 }
+impl PageContent {
+    pub fn new() -> Self {
+        PageContent {
+            doctype: "markdown".to_string(),
+            body: "".to_string(),
+            pinned: false,
+            starred: false,
+        }
+    }
+}
 
 #[derive(Serialize, Deserialize)]
 pub struct PageEntry {
+    __version__: u32,
     _id_: String,
     title: String,
     content: PageContent,
     sub_pages: Vec<PageEntry>,
+}
+
+impl PageEntry {
+    pub fn new(title: String) -> Self {
+        PageEntry {
+            __version__: CURRENT_VERSION,
+            _id_: uuid::Uuid::new_v4().to_string(),
+            title,
+            content: PageContent::new(),
+            sub_pages: Vec::new(),
+        }
+    }
 }
