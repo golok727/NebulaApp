@@ -1,7 +1,7 @@
 import { RootState } from '@/app/store'
 import Button from '@/components/Button'
 import { setSidebarWidth, toggleSidebar } from '@/features/appSlice'
-import { isInView } from '@/hooks/selectors'
+import { getCurrentPages, isInView } from '@/features/selectors'
 import { ChevronDoubleLeftIcon } from '@heroicons/react/24/outline'
 import { useCallback, useEffect, useState } from 'react'
 import { IoMdJournal } from 'react-icons/io'
@@ -14,11 +14,16 @@ const Sidebar = () => {
   const sidebarWidth = useSelector(
     ({ app }: RootState) => app.sidebar.sidebarWidth
   )
+
+  const currentNotebookName = useSelector(
+    (state: RootState) => state.editor.currentNotebook?.notebook_name ?? ''
+  )
+
   const { sidebar: showSidebar } = useSelector(isInView)
+  const currentPages = useSelector(getCurrentPages)
+  const [isDragging, setIsDragging] = useState(false)
 
   const dispatch = useDispatch()
-
-  const [isDragging, setIsDragging] = useState(false)
 
   const handleMouseDown = (ev: React.MouseEvent<HTMLDivElement>) => {
     ev.preventDefault()
@@ -70,7 +75,9 @@ const Sidebar = () => {
         <header className="sidebar-modern__header">
           <div className="sidebar-modern__header__left">
             <IoMdJournal />
-            <span>My Notebook</span>
+            <span>
+              {currentNotebookName ? currentNotebookName : 'Untitled'}
+            </span>
           </div>
           <div className="sidebar-modern__header__right">
             <Button onClick={handleToggleSidebar} variant={'transparent'}>
@@ -81,9 +88,13 @@ const Sidebar = () => {
 
         <section className="sidebar__main">
           <SidebarGroup groupTitle="Pages">
-            {pagesDummy.map((page) => {
-              return <SidebarExpandable key={page._id_} page={page} />
-            })}
+            {currentPages && currentPages.length > 0 ? (
+              currentPages.map((page) => {
+                return <SidebarExpandable key={page._id_} page={page} />
+              })
+            ) : (
+              <span className="no-pages-found">Start your journey...</span>
+            )}
           </SidebarGroup>
         </section>
       </div>

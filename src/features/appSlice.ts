@@ -10,6 +10,7 @@ export interface AppState {
   imageUrlCache: Record<string, string>
   prevMode: 'edit-only' | 'preview-only' | 'both' | 'no-distractions'
   mode: 'edit-only' | 'preview-only' | 'both' | 'no-distractions'
+  notebooks: NotebookInfo[]
 }
 
 const initialState: AppState = {
@@ -22,6 +23,7 @@ const initialState: AppState = {
   imageUrlCache: {},
   mode: 'edit-only',
   prevMode: 'edit-only',
+  notebooks: [],
 }
 
 const appSlice = createSlice({

@@ -12,7 +12,14 @@
   cursor: pointer;
   border-radius: 6px;
 }
+.sidebar-expandable_container__button:hover
+  .sidebar-expandable_container__button__options {
+  opacity: 1;
+}
 
+.sidebar-expandable_container__button__left {
+  display: flex;
+}
 .sidebar-expandable_container__button__text {
   font-size: 0.8rem;
 }
@@ -26,13 +33,16 @@
 }
 
 .sidebar-expandable_container__button .icon {
-  margin-right: 0.2rem;
-  font-size: 1rem;
+  margin-right: 0.4rem;
 }
 .sidebar-expandable_container__button div {
   display: flex;
 }
 
+.sidebar-expandable_container__button__options {
+  opacity: 0;
+  transition: all 0.2s ease;
+}
 .sidebar-expandable_container__button__options button {
   margin-inline: 0.2rem;
 }

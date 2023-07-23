@@ -1,4 +1,4 @@
-import { isInView } from '@/hooks/selectors'
+import { isInView } from '@/features/selectors'
 import useCodeMirror from '@/hooks/use-codemirror'
 import { useCallback } from 'react'
 import { useSelector } from 'react-redux'

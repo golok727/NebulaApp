@@ -15,6 +15,9 @@
   padding: var(--padding-1);
   height: 100%;
 }
+.main__sidebar__modern:hover .controls {
+  opacity: 1;
+}
 
 .main__sidebar > .resizer {
   position: absolute;

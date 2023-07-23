@@ -1,15 +1,14 @@
 import { useState } from 'react'
 import { MouseEventHandler, ReactNode } from 'react'
-import { CiStickyNote } from 'react-icons/ci'
 import { SlOptions } from 'react-icons/sl'
 import { IoMdAdd } from 'react-icons/io'
 import { ChevronDownIcon, ChevronRightIcon } from '@heroicons/react/24/outline'
 import './sidebar-expandable.css'
 import Button from '@/components/Button'
-import { pagesDummy } from '@/utils/constants'
 import { useParams } from 'react-router-dom'
+import { BsFiletypeMd } from 'react-icons/bs'
 interface Props {
-  page: Page
+  page: PageInfo
 }
 const SidebarExpandable = (props: Props) => {
   const { page } = props
@@ -29,15 +28,15 @@ const SidebarExpandable = (props: Props) => {
       </PageButton>
       {isExpanded ? (
         <>
-          {page.subPages && page.subPages.length > 0 ? (
+          {page.sub_pages && page.sub_pages.length > 0 ? (
             <div className="sidebar-expandable_container__subpage">
-              {page.subPages.map((subPage) => {
+              {page.sub_pages.map((subPage) => {
                 return <SidebarExpandable key={subPage._id_} page={subPage} />
               })}
             </div>
           ) : (
             <div className="sidebar-expandable_container__no-sub-pages">
-              No Subpages
+              No SubPages
             </div>
           )}
         </>
@@ -50,7 +49,7 @@ const SidebarExpandable = (props: Props) => {
 
 export default SidebarExpandable
 const PageButton = (props: {
-  children: ReactNode
+  children: string
   isExpanded?: boolean
   isActive?: boolean
   onClick?: MouseEventHandler<HTMLDivElement>
@@ -59,6 +58,7 @@ const PageButton = (props: {
   onOptionsClick?: () => void
 }) => {
   const { isActive = false } = props
+
   return (
     <div
       className={`sidebar-expandable_container__button ${
@@ -78,7 +78,10 @@ const PageButton = (props: {
           )}
         </Button>
 
-        <CiStickyNote className="icon" />
+        <div>
+          <BsFiletypeMd className="icon" />
+        </div>
+
         <span className="sidebar-expandable_container__button__text">
           {props.children}
         </span>
