@@ -6,6 +6,21 @@
   color: var(--text-gray);
   font-size: 0.7rem;
   font-weight: bold;
+  display: flex;
+  justify-content: space-between;
 }
-.sidebar__group__content {
+
+.sidebar__group__header .controls button {
+  font-size: 1rem;
+}
+.sidebar__group__header .controls {
+  display: flex;
+  gap: 0.2rem;
+  font-size: 3rem;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+.sidebar__group__content .no-pages-found {
+  color: var(--text-gray);
+  font-size: 0.7rem;
 }

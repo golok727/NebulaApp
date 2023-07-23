@@ -18,7 +18,7 @@ import {
   togglePreviewMode,
   toggleSidebar,
 } from '@/features/appSlice'
-import { isInView } from '@/hooks/selectors'
+import { isInView } from '@/features/selectors'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import Button from './Button'

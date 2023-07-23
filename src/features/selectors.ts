@@ -27,3 +27,5 @@ export const isInView = createSelector(
     }
   }
 )
+export const getCurrentPages = (state: RootState) =>
+  state.editor.currentNotebook?.pages ?? []

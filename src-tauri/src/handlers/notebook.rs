@@ -1,3 +1,4 @@
+use crate::handlers::pages;
 use crate::utils;
 use chrono::Utc;
 use serde::{Deserialize, Serialize};
@@ -5,12 +6,21 @@ use std::{fs, io::Read, path::PathBuf};
 use uuid::Uuid;
 
 const CURRENT_VERSION: i32 = 1;
+
+#[derive(Serialize, Deserialize, Clone)]
+pub struct PageInfo {
+    _id_: String,
+    title: String,
+    sub_pages: Vec<PageInfo>,
+}
+
 #[derive(Serialize, Deserialize, Clone)]
 pub struct Notebook {
     __version__: i32,
     _id_: String,
     notebook_name: String,
     created_at: String,
+    pages: Vec<PageInfo>,
 }
 impl Notebook {
     // Create a new instance of Notebook with the given notebook_name
@@ -20,6 +30,7 @@ impl Notebook {
             _id_: Uuid::new_v4().to_string(),
             notebook_name,
             created_at: Utc::now().to_rfc3339(),
+            pages: Vec::new(),
         }
     }
 }
@@ -103,6 +114,7 @@ pub struct CreateNotebookResponse {
     _id_: String,
     notebook_name: String,
     created_at: String,
+    pages: Vec<PageInfo>,
 }
 
 #[derive(Serialize)]
@@ -110,12 +122,24 @@ pub struct NotebookResponse {
     notebook: CreateNotebookResponse,
 }
 
+fn make_dummy(page_names: &Vec<&str>) -> Vec<PageInfo> {
+    let mut pages = Vec::<PageInfo>::new();
+
+    for page_name in page_names {
+        pages.push(PageInfo {
+            _id_: uuid::Uuid::new_v4().to_string(),
+            title: page_name.to_string(),
+            sub_pages: Vec::new(),
+        })
+    }
+    pages
+}
+
 #[tauri::command]
 pub fn load_notebook(notebook_id: String) -> Result<NotebookResponse, ErrorResponse> {
     let notebooks_dir = utils::get_notebook_data_dir();
 
     let notebook_dir = notebooks_dir.join(notebook_id);
-    println!("{}", notebook_dir.display());
     if notebook_dir.exists() {
         // Get the Notebook MetaData
         let meta_data = deserialize_notebook_metadata(&notebook_dir.join("__metadata__.nb"))
@@ -124,12 +148,26 @@ pub fn load_notebook(notebook_id: String) -> Result<NotebookResponse, ErrorRespo
                 message: err.clone(),
             })?;
 
+        //\\//! ------ This is for testing purpose
+        // TODO REMOVE THIS
+
+        let dummy_names = vec!["Radhey Shyam", "Coding", "SomeStuff"];
+        let mut dummy_pages = make_dummy(&dummy_names);
+
+        let sub_page_dummy = vec!["Krsna", "Golok", "Hello"];
+        dummy_pages[0].sub_pages = make_dummy(&sub_page_dummy);
+
+        //\\//! ------ This is for testing purpose
         // Make The Response
         let response = NotebookResponse {
             notebook: CreateNotebookResponse {
-                _id_: meta_data._id_,
-                notebook_name: meta_data.notebook_name,
-                created_at: meta_data.created_at,
+                _id_: meta_data._id_.clone(),
+                notebook_name: meta_data.notebook_name.clone(),
+                created_at: meta_data.created_at.clone(),
+                pages: match meta_data.notebook_name.as_str() {
+                    "Radha Krsna" => dummy_pages,
+                    _ => Vec::new(),
+                },
             },
         };
         Ok(response)

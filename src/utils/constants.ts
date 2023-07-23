@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid'
-export const pagesDummy: Page[] = [
+export const pagesDummy: PageEntry[] = [
   {
     _id_: uuidv4(),
     title: 'Radhey Shyam',

@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import React, { createElement, ReactNode } from 'react'
 import { setView, switchToPreviousView } from '@/features/appSlice'
-import { isInView } from '@/hooks/selectors'
+import { isInView } from '@/features/selectors'
 import { unified } from 'unified'
 import remarkParse from 'remark-parse'
 import remarkGfm from 'remark-gfm'
