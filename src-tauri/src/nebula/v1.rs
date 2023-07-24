@@ -34,6 +34,7 @@ pub struct PageEntry {
 pub struct NebulaNotebook {
     pub __id: String,
     pub name: String,
+    pub thumbnail: Option<String>,
     pub created_at: String,
     pub pages: Vec<String>,
     pub page_map: HashMap<String, PageEntry>,
@@ -68,6 +69,7 @@ impl NebulaNotebook {
         NebulaNotebook {
             __id: Uuid::new_v4().to_string(),
             name,
+            thumbnail: None,
             created_at: Utc::now().to_rfc3339().to_string(),
             pages: Vec::new(),
             page_map: HashMap::new(),
@@ -98,7 +100,7 @@ impl NebulaNotebook {
         Ok(())
     }
 
-    pub fn load_from_file(filepath: &PathBuf) -> Result<Self, String> {
+    pub fn _load_from_file(filepath: &PathBuf) -> Result<Self, String> {
         println!("{}", filepath.display());
         match filepath.is_file() {
             true => {
@@ -111,9 +113,9 @@ impl NebulaNotebook {
 
                 //? Split The header and data Part
 
-                let header_size = std::mem::size_of::<FileHeader>();
-                let header_data = &buffer[..header_size];
-                let notebook_data = &buffer[header_size..];
+                let header_size: usize = std::mem::size_of::<FileHeader>();
+                let header_data: &[u8] = &buffer[..header_size];
+                let notebook_data: &[u8] = &buffer[header_size..];
                 let header: FileHeader = bincode::deserialize::<FileHeader>(&header_data)
                     .map_err(|err| format!("Error retrieving header {}", err))?;
                 let file_version = header.__version__;

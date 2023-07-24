@@ -18,11 +18,11 @@ const Home = () => {
       return
     }
     try {
-      const res = (await invoke('create_notebook', {
+      const res = (await invoke('create_nebula_notebook', {
         notebookName: noteName.trim(),
       })) as any
-      navigate(`/editor/${res._id_}/`)
       console.log(res)
+      navigate(`/editor/${res._id_}/`)
 
       setNoteName('')
     } catch (error) {
@@ -33,8 +33,9 @@ const Home = () => {
   useEffect(() => {
     ;(async () => {
       try {
+        const nebula_notebooks = (await invoke('load_nebula_notebooks')) as any
+        console.log(nebula_notebooks.notebooks)
         const res = (await invoke('get_notebooks')) as any
-        console.log(res)
         setNotebooks(res)
       } catch (error) {
         console.log(error)
