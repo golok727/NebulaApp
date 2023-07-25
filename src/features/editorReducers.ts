@@ -28,9 +28,15 @@ export const loadNotebook = createAsyncThunk(
   'editor/loadNotebook',
   async (payload: LoadNotebookPayload, thunkApi) => {
     try {
+      const nebula_notebook = await invoke('load_nebula_notebook', {
+        notebookId: payload.notebook_id,
+      })
+      console.log(nebula_notebook)
+
       const res = await invoke<{ notebook: NotebookInfo }>('load_notebook', {
         notebookId: payload.notebook_id,
       })
+
       return res
     } catch (error: any) {
       return thunkApi.rejectWithValue(

@@ -11,14 +11,14 @@ mod handlers {
     pub mod notebook;
     pub mod pages;
 }
-use handlers::nb::{create_nebula_notebook, load_nebula_notebooks};
+use handlers::nb::{create_nebula_notebook, load_nebula_notebook, load_nebula_notebooks};
 use handlers::notebook::{create_notebook, get_notebooks, load_notebook};
 use state::AppState;
-use utils::initialize_app;
-
+use std::sync::{Arc, Mutex};
+use utils::{get_notebook_data_dir, initialize_app};
 fn main() {
     initialize_app();
-    // let notebook_dir = get_notebook_data_dir();
+    let notebook_dir = get_notebook_data_dir();
     //
     // let notebook = nebula::NebulaNotebookFile::NebulaNotebook::new("Radhey Krsna".to_string());
 
@@ -26,24 +26,27 @@ fn main() {
     //     .save_to_file()
     //     .unwrap_or_else(|err| println!("{}", err));
 
-    // let notebook_path = notebook_dir.join("fb14a8c0-9090-4fbd-af4e-13d855c18d53.nb");
-    // match nebula::NebulaNotebookFile::NebulaNotebook::load_from_file(&notebook_path) {
-    //     Ok(loaded_notebook) => {
-    //         println!("{:?}", loaded_notebook);
-    //     }
-    //     Err(err) => {
-    //         println!("Error Loading Notebook: {}", err);
-    //     }
-    // }
+    let notebook_path = notebook_dir.join("f9d9f375-c184-411d-a269-664354886aa3.nb");
+    match nebula::NebulaNotebookFile::NebulaNotebook::load_from_file(&notebook_path) {
+        Ok(loaded_notebook) => {
+            let pages_simple = loaded_notebook.get_simple_pages();
+            // println!("{:#?}", &loaded_notebook);
+            println!("{:#?}", &pages_simple);
+        }
+        Err(err) => {
+            println!("Error Loading Notebook: {}", err);
+        }
+    }
 
     tauri::Builder::default()
-        .manage(AppState::new())
+        .manage(Arc::new(Mutex::new(AppState::new())))
         .invoke_handler(tauri::generate_handler![
             create_notebook,
             get_notebooks,
             load_notebook,
             create_nebula_notebook,
-            load_nebula_notebooks
+            load_nebula_notebooks,
+            load_nebula_notebook,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application")

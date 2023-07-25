@@ -10,7 +10,7 @@ const Home = () => {
   const navigate = useNavigate()
 
   const [notebooks, setNotebooks] =
-    useState<{ _id_: string; notebook_name: string }[]>()
+    useState<{ __id: string; name: string; thumbnail: string | null }[]>()
   const handleCreateNewNotebook = async (ev: FormEvent) => {
     ev.preventDefault()
     if (!noteName) {
@@ -35,8 +35,7 @@ const Home = () => {
       try {
         const nebula_notebooks = (await invoke('load_nebula_notebooks')) as any
         console.log(nebula_notebooks.notebooks)
-        const res = (await invoke('get_notebooks')) as any
-        setNotebooks(res)
+        setNotebooks(nebula_notebooks.notebooks)
       } catch (error) {
         console.log(error)
       }
@@ -65,10 +64,8 @@ const Home = () => {
         {notebooks &&
           notebooks.length > 0 &&
           notebooks.map((notebook) => (
-            <li key={notebook._id_}>
-              <Link to={`/editor/${notebook._id_}/`}>
-                {notebook.notebook_name}
-              </Link>
+            <li key={notebook.__id}>
+              <Link to={`/editor/${notebook.__id}/`}>{notebook.name}</Link>
             </li>
           ))}
       </ul>

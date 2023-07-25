@@ -28,7 +28,8 @@ const Editor = () => {
   return (
     <div className="app__editor">
       <TopBar />
-      {currentNotebook ? <Main /> : <div>Notebook Not found</div>}
+      {/* {currentNotebook ? <Main /> : <div>Notebook Not found</div>} */}
+      <Main />
     </div>
   )
 }

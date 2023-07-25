@@ -10,27 +10,30 @@ use std::{
     fs,
     io::{Read, Write},
     path::PathBuf,
+    string,
 };
 use uuid::Uuid;
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct PageContent {
     pub doctype: String,
     pub body: String,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct PageEntry {
     pub __id: String,
     pub title: String,
     pub content: PageContent,
     pub created_at: String,
+    pub updated_at: String,
     pub pinned: bool,
     pub starred: bool,
+    pub tags: Option<Vec<String>>,
     pub parent_id: Option<String>,
     pub sub_pages: Vec<String>,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct NebulaNotebook {
     pub __id: String,
     pub name: String,
@@ -38,6 +41,20 @@ pub struct NebulaNotebook {
     pub created_at: String,
     pub pages: Vec<String>,
     pub page_map: HashMap<String, PageEntry>,
+    pub description: Option<String>,
+    pub author: Option<String>,
+    assets: Vec<String>,
+    pub last_accessed_at: String,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct PageSimple {
+    pub __id: String,
+    pub parent_id: Option<String>,
+    pub title: String,
+    pub pinned: bool,
+    pub starred: bool,
+    pub subpages: Vec<PageSimple>,
 }
 // Page Entry Implementation
 impl PageEntry {
@@ -47,10 +64,12 @@ impl PageEntry {
             title,
             content: PageContent::new(),
             created_at: Utc::now().to_rfc3339().to_string(),
+            updated_at: Utc::now().to_rfc3339().to_string(),
             pinned: false,
             starred: false,
             parent_id: None,
             sub_pages: Vec::new(),
+            tags: None,
         }
     }
 }
@@ -71,8 +90,60 @@ impl NebulaNotebook {
             name,
             thumbnail: None,
             created_at: Utc::now().to_rfc3339().to_string(),
+            last_accessed_at: Utc::now().to_rfc3339().to_string(),
+            assets: Vec::new(),
             pages: Vec::new(),
             page_map: HashMap::new(),
+            author: None,
+            description: None,
+        }
+    }
+
+    pub fn get_simple_pages(&self) -> Vec<PageSimple> {
+        let mut simple_pages: Vec<PageSimple> = Vec::new();
+
+        for page_id in &self.pages {
+            if let Some(page) = self.page_map.get(page_id) {
+                let simple_page = self.recursive_convert(page);
+                simple_pages.push(simple_page);
+            }
+        }
+
+        simple_pages
+    }
+    fn recursive_convert(&self, page: &PageEntry) -> PageSimple {
+        let mut simple_page = PageSimple {
+            __id: page.__id.clone(),
+            title: page.title.clone(),
+            parent_id: page.parent_id.clone(),
+            pinned: page.pinned.clone(),
+            starred: page.starred.clone(),
+            subpages: Vec::new(),
+        };
+        if !page.sub_pages.is_empty() {
+            for sub_page_id in &page.sub_pages {
+                if let Some(sub_page) = self.page_map.get(sub_page_id) {
+                    let sub_simple_page = self.recursive_convert(sub_page);
+                    simple_page.subpages.push(sub_simple_page);
+                }
+            }
+        }
+        simple_page
+    }
+
+    pub fn add_page(&mut self, title: String, parent_id: Option<String>) -> () {
+        let new_page = PageEntry::new(title);
+        self.page_map
+            .insert(new_page.__id.clone(), new_page.clone());
+        match parent_id {
+            Some(parent_id) => {
+                if let Some(parent_page) = self.page_map.get_mut(&parent_id) {
+                    parent_page.sub_pages.push(new_page.__id.clone());
+                }
+            }
+            _ => {
+                self.pages.push(new_page.__id);
+            }
         }
     }
 
@@ -100,7 +171,7 @@ impl NebulaNotebook {
         Ok(())
     }
 
-    pub fn _load_from_file(filepath: &PathBuf) -> Result<Self, String> {
+    pub fn load_from_file(filepath: &PathBuf) -> Result<Self, String> {
         println!("{}", filepath.display());
         match filepath.is_file() {
             true => {
@@ -123,8 +194,11 @@ impl NebulaNotebook {
                 // ? Match the file version
                 match file_version {
                     FILE_FORMAT_CURRENT_VERSION => {
-                        let notebook = bincode::deserialize::<NebulaNotebook>(&notebook_data)
-                            .map_err(|err| format!("Error deserializing notebook data {}", err))?;
+                        let mut notebook = bincode::deserialize::<NebulaNotebook>(&notebook_data)
+                            .map_err(|err| {
+                            format!("Error deserializing notebook data {}", err)
+                        })?;
+                        notebook.last_accessed_at = Utc::now().to_rfc3339().to_string();
                         Ok(notebook)
                     }
                     // Handle Migration logic

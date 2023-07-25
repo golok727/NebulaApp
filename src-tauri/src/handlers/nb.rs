@@ -1,9 +1,13 @@
+use crate::state::AppState;
 use crate::{nebula::NebulaNotebookFile::NebulaNotebook, utils::get_notebook_data_dir};
 use serde::{Deserialize, Serialize};
+use std::sync::{Arc, Mutex};
 use std::{
     fs,
     io::{Read, Write},
 };
+use tauri::State;
+
 #[derive(Serialize, Deserialize)]
 pub struct Response {
     notebook: NebulaNotebook,
@@ -99,15 +103,31 @@ pub fn create_nebula_notebook(notebook_name: String) -> Result<Response, String>
         Err(error) => Err(error),
     }
 }
-
+// Load Notebooks at startup
 #[tauri::command]
 pub fn load_nebula_notebooks() -> Result<MetaDataFile, String> {
     let res = load_notebooks_metadata()?;
     Ok(res)
 }
 
-// #[tauri::command]
-// pub fn load_nebula_notebook() {}
+#[tauri::command]
+pub fn load_nebula_notebook(
+    state: State<'_, Arc<Mutex<AppState>>>,
+    notebook_id: String,
+) -> Result<NebulaNotebook, String> {
+    println!("Loading State");
+    let mut state = state.lock().unwrap();
+    let notebooks_dir = get_notebook_data_dir();
+    let file_path = notebooks_dir.join(notebook_id + ".nb");
+    let notebook = NebulaNotebook::load_from_file(&file_path);
+    match notebook {
+        Ok(notebook) => {
+            state.set_notebook(notebook.clone());
+            Ok(notebook.clone())
+        }
+        Err(error) => Err(error),
+    }
+}
 
 // #[tauri::command]
 // pub fn unload_nebula_notebook() {}
