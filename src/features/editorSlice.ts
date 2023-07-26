@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 
-import reducers, { loadNotebook } from './editorReducers'
+import reducers, { loadNotebook, loadPage } from './editorReducers'
+import { P } from '@tauri-apps/api/event-41a9edf5'
 
 export interface AppEditorState {
   currentDoc: string
@@ -16,11 +17,7 @@ export interface AppEditorState {
 }
 
 const initialState: AppEditorState = {
-  currentDoc: `# Radhey Shyam
-**Shrimati Radhika Rani**
-
-![Radha Rani](nebula://assets/shriradha.png)
-`,
+  currentDoc: '',
   currentNotebook: null,
   currentPage: null,
   expandedPages: [],
@@ -37,6 +34,7 @@ const editorSlice = createSlice({
   initialState,
   reducers,
   extraReducers: (builder) => {
+    // Load Notebook
     builder
       .addCase(loadNotebook.pending, (state) => {
         state.status.loading = true
@@ -60,7 +58,36 @@ const editorSlice = createSlice({
         ) {
           state.status = { ...state.status, ...(action.payload as any) }
         }
-        console.log(state.status)
+      })
+
+    // Load Page
+    builder
+      .addCase(loadPage.pending, (state) => {
+        state.status = {
+          ...state.status,
+          loading: true,
+          message: 'Loading Notebook',
+        }
+      })
+      .addCase(loadPage.fulfilled, (state, action) => {
+        state.status = {
+          ...state.status,
+          loading: false,
+          code: '',
+          error: false,
+          message: '',
+        }
+        state.currentPage = action.payload
+        state.currentDoc = action.payload.content.body
+      })
+      .addCase(loadPage.rejected, (state, action) => {
+        state.status.error = true
+        if (
+          'message' in (action.payload as any) ||
+          'code' in (action.payload as any)
+        ) {
+          state.status = { ...state.status, ...(action.payload as any) }
+        }
       })
   },
 })

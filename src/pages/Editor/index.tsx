@@ -4,7 +4,7 @@ import TopBar from '@/components/topbar'
 import Main from './main'
 import { useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { loadNotebook } from '@/features/editorReducers'
+import { loadNotebook, loadPage } from '@/features/editorReducers'
 import { AppDispatch, RootState } from '@/app/store'
 import { resetNotebookState } from '@/features/editorSlice'
 const Editor = () => {
@@ -14,10 +14,10 @@ const Editor = () => {
     (state: RootState) => state.editor.currentNotebook
   )
   const notebookId = params.notebook
-
+  const pageId = params.pageId
   useEffect(() => {
     if (notebookId !== undefined) {
-      dispatch(loadNotebook({ notebook_id: notebookId }))
+      dispatch(loadNotebook({ notebookId: notebookId }))
       console.log(currentNotebook)
     }
 
@@ -26,6 +26,16 @@ const Editor = () => {
       dispatch(resetNotebookState())
     }
   }, [dispatch, notebookId])
+
+  useEffect(() => {
+    if (pageId !== undefined) {
+      console.log(`Load page ${pageId}`)
+      dispatch(loadPage({ pageId }))
+    } else {
+      // TODO
+      console.log('This page is unloaded')
+    }
+  }, [dispatch, pageId])
 
   return (
     <div className="app__editor">

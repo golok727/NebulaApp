@@ -1,17 +1,17 @@
 interface Content {
   doctype: 'markdown'
   body: string
-  starred: boolean
-  pinned: boolean
 }
 interface PageEntry {
-  _id_: string
+  __id: string
   title: string
   tags: string[]
   starred: boolean
-  pinned: boolean
   content: Content
-  sub_pages: PageEntry[]
+  tags: string[]
+  parent_id: string | null[]
+  starred: boolean
+  pinned: boolean
 }
 
 interface PageSimple {

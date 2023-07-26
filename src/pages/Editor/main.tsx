@@ -2,28 +2,32 @@ import './main.css'
 import Sidebar from './sidebar'
 import Repl from './repl'
 import Preview from './preview'
-import { useCallback, useRef, useState } from 'react'
+import { useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { setCurrentDoc } from '@/features/editorSlice'
 import { RootState } from '@/app/store'
 
-const initialDoc = `# Radhey Shyam
-**Shrimati Radhika Rani**
-![image](nebula://assets/shriradha.png)
-`
 const Main = () => {
-  const doc = useSelector((state: RootState) => state.editor.currentDoc)
   const dispatch = useDispatch()
 
   const handleDocChange = useCallback((newDoc: string) => {
     dispatch(setCurrentDoc(newDoc))
   }, [])
+  const currentPage = useSelector(
+    (state: RootState) => state.editor.currentPage
+  )
 
   return (
     <div className="editor__main">
       <Sidebar />
-      <Repl onChange={handleDocChange} doc={doc} />
-      <Preview doc={doc} />
+      {currentPage ? (
+        <>
+          <Repl onChange={handleDocChange} />
+          <Preview />
+        </>
+      ) : (
+        <h2>Please Select a page</h2>
+      )}
     </div>
   )
 }

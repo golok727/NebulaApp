@@ -1,6 +1,5 @@
 .main__sidebar {
-  padding: var(--padding-1);
-  padding-bottom: 4em;
+  padding: var(--padding-container);
   position: relative;
 }
 

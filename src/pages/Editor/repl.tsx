@@ -4,23 +4,39 @@ import { useCallback } from 'react'
 import { useSelector } from 'react-redux'
 import './repl.css'
 import { EditorState } from '@codemirror/state'
+import { RootState } from '@/app/store'
+import { useEffect } from 'react'
 
 interface Props {
-  doc: string
   onChange: (doc: string) => void
 }
 const Repl = (props: Props) => {
   const { repl: showRepl } = useSelector(isInView)
-  const { doc: initialDoc, onChange } = props
-
+  const { onChange } = props
+  const currentPage = useSelector(
+    (state: RootState) => state.editor.currentPage
+  )
   const handleChange = useCallback(
     (state: EditorState) => onChange(state.doc.toString()),
     [onChange]
   )
+
   const [editorRef, view] = useCodeMirror({
-    initialDoc,
+    initialDoc: currentPage?.content.body || '',
     onChange: handleChange,
   })
+
+  useEffect(() => {
+    if (view && currentPage) {
+      view.dispatch({
+        changes: {
+          from: 0,
+          to: view.state.doc.length,
+          insert: currentPage.content.body,
+        },
+      })
+    }
+  }, [view, currentPage])
 
   return (
     <div className={`editor__repl-container ${showRepl ? ' ' : 'hidden'}`}>
