@@ -1,8 +1,7 @@
 .editor__repl-container {
   height: 100%;
   flex: 1;
-  padding: var(--padding-1);
-  padding-bottom: 4em;
+  padding: var(--padding-container);
   position: relative;
 }
 .editor__repl-container.hidden {

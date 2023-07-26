@@ -44,7 +44,7 @@ const reducers = {
     state.status = { ...state.status, ...action.payload }
   },
 }
-type LoadNotebookPayload = { notebook_id: string }
+type LoadNotebookPayload = { notebookId: string }
 export const loadNotebook = createAsyncThunk(
   'editor/loadNotebook',
   async (payload: LoadNotebookPayload, thunkApi) => {
@@ -52,12 +52,28 @@ export const loadNotebook = createAsyncThunk(
       const nebula_notebook = await invoke<NotebookInfo>(
         'load_nebula_notebook',
         {
-          notebookId: payload.notebook_id,
+          notebookId: payload.notebookId,
         }
       )
 
       return nebula_notebook
     } catch (error: any) {
+      return thunkApi.rejectWithValue(error)
+    }
+  }
+)
+
+type LoadPagePayload = { pageId: string }
+export const loadPage = createAsyncThunk(
+  'editor/loadPage',
+  async (payload: LoadPagePayload, thunkApi) => {
+    try {
+      const page = await invoke<PageEntry>('load_page', {
+        pageId: payload.pageId,
+      })
+      console.log(page)
+      return page
+    } catch (error) {
       return thunkApi.rejectWithValue(error)
     }
   }

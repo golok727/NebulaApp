@@ -1,4 +1,5 @@
 use crate::nebula::NebulaNotebookFile::NebulaNotebook;
+
 pub struct AppState {
     pub notebook: Option<NebulaNotebook>,
 }
@@ -10,6 +11,7 @@ impl AppState {
     pub fn set_notebook(&mut self, notebook: NebulaNotebook) {
         self.notebook = Some(notebook);
     }
+
     pub fn unload_notebook(&mut self) -> Result<bool, String> {
         match &self.notebook {
             Some(notebook) => {

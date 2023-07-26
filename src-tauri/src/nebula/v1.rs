@@ -1,10 +1,10 @@
+use crate::utils::status::error::{ErrorCode, ErrorResponse};
 use crate::{
     nebula::Header::{FileHeader, FILE_FORMAT_CURRENT_VERSION},
     utils::Application::get_notebook_data_dir,
 };
 use chrono::Utc;
 use serde::{Deserialize, Serialize};
-
 use std::{
     collections::HashMap,
     fs,
@@ -95,6 +95,15 @@ impl NebulaNotebook {
             page_map: HashMap::new(),
             author: None,
             description: None,
+        }
+    }
+    pub fn get_page(&self, page_id: &str) -> Result<PageEntry, ErrorResponse> {
+        match self.page_map.get(page_id) {
+            Some(page) => Ok(page.clone()),
+            _ => Err(ErrorResponse::new(
+                ErrorCode::NotFoundError,
+                String::from("Page Not found"),
+            )),
         }
     }
 

@@ -13,10 +13,9 @@ import './preview.css'
 import 'github-markdown-css/github-markdown.css'
 import RemarkCode from './remark-code'
 import RemarkImg from './remark-image'
+import { RootState } from '@/app/store'
 
-interface Props {
-  doc: string
-}
+interface Props {}
 
 const schema: Schema = {
   ...defaultSchema,
@@ -36,8 +35,9 @@ const schema: Schema = {
   },
 }
 
-const Preview = ({ doc }: Props) => {
+const Preview = ({}: Props) => {
   const dispatch = useDispatch()
+  const doc = useSelector((state: RootState) => state.editor.currentDoc)
   const { preview: showPreview, appMode } = useSelector(isInView)
   const handleDoubleClick = () => {
     if (appMode === 'preview-only') {
