@@ -1,186 +1,177 @@
-// use crate::handlers::pages;
-use crate::utils;
-use chrono::Utc;
+use crate::state::AppState;
+use crate::utils::status::error::{ErrorCode, ErrorResponse};
+use crate::{
+    nebula::NebulaNotebookFile::{NebulaNotebook, PageSimple},
+    utils::Application::get_notebook_data_dir,
+};
 use serde::{Deserialize, Serialize};
-use std::{fs, io::Read, path::PathBuf};
-use uuid::Uuid;
-
-const CURRENT_VERSION: i32 = 1;
-
-#[derive(Serialize, Deserialize, Clone)]
-pub struct PageInfo {
-    _id_: String,
-    title: String,
-    sub_pages: Vec<PageInfo>,
+use std::sync::{Arc, Mutex};
+use std::{
+    fs,
+    io::{Read, Write},
+};
+use tauri::State;
+#[derive(Serialize, Deserialize)]
+pub struct Response {
+    notebook: NebulaNotebook,
 }
 
-#[derive(Serialize, Deserialize, Clone)]
-pub struct Notebook {
-    __version__: i32,
-    _id_: String,
-    notebook_name: String,
-    created_at: String,
-    pages: Vec<PageInfo>,
+#[derive(Clone, Serialize, Deserialize)]
+pub struct NotebookMetadata {
+    __id: String,
+    name: String,
+    thumbnail: Option<String>,
 }
-impl Notebook {
-    // Create a new instance of Notebook with the given notebook_name
-    pub fn new(notebook_name: String) -> Self {
-        Notebook {
-            __version__: CURRENT_VERSION,
-            _id_: Uuid::new_v4().to_string(),
-            notebook_name,
-            created_at: Utc::now().to_rfc3339(),
-            pages: Vec::new(),
+#[derive(Clone, Serialize, Deserialize)]
+pub struct MetaDataFile {
+    notebooks: Vec<NotebookMetadata>,
+}
+pub fn load_notebooks_metadata() -> Result<MetaDataFile, String> {
+    let notebooks_dir = get_notebook_data_dir();
+    let notebooks_metadata_json = notebooks_dir.join("meta_data.json");
+
+    match notebooks_metadata_json.exists() {
+        true => {
+            let mut file =
+                fs::File::open(&notebooks_metadata_json).map_err(|_| "Error Loading File")?;
+            let mut json = String::new();
+
+            file.read_to_string(&mut json)
+                .map_err(|_| "Error reading from file")?;
+
+            let data: MetaDataFile =
+                serde_json::from_str(&json).map_err(|_| "Error Deserializing")?;
+
+            Ok(data)
+        }
+        _ => Err("Error Loading MetaData File ".to_string()),
+    }
+}
+pub fn put_metadata(data: &MetaDataFile) -> Result<(), String> {
+    let notebooks_dir = get_notebook_data_dir();
+    let notebooks_metadata_json = notebooks_dir.join("meta_data.json");
+
+    let json_string = serde_json::to_string(&data).map_err(|_| "Error Json Stringify")?;
+    let mut json_file =
+        fs::File::create(notebooks_metadata_json).map_err(|_| "Error Creating File")?;
+    json_file
+        .write_all(json_string.as_bytes())
+        .map_err(|_| "Error Saving to File")?;
+
+    Ok(())
+}
+
+pub fn add_notebook_to_metadata_file(metadata: &NotebookMetadata) -> Result<MetaDataFile, String> {
+    let notebooks_dir = get_notebook_data_dir();
+    let notebooks_metadata_json = notebooks_dir.join("meta_data.json");
+
+    let existing_data = if notebooks_metadata_json.exists() {
+        let data = load_notebooks_metadata()?;
+        Ok(data)
+    } else {
+        let new_meta_data_file_content = MetaDataFile {
+            notebooks: Vec::new(),
+        };
+        Ok(new_meta_data_file_content)
+    };
+
+    match existing_data {
+        Ok(mut data) => {
+            data.notebooks.push(metadata.clone());
+            put_metadata(&data)?;
+            Ok(data)
+        }
+        Err(err) => err,
+    }
+}
+
+#[tauri::command]
+pub fn create_nebula_notebook(notebook_name: String) -> Result<Response, String> {
+    let new_notebook = NebulaNotebook::new(notebook_name);
+    let meta_data = NotebookMetadata {
+        __id: new_notebook.__id.clone(),
+        name: new_notebook.name.clone(),
+        thumbnail: new_notebook.thumbnail.clone(),
+    };
+
+    match new_notebook.save_to_file() {
+        Ok(()) => {
+            let res = Response {
+                notebook: new_notebook,
+            };
+            add_notebook_to_metadata_file(&meta_data)?;
+            Ok(res)
+        }
+        Err(error) => Err(error),
+    }
+}
+// Load Notebooks at startup
+#[tauri::command]
+pub fn load_nebula_notebooks() -> Result<MetaDataFile, String> {
+    let res = load_notebooks_metadata()?;
+    Ok(res)
+}
+
+#[derive(Serialize, Deserialize)]
+pub struct NotebookResponse {
+    pub __id: String,
+    pub name: String,
+    pub last_accessed_at: String,
+    pub created_at: String,
+    assets: Vec<String>,
+    pub pages: Vec<PageSimple>,
+    pub thumbnail: Option<String>,
+    pub description: Option<String>,
+    pub author: Option<String>,
+}
+
+impl NotebookResponse {
+    fn new(notebook: &NebulaNotebook, pages_simple: Vec<PageSimple>) -> Self {
+        NotebookResponse {
+            __id: notebook.__id.clone(),
+            name: notebook.name.clone(),
+            last_accessed_at: notebook.last_accessed_at.clone(),
+            created_at: notebook.created_at.clone(),
+            assets: notebook.assets.clone(),
+            pages: pages_simple,
+            thumbnail: notebook.thumbnail.clone(),
+            description: notebook.description.clone(),
+            author: notebook.author.clone(),
         }
     }
 }
 
-fn write_notebook_metadata(
-    notebook_meta_data_path: &PathBuf,
-    data: &Notebook,
-) -> Result<(), String> {
-    let serialized =
-        bincode::serialize(&data).map_err(|err| format!("Error serializing data {}", err))?;
-
-    fs::write(&notebook_meta_data_path, &serialized)
-        .map_err(|err| format!("Failed to ass notebook metadata to notebooks.json: {}", err))
-}
-
 #[tauri::command]
-pub fn create_notebook(notebook_name: String) -> Result<Notebook, String> {
-    let notebook_dir = utils::get_notebook_data_dir();
+pub fn load_nebula_notebook(
+    state: State<'_, Arc<Mutex<AppState>>>,
+    notebook_id: String,
+) -> Result<NotebookResponse, ErrorResponse> {
+    let mut state = state.lock().unwrap();
+    let notebooks_dir = get_notebook_data_dir();
+    let file_path = notebooks_dir.join(notebook_id + ".nb");
 
-    if notebook_dir.exists() {
-        let new_notebook = Notebook::new(notebook_name);
-        let notebook_path = notebook_dir.join(&new_notebook._id_);
-        fs::create_dir(&notebook_path)
-            .map_err(|err| format!("Failed to create a notebook directory: {}", err))?;
+    let notebook = NebulaNotebook::load_from_file(&file_path);
 
-        let notebook_meta_data_path = notebook_path.join("__metadata__.nb");
-        write_notebook_metadata(&notebook_meta_data_path, &new_notebook)?;
+    match notebook {
+        Ok(notebook) => {
+            state.set_notebook(notebook);
 
-        Ok(new_notebook)
-    } else {
-        Err("Notebook data directory does not exist.".to_string())
-    }
-}
-
-fn deserialize_notebook_metadata(file_path: &PathBuf) -> Result<Notebook, String> {
-    // Open the file
-    let mut file =
-        fs::File::open(file_path).map_err(|err| format!("Error opening file: {}", err))?;
-
-    // Read the file into a buffer
-    let mut data_bytes = Vec::new();
-    file.read_to_end(&mut data_bytes)
-        .map_err(|err| format!("Error reading file: {}", err))?;
-
-    // Deserialize the buffer into Notebook
-
-    match bincode::deserialize(&data_bytes) {
-        Ok(data) => Ok(data),
-        Err(err) => Err(format!("Error deserializing file\n\n Error = {}", err)),
-    }
-}
-
-#[tauri::command]
-pub fn get_notebooks() -> Result<Vec<Notebook>, String> {
-    let mut notebooks: Vec<Notebook> = Vec::new();
-
-    let notebook_dir = utils::get_notebook_data_dir();
-    if notebook_dir.exists() {
-        let entries = fs::read_dir(notebook_dir)
-            .map_err(|err| format!("Error Reading notebooks:\n\n Error \n{}", err))?;
-
-        for entry in entries {
-            let entry = entry.map_err(|_| "Error reading notebook".to_string())?;
-            let path = entry.path();
-            if path.is_dir() {
-                let meta_data_file = path.join("__metadata__.nb");
-                if meta_data_file.exists() {
-                    let notebook = deserialize_notebook_metadata(&meta_data_file)?;
-                    notebooks.push(notebook);
+            match &state.notebook {
+                Some(notebook) => {
+                    let simple_pages = notebook.get_simple_pages();
+                    let response = NotebookResponse::new(notebook, simple_pages);
+                    Ok(response)
                 }
+
+                _ => Err(ErrorResponse::new(
+                    ErrorCode::NotebookNotLoadedYet,
+                    "Notebook is loaded".to_string(),
+                )),
             }
         }
-        Ok(notebooks)
-    } else {
-        Err("Error getting notebooks".to_string())
+        Err(error) => Err(ErrorResponse::new(ErrorCode::NotFoundError, error)),
     }
 }
 
-#[derive(Serialize)]
-pub struct CreateNotebookResponse {
-    _id_: String,
-    notebook_name: String,
-    created_at: String,
-    pages: Vec<PageInfo>,
-}
-
-#[derive(Serialize)]
-pub struct NotebookResponse {
-    notebook: CreateNotebookResponse,
-}
-
-fn make_dummy(page_names: &Vec<&str>) -> Vec<PageInfo> {
-    let mut pages = Vec::<PageInfo>::new();
-
-    for page_name in page_names {
-        pages.push(PageInfo {
-            _id_: uuid::Uuid::new_v4().to_string(),
-            title: page_name.to_string(),
-            sub_pages: Vec::new(),
-        })
-    }
-    pages
-}
-
-#[tauri::command]
-pub fn load_notebook(notebook_id: String) -> Result<NotebookResponse, ErrorResponse> {
-    let notebooks_dir = utils::get_notebook_data_dir();
-
-    let notebook_dir = notebooks_dir.join(notebook_id);
-    if notebook_dir.exists() {
-        // Get the Notebook MetaData
-        let meta_data = deserialize_notebook_metadata(&notebook_dir.join("__metadata__.nb"))
-            .map_err(|err| ErrorResponse {
-                status: 500,
-                message: err.clone(),
-            })?;
-
-        //\\//! ------ This is for testing purpose
-        // TODO REMOVE THIS
-
-        let dummy_names = vec!["Radhey Shyam", "Coding", "SomeStuff"];
-        let mut dummy_pages = make_dummy(&dummy_names);
-
-        let sub_page_dummy = vec!["Krsna", "Golok", "Hello"];
-        dummy_pages[0].sub_pages = make_dummy(&sub_page_dummy);
-
-        //\\//! ------ This is for testing purpose
-        // Make The Response
-        let response = NotebookResponse {
-            notebook: CreateNotebookResponse {
-                _id_: meta_data._id_.clone(),
-                notebook_name: meta_data.notebook_name.clone(),
-                created_at: meta_data.created_at.clone(),
-                pages: match meta_data.notebook_name.as_str() {
-                    "Radha Krsna" => dummy_pages,
-                    _ => Vec::new(),
-                },
-            },
-        };
-        Ok(response)
-    } else {
-        Err(ErrorResponse {
-            status: 404,
-            message: "Notebook Not Found".to_string(),
-        })
-    }
-}
-
-#[derive(Serialize)]
-pub struct ErrorResponse {
-    status: i32,
-    message: String,
-}
+// #[tauri::command]
+// pub fn unload_nebula_notebook() {}

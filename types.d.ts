@@ -14,15 +14,23 @@ interface PageEntry {
   sub_pages: PageEntry[]
 }
 
-interface PageInfo {
-  _id_: string
+interface PageSimple {
+  __id: string
+  parent_id: string | null
   title: string
-  sub_pages: PageInfo[]
+  pinned: boolean
+  starred: boolean
+  sub_pages: PageSimple[]
 }
 
 interface NotebookInfo {
-  _id_: string
+  __id: string
+  name: string
+  author: string | null
+  thumbnail: string | null
+  description: string
   created_at: string
-  notebook_name: string
-  pages: PageInfo[]
+  last_accessed_at: string
+  pages: PagesSimple[]
+  assets: string[]
 }

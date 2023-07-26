@@ -6,10 +6,12 @@ export interface AppEditorState {
   currentDoc: string
   currentNotebook: NotebookInfo | null
   currentPage: PageEntry | null
+  expandedPages: string[]
   status: {
+    code: string
     loading: boolean
     error: boolean
-    msg: string
+    message: string
   }
 }
 
@@ -21,10 +23,12 @@ const initialState: AppEditorState = {
 `,
   currentNotebook: null,
   currentPage: null,
+  expandedPages: [],
   status: {
+    code: '',
     loading: false,
     error: false,
-    msg: '',
+    message: '',
   },
 }
 
@@ -36,19 +40,27 @@ const editorSlice = createSlice({
     builder
       .addCase(loadNotebook.pending, (state) => {
         state.status.loading = true
-        state.status.msg = 'Loading Notebook...'
+        state.status.message = 'Loading Notebook...'
       })
       .addCase(loadNotebook.fulfilled, (state, action) => {
-        state.status.loading = false
-        state.status.msg = ''
-        state.currentNotebook = action.payload.notebook
+        state.status = {
+          ...state.status,
+          loading: false,
+          code: '',
+          error: false,
+          message: '',
+        }
+        state.currentNotebook = action.payload
       })
       .addCase(loadNotebook.rejected, (state, action) => {
         state.status.error = true
-        state.status.msg =
-          (action.payload as any)?.message !== undefined
-            ? (action.payload as any).message
-            : 'Failed Loading Notebook'
+        if (
+          'message' in (action.payload as any) ||
+          'code' in (action.payload as any)
+        ) {
+          state.status = { ...state.status, ...(action.payload as any) }
+        }
+        console.log(state.status)
       })
   },
 })
@@ -59,4 +71,5 @@ export const {
   resetNotebookState,
   resetEditorStatus: resetStatus,
   setEditorStatus: setStatus,
+  toggleExpanded,
 } = editorSlice.actions

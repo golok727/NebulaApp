@@ -7,31 +7,46 @@ import './sidebar-expandable.css'
 import Button from '@/components/Button'
 import { useParams } from 'react-router-dom'
 import { BsFiletypeMd } from 'react-icons/bs'
+import { useDispatch, useSelector } from 'react-redux'
+import { isExpanded } from '@/features/selectors'
+import { toggleExpanded } from '@/features/editorSlice'
+import { useNavigate } from 'react-router-dom'
 interface Props {
-  page: PageInfo
+  page: PageSimple
 }
 const SidebarExpandable = (props: Props) => {
   const { page } = props
-  const [isExpanded, setIsExpanded] = useState(false)
-  const { pageId } = useParams()
+  const isPageExpanded = useSelector(isExpanded(page.__id))
+  const { pageId, notebook: notebookId } = useParams()
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
   const handleExpand = () => {
-    setIsExpanded((prev) => !prev)
+    dispatch(toggleExpanded(page.__id))
   }
+  const handleOnClick = () => {
+    console.log('Click')
+    if (notebookId) {
+      console.log(window.location.href)
+      navigate(`/editor/${notebookId}/${page.__id}`)
+    }
+  }
+
   return (
     <div className="sidebar-expandable_container">
       <PageButton
-        isActive={pageId === page._id_}
+        isActive={pageId === page.__id}
         onExpandClick={handleExpand}
-        isExpanded={isExpanded}
+        isExpanded={isPageExpanded}
+        onClick={handleOnClick}
       >
         {page.title}
       </PageButton>
-      {isExpanded ? (
+      {isPageExpanded ? (
         <>
           {page.sub_pages && page.sub_pages.length > 0 ? (
             <div className="sidebar-expandable_container__subpage">
               {page.sub_pages.map((subPage) => {
-                return <SidebarExpandable key={subPage._id_} page={subPage} />
+                return <SidebarExpandable key={subPage.__id} page={subPage} />
               })}
             </div>
           ) : (
@@ -68,7 +83,10 @@ const PageButton = (props: {
     >
       <div className="sidebar-expandable_container__button__left">
         <Button
-          onClick={() => props.onExpandClick && props.onExpandClick()}
+          onClick={(ev) => {
+            ev.stopPropagation()
+            props.onExpandClick && props.onExpandClick()
+          }}
           variant="transparent"
         >
           {props.isExpanded ? (

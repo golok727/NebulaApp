@@ -8,7 +8,6 @@ import { IoMdJournal } from 'react-icons/io'
 import { useDispatch, useSelector } from 'react-redux'
 import SidebarGroup from './sidebar-group'
 import './sidebar.css'
-import { pagesDummy } from '@/utils/constants'
 import SidebarExpandable from './sidebar-expandable'
 const Sidebar = () => {
   const sidebarWidth = useSelector(
@@ -16,7 +15,7 @@ const Sidebar = () => {
   )
 
   const currentNotebookName = useSelector(
-    (state: RootState) => state.editor.currentNotebook?.notebook_name ?? ''
+    (state: RootState) => state.editor.currentNotebook?.name ?? ''
   )
 
   const { sidebar: showSidebar } = useSelector(isInView)
@@ -90,7 +89,7 @@ const Sidebar = () => {
           <SidebarGroup groupTitle="Pages">
             {currentPages && currentPages.length > 0 ? (
               currentPages.map((page) => {
-                return <SidebarExpandable key={page._id_} page={page} />
+                return <SidebarExpandable key={page.__id} page={page} />
               })
             ) : (
               <span className="no-pages-found">Start your journey...</span>

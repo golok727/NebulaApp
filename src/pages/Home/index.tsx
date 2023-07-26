@@ -3,14 +3,15 @@ import { Link, useNavigate } from 'react-router-dom'
 import NebulaLogo from '../../assets/logo-nebula.svg'
 import { invoke } from '@tauri-apps/api/tauri'
 import { FormEvent, useEffect, useState } from 'react'
+import { HomeNotebook, loadNebulaNotebooks } from '@/utils/notebook'
 const disabled = false
 
 const Home = () => {
   const [noteName, setNoteName] = useState('')
   const navigate = useNavigate()
 
-  const [notebooks, setNotebooks] =
-    useState<{ __id: string; name: string; thumbnail: string | null }[]>()
+  const [notebooks, setNotebooks] = useState<HomeNotebook[]>()
+
   const handleCreateNewNotebook = async (ev: FormEvent) => {
     ev.preventDefault()
     if (!noteName) {
@@ -33,8 +34,7 @@ const Home = () => {
   useEffect(() => {
     ;(async () => {
       try {
-        const nebula_notebooks = (await invoke('load_nebula_notebooks')) as any
-        console.log(nebula_notebooks.notebooks)
+        const nebula_notebooks = await loadNebulaNotebooks()
         setNotebooks(nebula_notebooks.notebooks)
       } catch (error) {
         console.log(error)

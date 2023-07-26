@@ -1,6 +1,6 @@
 use crate::{
     nebula::Header::{FileHeader, FILE_FORMAT_CURRENT_VERSION},
-    utils::get_notebook_data_dir,
+    utils::Application::get_notebook_data_dir,
 };
 use chrono::Utc;
 use serde::{Deserialize, Serialize};
@@ -10,7 +10,6 @@ use std::{
     fs,
     io::{Read, Write},
     path::PathBuf,
-    string,
 };
 use uuid::Uuid;
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -43,7 +42,7 @@ pub struct NebulaNotebook {
     pub page_map: HashMap<String, PageEntry>,
     pub description: Option<String>,
     pub author: Option<String>,
-    assets: Vec<String>,
+    pub assets: Vec<String>,
     pub last_accessed_at: String,
 }
 
@@ -54,11 +53,11 @@ pub struct PageSimple {
     pub title: String,
     pub pinned: bool,
     pub starred: bool,
-    pub subpages: Vec<PageSimple>,
+    pub sub_pages: Vec<PageSimple>,
 }
 // Page Entry Implementation
 impl PageEntry {
-    pub fn new(title: String) -> Self {
+    pub fn new(title: String, parent_id: Option<String>) -> Self {
         PageEntry {
             __id: Uuid::new_v4().to_string(),
             title,
@@ -67,7 +66,7 @@ impl PageEntry {
             updated_at: Utc::now().to_rfc3339().to_string(),
             pinned: false,
             starred: false,
-            parent_id: None,
+            parent_id,
             sub_pages: Vec::new(),
             tags: None,
         }
@@ -118,13 +117,13 @@ impl NebulaNotebook {
             parent_id: page.parent_id.clone(),
             pinned: page.pinned.clone(),
             starred: page.starred.clone(),
-            subpages: Vec::new(),
+            sub_pages: Vec::new(),
         };
         if !page.sub_pages.is_empty() {
             for sub_page_id in &page.sub_pages {
                 if let Some(sub_page) = self.page_map.get(sub_page_id) {
                     let sub_simple_page = self.recursive_convert(sub_page);
-                    simple_page.subpages.push(sub_simple_page);
+                    simple_page.sub_pages.push(sub_simple_page);
                 }
             }
         }
@@ -132,13 +131,13 @@ impl NebulaNotebook {
     }
 
     pub fn add_page(&mut self, title: String, parent_id: Option<String>) -> () {
-        let new_page = PageEntry::new(title);
+        let new_page = PageEntry::new(title, parent_id.to_owned());
         self.page_map
-            .insert(new_page.__id.clone(), new_page.clone());
+            .insert(new_page.__id.to_owned(), new_page.to_owned());
         match parent_id {
             Some(parent_id) => {
                 if let Some(parent_page) = self.page_map.get_mut(&parent_id) {
-                    parent_page.sub_pages.push(new_page.__id.clone());
+                    parent_page.sub_pages.push(new_page.__id.to_owned());
                 }
             }
             _ => {
@@ -151,7 +150,7 @@ impl NebulaNotebook {
         let notebook_data_dir = get_notebook_data_dir();
         //?  Get the storage Dir and make a new file with the data
 
-        let new_filepath = notebook_data_dir.join(self.__id.clone() + ".nb");
+        let new_filepath = notebook_data_dir.join(self.__id.to_owned() + ".nb");
         let mut file =
             fs::File::create(new_filepath).map_err(|err| format!("Error creating file {}", err))?;
 
@@ -172,7 +171,6 @@ impl NebulaNotebook {
     }
 
     pub fn load_from_file(filepath: &PathBuf) -> Result<Self, String> {
-        println!("{}", filepath.display());
         match filepath.is_file() {
             true => {
                 // ? Read File to buffer

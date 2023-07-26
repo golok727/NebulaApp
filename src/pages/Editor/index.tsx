@@ -13,23 +13,24 @@ const Editor = () => {
   const currentNotebook = useSelector(
     (state: RootState) => state.editor.currentNotebook
   )
+  const notebookId = params.notebook
+
   useEffect(() => {
-    const notebookId = params.notebook
     if (notebookId !== undefined) {
       dispatch(loadNotebook({ notebook_id: notebookId }))
+      console.log(currentNotebook)
     }
 
     return () => {
       console.log('Unload')
       dispatch(resetNotebookState())
     }
-  }, [dispatch, params])
+  }, [dispatch, notebookId])
 
   return (
     <div className="app__editor">
       <TopBar />
-      {/* {currentNotebook ? <Main /> : <div>Notebook Not found</div>} */}
-      <Main />
+      {currentNotebook ? <Main /> : <div>Notebook Not found</div>}
     </div>
   )
 }

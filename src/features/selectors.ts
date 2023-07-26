@@ -29,3 +29,9 @@ export const isInView = createSelector(
 )
 export const getCurrentPages = (state: RootState) =>
   state.editor.currentNotebook?.pages ?? []
+
+export const isExpanded = (
+  page_id: string
+): ((state: RootState) => boolean) => {
+  return (state: RootState) => state.editor.expandedPages.includes(page_id)
+}
