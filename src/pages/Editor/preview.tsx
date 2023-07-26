@@ -1,23 +1,23 @@
 import { useDispatch, useSelector } from 'react-redux'
 
-import React, { createElement, ReactNode } from 'react'
+import React, { createElement } from 'react'
 import { setView, switchToPreviousView } from '@/features/appSlice'
 import { isInView } from '@/features/selectors'
 import { unified } from 'unified'
 import remarkParse from 'remark-parse'
 import remarkGfm from 'remark-gfm'
-import remarkReact, { Options } from 'remark-react'
-import { Schema, defaultSchema } from 'hast-util-sanitize'
-import './preview.css'
-
+import rehypeReact from 'rehype-react'
+import rehypeSanitize, { defaultSchema } from 'rehype-sanitize'
+import remarkRehype from 'remark-rehype'
 import 'github-markdown-css/github-markdown.css'
 import RemarkCode from './remark-code'
 import RemarkImg from './remark-image'
 import { RootState } from '@/app/store'
+import './preview.css'
 
 interface Props {}
 
-const schema: Schema = {
+const schema = {
   ...defaultSchema,
   attributes: {
     ...defaultSchema.attributes,
@@ -46,18 +46,23 @@ const Preview = ({}: Props) => {
       dispatch(setView('preview-only'))
     }
   }
-  const md = unified()
-    .use(remarkParse)
-    .use(remarkGfm)
-    .use(remarkReact, {
-      createElement: createElement,
-      sanitize: schema,
-      remarkReactComponents: {
-        code: RemarkCode,
-        img: RemarkImg,
-      },
-    } as Options)
-    .processSync(doc).result as ReactNode
+  let md = <></>
+
+  if (showPreview) {
+    md = unified()
+      .use(remarkParse)
+      .use(remarkRehype)
+      .use(remarkGfm)
+      .use(rehypeSanitize, schema)
+      .use(rehypeReact, {
+        createElement: createElement,
+        components: {
+          code: RemarkCode,
+          img: RemarkImg,
+        },
+      })
+      .processSync(doc).result
+  }
   return (
     <div
       className={`editor__preview-container ${showPreview ? '' : 'hidden'} `}

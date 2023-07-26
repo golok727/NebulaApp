@@ -10,13 +10,15 @@ import {
   UserCircleIcon,
   ViewColumnsIcon,
 } from '@heroicons/react/24/outline'
+import { PiSlideshow, PiSlideshowFill } from 'react-icons/pi'
 import MenuButton from './Button'
 import './topbar.css'
 
 import {
   toggleNoDistractionsMode,
-  togglePreviewMode,
+  toggleSplitMode,
   toggleSidebar,
+  togglePreviewOnly,
 } from '@/features/appSlice'
 import { isInView } from '@/features/selectors'
 import { useDispatch, useSelector } from 'react-redux'
@@ -38,8 +40,12 @@ const TopBar = () => {
     dispatch(toggleNoDistractionsMode())
   }
 
-  const handleTogglePreview = () => {
-    dispatch(togglePreviewMode())
+  const handleToggleSplitMode = () => {
+    dispatch(toggleSplitMode())
+  }
+
+  const handleTogglePreviewOnly = () => {
+    dispatch(togglePreviewOnly())
   }
 
   return (
@@ -66,12 +72,24 @@ const TopBar = () => {
           )}
         </Button>
 
+        <Button
+          onClick={handleTogglePreviewOnly}
+          disabled={appMode == 'no-distractions'}
+          variant={'transparent'}
+        >
+          {appMode === 'preview-only' ? (
+            <PiSlideshowFill style={{ fontSize: 19 }} />
+          ) : (
+            <PiSlideshow style={{ fontSize: 19 }} />
+          )}
+        </Button>
+
         <Button onClick={handleToggleDistractionMode} variant="transparent">
           <ViewColumnsIcon width={19} />
         </Button>
 
         <Button
-          onClick={handleTogglePreview}
+          onClick={handleToggleSplitMode}
           disabled={appMode == 'no-distractions'}
           variant="transparent"
         >

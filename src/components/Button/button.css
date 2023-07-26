@@ -1,6 +1,6 @@
 .app__button {
   background-color: var(--clr-tool-bar-button);
-  border: 1px solid var(--clr-tool-bar-button-border);
+  border: var(--clr-tool-bar-button-border);
   border-radius: var(--tool-bar-button-border-radius);
   display: flex;
   align-items: center;
@@ -8,7 +8,7 @@
   color: var(--text-gray);
   cursor: pointer;
   padding: 0.2rem 0.6rem;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
 
   &.default {
     padding: 0.2rem 0.6rem;
@@ -16,6 +16,7 @@
 
   &.menu {
     padding: 0.2rem 0.6rem;
+    background-image: var(--grad-menu-btn);
   }
 
   &.navigation {
@@ -40,5 +41,8 @@
   &:disabled {
     color: #333;
     cursor: not-allowed;
+  }
+  &.menu:hover {
+    background-image: var(--grad-menu-btn-hover);
   }
 }

@@ -44,12 +44,24 @@ const reducers = {
 
     state.prevMode = currMode
   },
-  togglePreviewMode: (state: AppState) => {
+  toggleSplitMode: (state: AppState) => {
     const mode = state.mode
 
     const isPreviewHidden = mode === 'edit-only' || mode === 'no-distractions'
     if (isPreviewHidden) {
       state.mode = 'both'
+    } else {
+      state.mode = 'edit-only'
+    }
+    state.prevMode = mode
+  },
+  togglePreviewOnly: (state: AppState) => {
+    const mode = state.mode
+
+    const isPreviewHidden = mode === 'edit-only' || mode === 'no-distractions'
+
+    if (isPreviewHidden) {
+      state.mode = 'preview-only'
     } else {
       state.mode = 'edit-only'
     }

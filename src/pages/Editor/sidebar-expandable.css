@@ -3,6 +3,7 @@
 .sidebar-expandable_container__button {
   background-color: transparent;
   padding: 0.2rem 0.4rem;
+  margin-bottom: 0.2rem;
   color: #999999;
   border: none;
   display: flex;
@@ -25,10 +26,10 @@
 }
 
 .sidebar-expandable_container__button:hover {
-  background-color: rgba(255, 255, 255, 0.09);
+  background-color: rgba(255, 255, 255, 0.055);
 }
 .sidebar-expandable_container__button.active {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(255, 255, 255, 0.062);
   color: #fff;
 }
 

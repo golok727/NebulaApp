@@ -8,9 +8,15 @@
   --clr-background: hsla(0, 0%, 7%, 1);
   --grad-panes-gradient: linear-gradient(
     166deg,
-    #151515 22.13%,
+    #0e0e0e 22.13%,
     #111111 95.83%
   );
+  --grad-panes-gradient: linear-gradient(170deg, #1a1a1a 10.4%, #0a0a0a 95.83%);
+  --grad-preview: linear-gradient(170deg, #1a1a1a 10.4%, #0a0a0a 95.83%);
+  --grad-top-bar: linear-gradient(0, #1a1a1a 10.4%, #0a0a0a 95.83%);
+  --grad-menu-btn: linear-gradient(0, #1f1f1f 10.4%, #161616 95.83%);
+  --grad-menu-btn-hover: linear-gradient(0, #2c2c2c 10.4%, #161616 95.83%);
+
   --clr-border: rgba(255, 255, 255, 0.116);
   --clr-top-bar: #141414;
   --text-gray: #939393;
@@ -20,10 +26,10 @@
   --padding-1: 0.3rem 0.3rem;
   --padding-2: 0.6rem 0.7rem;
   --padding-3: 0.6rem 0.9rem;
-  --tool-bar-button-border-radius: 0.125rem;
+  --tool-bar-button-border-radius: 0.4rem;
   --editor-main-border: 1px solid #2e2e2e;
   --editor-main-border-hover: #414141;
-  --clr-tool-bar-button-border: 0.2px solid rgba(170, 170, 170, 0.2);
+  --clr-tool-bar-button-border: 0.2px solid rgba(170, 170, 170, 0.103);
   --clr-tool-bar-button: #232323;
   --clr-tool-bar-button-hover: #383838;
   --clr-text-primary: #dfdfdf;

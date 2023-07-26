@@ -1,5 +1,5 @@
 .sidebar__group {
-  padding: var(--padding-2);
+  padding: 0.4rem 0.4rem;
 }
 
 .sidebar__group__header {
@@ -19,6 +19,9 @@
   font-size: 3rem;
   opacity: 0;
   transition: opacity 0.2s ease;
+}
+.sidebar__group__content {
+  padding: 0.3rem 0;
 }
 .sidebar__group__content .no-pages-found {
   color: var(--text-gray);

@@ -37,9 +37,10 @@ export const {
   hideSidebar,
   showSidebar,
   setSidebarWidth,
-  togglePreviewMode,
+  toggleSplitMode,
   setView,
   switchToPreviousView,
   toggleNoDistractionsMode,
+  togglePreviewOnly,
 } = appSlice.actions
 export default appSlice.reducer

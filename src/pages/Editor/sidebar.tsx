@@ -4,7 +4,7 @@ import { setSidebarWidth, toggleSidebar } from '@/features/appSlice'
 import { getCurrentPages, isInView } from '@/features/selectors'
 import { ChevronDoubleLeftIcon } from '@heroicons/react/24/outline'
 import { useCallback, useEffect, useState } from 'react'
-import { IoMdJournal } from 'react-icons/io'
+import { SlNotebook } from 'react-icons/sl'
 import { useDispatch, useSelector } from 'react-redux'
 import SidebarGroup from './sidebar-group'
 import './sidebar.css'
@@ -73,7 +73,7 @@ const Sidebar = () => {
       <div className="main__sidebar__modern">
         <header className="sidebar-modern__header">
           <div className="sidebar-modern__header__left">
-            <IoMdJournal />
+            <SlNotebook />
             <span>
               {currentNotebookName ? currentNotebookName : 'Untitled'}
             </span>

@@ -1,9 +1,7 @@
-import { useState } from 'react'
 import { MouseEventHandler, ReactNode } from 'react'
 import { SlOptions } from 'react-icons/sl'
 import { IoMdAdd } from 'react-icons/io'
 import { ChevronDownIcon, ChevronRightIcon } from '@heroicons/react/24/outline'
-import './sidebar-expandable.css'
 import Button from '@/components/Button'
 import { useParams } from 'react-router-dom'
 import { BsFiletypeMd } from 'react-icons/bs'
@@ -11,6 +9,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { isExpanded } from '@/features/selectors'
 import { toggleExpanded } from '@/features/editorSlice'
 import { useNavigate } from 'react-router-dom'
+import './sidebar-expandable.css'
 interface Props {
   page: PageSimple
 }
@@ -83,6 +82,7 @@ const PageButton = (props: {
     >
       <div className="sidebar-expandable_container__button__left">
         <Button
+          style={{ marginRight: '0.4rem' }}
           onClick={(ev) => {
             ev.stopPropagation()
             props.onExpandClick && props.onExpandClick()

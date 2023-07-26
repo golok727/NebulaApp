@@ -49,7 +49,9 @@
         "resizable": true,
         "title": "Nebula",
         "width": 1200,
-        "height": 700
+        "height": 700,
+        "minHeight": 500,
+        "minWidth": 400
       }
     ]
   }
