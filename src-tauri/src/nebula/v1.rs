@@ -139,18 +139,48 @@ impl NebulaNotebook {
         simple_page
     }
 
-    pub fn add_page(&mut self, title: String, parent_id: Option<String>) -> () {
+    pub fn add_page(
+        &mut self,
+        title: String,
+        parent_id: Option<String>,
+        insert_after: Option<String>,
+    ) {
         let new_page = PageEntry::new(title, parent_id.to_owned());
         self.page_map
             .insert(new_page.__id.to_owned(), new_page.to_owned());
-        match parent_id {
-            Some(parent_id) => {
+
+        match (parent_id, insert_after) {
+            (Some(parent_id), Some(insert_after_id)) => {
+                if let Some(parent_page) = self.page_map.get_mut(&parent_id) {
+                    let index = parent_page
+                        .sub_pages
+                        .iter()
+                        .position(|id| *id == insert_after_id);
+                    parent_page.sub_pages.insert(
+                        index.unwrap_or_else(|| parent_page.sub_pages.len()),
+                        new_page.__id.to_owned(),
+                    );
+                }
+            }
+            (Some(parent_id), None) => {
                 if let Some(parent_page) = self.page_map.get_mut(&parent_id) {
                     parent_page.sub_pages.push(new_page.__id.to_owned());
                 }
             }
-            _ => {
-                self.pages.push(new_page.__id);
+            (None, Some(insert_after_id)) => {
+                if let Some(insert_after_page) = self.page_map.get_mut(&insert_after_id) {
+                    let index = insert_after_page
+                        .sub_pages
+                        .iter()
+                        .position(|id| *id == insert_after_id);
+                    insert_after_page.sub_pages.insert(
+                        index.unwrap_or_else(|| insert_after_page.sub_pages.len()),
+                        new_page.__id.to_owned(),
+                    );
+                }
+            }
+            (None, None) => {
+                self.pages.push(new_page.__id.to_owned());
             }
         }
     }

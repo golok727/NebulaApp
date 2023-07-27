@@ -1,0 +1,20 @@
+.modal__page-context {
+  background-image: var(--grad-menu-btn);
+  padding: 0.5rem 0.5rem;
+  border: 1px solid #ffffff1e;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.5);
+  border-radius: 10px;
+  display: grid;
+  gap: 0.4rem;
+}
+
+.modal__page-context .modal__button {
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.modal__page-context .modal__button svg {
+  font-size: 1.2rem;
+}

@@ -99,4 +99,5 @@ export const {
   resetEditorStatus: resetStatus,
   setEditorStatus: setStatus,
   toggleExpanded,
+  collapseAll,
 } = editorSlice.actions

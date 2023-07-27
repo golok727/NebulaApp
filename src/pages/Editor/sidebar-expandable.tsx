@@ -10,12 +10,17 @@ import { isExpanded } from '@/features/selectors'
 import { toggleExpanded } from '@/features/editorSlice'
 import { useNavigate } from 'react-router-dom'
 import './sidebar-expandable.css'
+import { NebulaModal } from '@/features/modalSlice'
+import { RootState } from '@/app/store'
 interface Props {
   page: PageSimple
 }
 const SidebarExpandable = (props: Props) => {
   const { page } = props
   const isPageExpanded = useSelector(isExpanded(page.__id))
+  const currentPage = useSelector(
+    (state: RootState) => state.editor.currentPage
+  )
   const { pageId, notebook: notebookId } = useParams()
   const dispatch = useDispatch()
   const navigate = useNavigate()
@@ -23,20 +28,48 @@ const SidebarExpandable = (props: Props) => {
     dispatch(toggleExpanded(page.__id))
   }
   const handleOnClick = () => {
-    console.log('Click')
     if (notebookId) {
-      console.log(window.location.href)
       navigate(`/editor/${notebookId}/${page.__id}`)
+    }
+  }
+  const handleAddPage = (ev: React.MouseEvent<HTMLButtonElement>) => {
+    dispatch(
+      NebulaModal.showModal({
+        id: 'pageCreate',
+        type: 'page/create',
+        parentId: currentPage !== null ? currentPage.parent_id : null,
+        insertAfterId: null,
+        x: ev.pageX,
+        y: ev.pageY + 10,
+        label: 'Create Sub-page',
+      })
+    )
+  }
+
+  const handlePageContext = (ev: React.MouseEvent<HTMLButtonElement>) => {
+    if (currentPage) {
+      dispatch(
+        NebulaModal.showModal({
+          id: 'pageContext',
+          type: 'page/context',
+          pageId: currentPage.__id,
+          x: ev.pageX,
+          y: ev.pageY + 10,
+          label: 'Options',
+        })
+      )
     }
   }
 
   return (
     <div className="sidebar-expandable_container">
       <PageButton
+        onAddClick={handleAddPage}
         isActive={pageId === page.__id}
         onExpandClick={handleExpand}
         isExpanded={isPageExpanded}
         onClick={handleOnClick}
+        onOptionsClick={handlePageContext}
       >
         {page.title}
       </PageButton>
@@ -68,8 +101,8 @@ const PageButton = (props: {
   isActive?: boolean
   onClick?: MouseEventHandler<HTMLDivElement>
   onExpandClick?: () => void
-  onAddClick?: () => void
-  onOptionsClick?: () => void
+  onAddClick?: React.MouseEventHandler<HTMLButtonElement>
+  onOptionsClick?: React.MouseEventHandler<HTMLButtonElement>
 }) => {
   const { isActive = false } = props
 
@@ -105,11 +138,11 @@ const PageButton = (props: {
         </span>
       </div>
       <div className="sidebar-expandable_container__button__options">
-        <Button variant="transparent">
+        <Button onClick={props.onOptionsClick} variant="transparent">
           <SlOptions />
         </Button>
 
-        <Button variant="transparent">
+        <Button onClick={props.onAddClick} variant="transparent">
           <IoMdAdd />
         </Button>
       </div>

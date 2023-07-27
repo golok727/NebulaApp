@@ -9,7 +9,7 @@ interface PageEntry {
   starred: boolean
   content: Content
   tags: string[]
-  parent_id: string | null[]
+  parent_id: string | null
   starred: boolean
   pinned: boolean
 }

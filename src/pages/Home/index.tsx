@@ -22,7 +22,6 @@ const Home = () => {
       const res = (await invoke('create_nebula_notebook', {
         notebookName: noteName.trim(),
       })) as any
-      console.log(res)
       navigate(`/editor/${res._id_}/`)
 
       setNoteName('')

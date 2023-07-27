@@ -38,11 +38,12 @@
   &:hover {
     background-color: var(--clr-tool-bar-button-hover);
   }
+  &.menu:hover {
+    background-image: var(--grad-menu-btn-hover);
+  }
+
   &:disabled {
     color: #333;
     cursor: not-allowed;
-  }
-  &.menu:hover {
-    background-image: var(--grad-menu-btn-hover);
   }
 }

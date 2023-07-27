@@ -27,6 +27,9 @@ const reducers = {
     }
     state.expandedPages = []
   },
+  collapseAll: (state: AppEditorState) => {
+    state.expandedPages = []
+  },
 
   resetEditorStatus: (state: AppEditorState) => {
     state.status = {
@@ -71,7 +74,6 @@ export const loadPage = createAsyncThunk(
       const page = await invoke<PageEntry>('load_page', {
         pageId: payload.pageId,
       })
-      console.log(page)
       return page
     } catch (error) {
       return thunkApi.rejectWithValue(error)

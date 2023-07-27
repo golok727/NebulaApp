@@ -2,7 +2,7 @@ import './app.css'
 import { Routes, Route } from 'react-router-dom'
 import Home from '@/pages/Home'
 import Editor from '@/pages/Editor'
-import HomeWrapper from './pages/home-wrapper'
+import Modal from './components/Modal'
 function App() {
   return (
     <div className="app-container">
@@ -11,6 +11,7 @@ function App() {
         <Route path="/editor/:notebook/:pageId" element={<Editor />} />
         <Route path="/editor/:notebook/" element={<Editor />} />
       </Routes>
+      <Modal />
     </div>
   )
 }

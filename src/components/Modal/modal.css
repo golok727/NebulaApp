@@ -1,0 +1,26 @@
+.app__modal {
+  position: absolute;
+  z-index: 10000;
+}
+
+.modal__title {
+  font-size: 0.7rem;
+  font-weight: bold;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.modal__button {
+  background-color: rgba(0, 0, 0, 0.2);
+  border: 1px solid #222;
+  cursor: pointer;
+  padding: 0.4rem 0.6rem;
+  color: var(--clr-text-primary);
+  border-radius: 10px;
+  color: var(--text-gray);
+  transition: all 0.2s ease;
+}
+
+.modal__button:hover {
+  color: var(--clr-text-primary);
+  background-color: rgba(0, 0, 0, 0.6);
+}

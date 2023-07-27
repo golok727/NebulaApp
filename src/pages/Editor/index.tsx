@@ -29,7 +29,6 @@ const Editor = () => {
 
   useEffect(() => {
     if (pageId !== undefined) {
-      console.log(`Load page ${pageId}`)
       dispatch(loadPage({ pageId }))
     } else {
       // TODO
