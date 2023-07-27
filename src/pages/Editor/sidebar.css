@@ -14,7 +14,8 @@
   padding: var(--padding-1);
   height: 100%;
 }
-.main__sidebar__modern:hover .controls {
+.main__sidebar__modern:hover .controls,
+.main__sidebar__modern:focus-within .controls {
   opacity: 1;
 }
 

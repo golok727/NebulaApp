@@ -39,8 +39,14 @@ const SidebarExpandable = (props: Props) => {
         type: 'page/create',
         parentId: currentPage !== null ? currentPage.parent_id : null,
         insertAfterId: null,
-        x: ev.pageX,
-        y: ev.pageY + 10,
+        x:
+          ev.detail === 1
+            ? ev.pageX
+            : ev.currentTarget.getBoundingClientRect().left,
+        y:
+          ev.detail === 1
+            ? ev.pageY + 10
+            : ev.currentTarget.getBoundingClientRect().top,
         label: 'Create Sub-page',
       })
     )
@@ -53,8 +59,14 @@ const SidebarExpandable = (props: Props) => {
           id: 'pageContext',
           type: 'page/context',
           pageId: currentPage.__id,
-          x: ev.pageX,
-          y: ev.pageY + 10,
+          x:
+            ev.detail === 1
+              ? ev.pageX
+              : ev.currentTarget.getBoundingClientRect().left,
+          y:
+            ev.detail === 1
+              ? ev.pageY + 10
+              : ev.currentTarget.getBoundingClientRect().top + 10,
           label: 'Options',
         })
       )
@@ -108,6 +120,8 @@ const PageButton = (props: {
 
   return (
     <div
+      role="button"
+      tabIndex={1}
       className={`sidebar-expandable_container__button ${
         isActive ? 'active' : ''
       }`}

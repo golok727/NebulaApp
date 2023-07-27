@@ -1,5 +1,3 @@
-/* .sidebar-expandable-container {
-} */
 .sidebar-expandable_container__button {
   background-color: transparent;
   padding: 0.2rem 0.4rem;
@@ -14,6 +12,8 @@
   border-radius: 6px;
 }
 .sidebar-expandable_container__button:hover
+  .sidebar-expandable_container__button__options,
+.sidebar-expandable_container__button:focus-within
   .sidebar-expandable_container__button__options {
   opacity: 1;
 }
@@ -44,6 +44,7 @@
   opacity: 0;
   transition: all 0.2s ease;
 }
+
 .sidebar-expandable_container__button__options button {
   margin-inline: 0.2rem;
 }

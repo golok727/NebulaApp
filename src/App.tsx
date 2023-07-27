@@ -3,7 +3,9 @@ import { Routes, Route } from 'react-router-dom'
 import Home from '@/pages/Home'
 import Editor from '@/pages/Editor'
 import Modal from './components/Modal'
+import useKeyboard from './keyboard/use-keyboard'
 function App() {
+  useKeyboard()
   return (
     <div className="app-container">
       <Routes>

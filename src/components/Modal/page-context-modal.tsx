@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react'
 import './page-context-modal.css'
 import { IPageContextModal } from '@/features/modalSlice'
 import { CgRename } from 'react-icons/cg'
@@ -6,9 +7,14 @@ import { TbStatusChange, TbInfoSquareRounded } from 'react-icons/tb'
 type Props = {
   modal: IPageContextModal
 }
+
 const PageContextModal = ({ modal }: Props) => {
+  const containerRef = useRef<HTMLDivElement | null>(null)
+  useEffect(() => {
+    if (containerRef.current) containerRef.current.focus()
+  }, [containerRef])
   return (
-    <div className="modal__page-context">
+    <div ref={containerRef} tabIndex={0} className="modal__page-context">
       {modal.label && <span className="modal__title">{modal.label}</span>}
       <button className="modal__button">
         <CgRename />

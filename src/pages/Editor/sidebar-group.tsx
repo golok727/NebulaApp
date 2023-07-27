@@ -26,8 +26,14 @@ const SidebarGroup = ({ groupTitle, children }: Props) => {
         type: 'page/create',
         parentId: null,
         insertAfterId: currentPage !== null ? currentPage.__id : null,
-        x: ev.pageX,
-        y: ev.pageY + 10,
+        x:
+          ev.detail === 0
+            ? ev.currentTarget.getBoundingClientRect().left
+            : ev.pageX,
+        y:
+          ev.detail === 0
+            ? ev.currentTarget.getBoundingClientRect().top + 10
+            : ev.pageY + 10,
         label: 'Create Page',
       })
     )

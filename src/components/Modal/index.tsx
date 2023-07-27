@@ -21,13 +21,20 @@ const Modal = () => {
         if (currentModal) dispatch(NebulaModal.unloadModal())
       }
     }
+    const handleKeyDown = (ev: KeyboardEvent) => {
+      if (ev.key === 'Escape') {
+        dispatch(NebulaModal.unloadModal())
+      }
+    }
     const delayedRegistration = setTimeout(() => {
       document.addEventListener('click', handleClick)
+      document.addEventListener('keydown', handleKeyDown)
     }, 10) // Delay the registration of the click event listener
 
     return () => {
       clearTimeout(delayedRegistration) // Clear the timeout to avoid memory leaks
       document.removeEventListener('click', handleClick)
+      document.removeEventListener('keydown', handleKeyDown)
     }
   }, [dispatch, modalContainerRef, currentModal])
 

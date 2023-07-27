@@ -1,5 +1,5 @@
 import { IPageCreationModal, NebulaModal } from '@/features/modalSlice'
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import './page-create-modal.css'
 import { useDispatch } from 'react-redux'
 
@@ -9,6 +9,7 @@ type Props = {
 
 const PageCreationModal = ({ modal }: Props) => {
   const [pageTitle, setPageTitle] = useState('')
+  const inputRef = useRef<HTMLInputElement | null>(null)
   const dispatch = useDispatch()
   const handleAddPage = (ev: React.FormEvent) => {
     ev.preventDefault()
@@ -16,10 +17,14 @@ const PageCreationModal = ({ modal }: Props) => {
 
     dispatch(NebulaModal.unloadModal())
   }
+  useEffect(() => {
+    if (inputRef.current) inputRef.current.focus()
+  }, [inputRef])
   return (
     <form onSubmit={handleAddPage} className="modal__page-create">
       {modal.label && <span className="modal__title">{modal.label}</span>}
       <input
+        ref={inputRef}
         aria-autocomplete="none"
         value={pageTitle}
         onChange={(ev) => setPageTitle(ev.target.value)}
