@@ -6,6 +6,7 @@ interface IAppModal {
   x: number
   y: number
   label?: string
+  subtractHalfWidth?: boolean
 }
 
 export interface IPageCreationModal extends IAppModal {

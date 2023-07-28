@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 
-import reducers, { loadNotebook, loadPage } from './editorReducers'
+import reducers, { addPage, loadNotebook, loadPage } from './editorReducers'
 import { P } from '@tauri-apps/api/event-41a9edf5'
 
 export interface AppEditorState {
@@ -35,10 +35,22 @@ const editorSlice = createSlice({
   reducers,
   extraReducers: (builder) => {
     // Load Notebook
+
+    const handleRejectedStatus = (state: AppEditorState, payload: any) => {
+      const messageAndCode = {
+        message: payload.message ?? '',
+        code: payload.code ?? '',
+      }
+      state.status = { ...state.status, error: true, ...messageAndCode }
+    }
+
     builder
       .addCase(loadNotebook.pending, (state) => {
-        state.status.loading = true
-        state.status.message = 'Loading Notebook...'
+        state.status = {
+          ...state.status,
+          loading: true,
+          message: 'Loading Notebook',
+        }
       })
       .addCase(loadNotebook.fulfilled, (state, action) => {
         state.status = {
@@ -51,13 +63,7 @@ const editorSlice = createSlice({
         state.currentNotebook = action.payload
       })
       .addCase(loadNotebook.rejected, (state, action) => {
-        state.status.error = true
-        if (
-          'message' in (action.payload as any) ||
-          'code' in (action.payload as any)
-        ) {
-          state.status = { ...state.status, ...(action.payload as any) }
-        }
+        handleRejectedStatus(state, action.payload)
       })
 
     // Load Page
@@ -66,7 +72,7 @@ const editorSlice = createSlice({
         state.status = {
           ...state.status,
           loading: true,
-          message: 'Loading Notebook',
+          message: 'Loading Page',
         }
       })
       .addCase(loadPage.fulfilled, (state, action) => {
@@ -81,13 +87,41 @@ const editorSlice = createSlice({
         state.currentDoc = action.payload.content.body
       })
       .addCase(loadPage.rejected, (state, action) => {
-        state.status.error = true
-        if (
-          'message' in (action.payload as any) ||
-          'code' in (action.payload as any)
-        ) {
-          state.status = { ...state.status, ...(action.payload as any) }
+        handleRejectedStatus(state, action.payload)
+      })
+
+    // Add Page
+
+    builder
+      .addCase(addPage.pending, (state) => {
+        state.status = {
+          ...state.status,
+          loading: true,
+          message: 'Adding Page',
         }
+      })
+      .addCase(addPage.fulfilled, (state, action) => {
+        state.status = {
+          ...state.status,
+          loading: false,
+          code: '',
+          error: false,
+          message: '',
+        }
+        if (state.currentNotebook) {
+          state.currentNotebook.pages = action.payload.pages
+        }
+
+        const argParentId = action.meta.arg.parentId
+        if (
+          argParentId !== null &&
+          !state.expandedPages.includes(argParentId)
+        ) {
+          state.expandedPages = [...state.expandedPages, argParentId]
+        }
+      })
+      .addCase(addPage.rejected, (state, action) => {
+        handleRejectedStatus(state, action.payload)
       })
   },
 })

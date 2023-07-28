@@ -38,6 +38,12 @@ const Repl = (props: Props) => {
     }
   }, [view, currentPage])
 
+  useEffect(() => {
+    if (showRepl && view) {
+      view.focus()
+    }
+  }, [showRepl, view])
+
   return (
     <div className={`editor__repl-container ${showRepl ? ' ' : 'hidden'}`}>
       <div ref={editorRef} className="editor__repl editor-hover" />

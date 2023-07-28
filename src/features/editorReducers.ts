@@ -81,4 +81,24 @@ export const loadPage = createAsyncThunk(
   }
 )
 
+type AddPagePayload = {
+  title: string
+  parentId: string | null
+  insertAfterId: string | null
+}
+export const addPage = createAsyncThunk(
+  'editor/addPage',
+  async (payload: AddPagePayload, thunkApi) => {
+    try {
+      const newSimplePages = await invoke<{ pages: PageSimple[] }>('add_page', {
+        ...payload,
+      })
+      console.log(newSimplePages)
+      return newSimplePages
+    } catch (error) {
+      return thunkApi.rejectWithValue(error)
+    }
+  }
+)
+
 export default reducers

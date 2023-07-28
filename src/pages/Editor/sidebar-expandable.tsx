@@ -12,6 +12,7 @@ import { useNavigate } from 'react-router-dom'
 import './sidebar-expandable.css'
 import { NebulaModal } from '@/features/modalSlice'
 import { RootState } from '@/app/store'
+import { CgPathExclude } from 'react-icons/cg'
 interface Props {
   page: PageSimple
 }
@@ -33,40 +34,30 @@ const SidebarExpandable = (props: Props) => {
     }
   }
   const handleAddPage = (ev: React.MouseEvent<HTMLButtonElement>) => {
+    ev.stopPropagation()
     dispatch(
       NebulaModal.showModal({
         id: 'pageCreate',
         type: 'page/create',
-        parentId: currentPage !== null ? currentPage.parent_id : null,
+        parentId: page.__id,
         insertAfterId: null,
-        x:
-          ev.detail === 1
-            ? ev.pageX
-            : ev.currentTarget.getBoundingClientRect().left,
-        y:
-          ev.detail === 1
-            ? ev.pageY + 10
-            : ev.currentTarget.getBoundingClientRect().top,
+        x: ev.currentTarget.getBoundingClientRect().left,
+        y: ev.currentTarget.getBoundingClientRect().top,
         label: 'Create Sub-page',
       })
     )
   }
 
   const handlePageContext = (ev: React.MouseEvent<HTMLButtonElement>) => {
+    ev.stopPropagation()
     if (currentPage) {
       dispatch(
         NebulaModal.showModal({
           id: 'pageContext',
           type: 'page/context',
           pageId: currentPage.__id,
-          x:
-            ev.detail === 1
-              ? ev.pageX
-              : ev.currentTarget.getBoundingClientRect().left,
-          y:
-            ev.detail === 1
-              ? ev.pageY + 10
-              : ev.currentTarget.getBoundingClientRect().top + 10,
+          x: ev.currentTarget.getBoundingClientRect().left,
+          y: ev.currentTarget.getBoundingClientRect().top + 10,
           label: 'Options',
         })
       )
@@ -76,6 +67,7 @@ const SidebarExpandable = (props: Props) => {
   return (
     <div className="sidebar-expandable_container">
       <PageButton
+        id={page.__id}
         onAddClick={handleAddPage}
         isActive={pageId === page.__id}
         onExpandClick={handleExpand}
@@ -108,6 +100,7 @@ const SidebarExpandable = (props: Props) => {
 
 export default SidebarExpandable
 const PageButton = (props: {
+  id: string
   children: string
   isExpanded?: boolean
   isActive?: boolean
@@ -120,6 +113,7 @@ const PageButton = (props: {
 
   return (
     <div
+      id={props.id}
       role="button"
       tabIndex={1}
       className={`sidebar-expandable_container__button ${

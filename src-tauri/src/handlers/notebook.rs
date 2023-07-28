@@ -5,6 +5,7 @@ use crate::{
     utils::Application::get_notebook_data_dir,
 };
 use serde::{Deserialize, Serialize};
+use std::fmt::format;
 use std::sync::{Arc, Mutex};
 use std::{
     fs,
@@ -26,42 +27,56 @@ pub struct NotebookMetadata {
 pub struct MetaDataFile {
     notebooks: Vec<NotebookMetadata>,
 }
-pub fn load_notebooks_metadata() -> Result<MetaDataFile, String> {
+pub fn load_notebooks_metadata() -> Result<MetaDataFile, ErrorResponse> {
     let notebooks_dir = get_notebook_data_dir();
     let notebooks_metadata_json = notebooks_dir.join("meta_data.json");
 
     match notebooks_metadata_json.exists() {
         true => {
             let mut file =
-                fs::File::open(&notebooks_metadata_json).map_err(|_| "Error Loading File")?;
+                fs::File::open(&notebooks_metadata_json).map_err(|error| ErrorResponse::new(ErrorCode::FileNotFound, format!("Error Opening Metadata File {}", error)))?;
+
             let mut json = String::new();
 
             file.read_to_string(&mut json)
-                .map_err(|_| "Error reading from file")?;
+                .map_err(|error| ErrorResponse::new(ErrorCode::IoError, format!("Error Reading File {}", error)))?;
 
             let data: MetaDataFile =
-                serde_json::from_str(&json).map_err(|_| "Error Deserializing")?;
+                serde_json::from_str(&json).map_err(|error| ErrorResponse::new(ErrorCode::DeserializationError, format!("Error deserializing metadata file {}", error)))?;
 
             Ok(data)
         }
-        _ => Err("Error Loading MetaData File ".to_string()),
+        _ => Err(ErrorResponse::new(ErrorCode::NotebookMetadataNotFound, "No Metadata file available. May be it is deleted or corrupted please try auto recovery".to_string())),
     }
 }
-pub fn put_metadata(data: &MetaDataFile) -> Result<(), String> {
+pub fn put_metadata(data: &MetaDataFile) -> Result<(), ErrorResponse> {
     let notebooks_dir = get_notebook_data_dir();
     let notebooks_metadata_json = notebooks_dir.join("meta_data.json");
 
-    let json_string = serde_json::to_string(&data).map_err(|_| "Error Json Stringify")?;
-    let mut json_file =
-        fs::File::create(notebooks_metadata_json).map_err(|_| "Error Creating File")?;
+    let json_string = serde_json::to_string(&data).map_err(|error| {
+        ErrorResponse::new(
+            ErrorCode::SerializationError,
+            format!("Error Serializing Metadata {}", error),
+        )
+    })?;
+    let mut json_file = fs::File::create(notebooks_metadata_json).map_err(|error| {
+        ErrorResponse::new(ErrorCode::IoError, format!("Error Creating File {}", error))
+    })?;
     json_file
         .write_all(json_string.as_bytes())
-        .map_err(|_| "Error Saving to File")?;
+        .map_err(|error| {
+            ErrorResponse::new(
+                ErrorCode::IoError,
+                format!("Error Saving to file: {}", error),
+            )
+        })?;
 
     Ok(())
 }
 
-pub fn add_notebook_to_metadata_file(metadata: &NotebookMetadata) -> Result<MetaDataFile, String> {
+pub fn add_notebook_to_metadata_file(
+    metadata: &NotebookMetadata,
+) -> Result<MetaDataFile, ErrorResponse> {
     let notebooks_dir = get_notebook_data_dir();
     let notebooks_metadata_json = notebooks_dir.join("meta_data.json");
 
@@ -86,7 +101,7 @@ pub fn add_notebook_to_metadata_file(metadata: &NotebookMetadata) -> Result<Meta
 }
 
 #[tauri::command]
-pub fn create_nebula_notebook(notebook_name: String) -> Result<Response, String> {
+pub fn create_nebula_notebook(notebook_name: String) -> Result<Response, ErrorResponse> {
     let new_notebook = NebulaNotebook::new(notebook_name);
     let meta_data = NotebookMetadata {
         __id: new_notebook.__id.clone(),
@@ -107,7 +122,7 @@ pub fn create_nebula_notebook(notebook_name: String) -> Result<Response, String>
 }
 // Load Notebooks at startup
 #[tauri::command]
-pub fn load_nebula_notebooks() -> Result<MetaDataFile, String> {
+pub fn load_nebula_notebooks() -> Result<MetaDataFile, ErrorResponse> {
     let res = load_notebooks_metadata()?;
     Ok(res)
 }
@@ -151,23 +166,14 @@ pub fn load_nebula_notebook(
     let file_path = notebooks_dir.join(notebook_id + ".nb");
 
     let notebook = NebulaNotebook::load_from_file(&file_path);
-
     match notebook {
         Ok(notebook) => {
             state.set_notebook(notebook);
-
-            match &state.notebook {
-                Some(notebook) => {
-                    let simple_pages = notebook.get_simple_pages();
-                    let response = NotebookResponse::new(notebook, simple_pages);
-                    Ok(response)
-                }
-
-                _ => Err(ErrorResponse::new(
-                    ErrorCode::NotebookNotLoadedYet,
-                    "Notebook is loaded".to_string(),
-                )),
-            }
+            state.use_notebook(|notebook| {
+                let simple_pages = notebook.get_simple_pages();
+                let response = NotebookResponse::new(notebook, simple_pages);
+                Ok(response)
+            })?
         }
         Err(error) => Err(ErrorResponse::new(ErrorCode::NotFoundError, error)),
     }

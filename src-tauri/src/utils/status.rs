@@ -14,6 +14,9 @@ pub mod error {
         Unsupported,
         Unexpected,
         NotebookNotLoadedYet,
+        NotebookMetadataNotFound,
+        IoError,
+        FileNotFound,
     }
     #[derive(Debug, Serialize, Deserialize)]
     pub struct ErrorResponse {

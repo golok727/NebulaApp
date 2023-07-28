@@ -24,16 +24,10 @@ const SidebarGroup = ({ groupTitle, children }: Props) => {
       NebulaModal.showModal({
         id: 'pageCreate',
         type: 'page/create',
-        parentId: null,
+        parentId: currentPage !== null ? currentPage.parent_id : null,
         insertAfterId: currentPage !== null ? currentPage.__id : null,
-        x:
-          ev.detail === 0
-            ? ev.currentTarget.getBoundingClientRect().left
-            : ev.pageX,
-        y:
-          ev.detail === 0
-            ? ev.currentTarget.getBoundingClientRect().top + 10
-            : ev.pageY + 10,
+        x: ev.currentTarget.getBoundingClientRect().left,
+        y: ev.currentTarget.getBoundingClientRect().top + 10,
         label: 'Create Page',
       })
     )

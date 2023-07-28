@@ -152,14 +152,15 @@ impl NebulaNotebook {
         match (parent_id, insert_after) {
             (Some(parent_id), Some(insert_after_id)) => {
                 if let Some(parent_page) = self.page_map.get_mut(&parent_id) {
-                    let index = parent_page
+                    let idx = parent_page
                         .sub_pages
                         .iter()
-                        .position(|id| *id == insert_after_id);
-                    parent_page.sub_pages.insert(
-                        index.unwrap_or_else(|| parent_page.sub_pages.len()),
-                        new_page.__id.to_owned(),
-                    );
+                        .position(|id| *id == insert_after_id)
+                        .unwrap_or_else(|| parent_page.sub_pages.len());
+                    // Add to  subpage list
+                    parent_page
+                        .sub_pages
+                        .insert(idx + 1, new_page.__id.to_owned());
                 }
             }
             (Some(parent_id), None) => {
@@ -169,42 +170,70 @@ impl NebulaNotebook {
             }
             (None, Some(insert_after_id)) => {
                 if let Some(insert_after_page) = self.page_map.get_mut(&insert_after_id) {
-                    let index = insert_after_page
-                        .sub_pages
-                        .iter()
-                        .position(|id| *id == insert_after_id);
-                    insert_after_page.sub_pages.insert(
-                        index.unwrap_or_else(|| insert_after_page.sub_pages.len()),
-                        new_page.__id.to_owned(),
-                    );
-                }
+                    match &insert_after_page.parent_id {
+                        // If the there is a parent_id means that the page is a sub page and the element
+                        Some(_) => {
+                            let idx = insert_after_page
+                                .sub_pages
+                                .iter()
+                                .position(|id| *id == insert_after_id)
+                                .unwrap_or_else(|| insert_after_page.sub_pages.len());
+
+                            // May panic
+                            insert_after_page
+                                .sub_pages
+                                .insert(idx + 1, new_page.__id.to_owned());
+                        }
+                        // If the parent id is None means that the page is a root page
+                        None => {
+                            let idx = self
+                                .pages
+                                .iter()
+                                .position(|id| *id == insert_after_id)
+                                .unwrap_or_else(|| self.pages.len());
+                            println!("Idx {}", idx);
+                            self.pages.insert(idx + 1, new_page.__id.to_owned());
+                        }
+                    }
+                };
             }
             (None, None) => {
-                self.pages.push(new_page.__id.to_owned());
+                self.pages.insert(0, new_page.__id.to_owned());
             }
         }
     }
 
-    pub fn save_to_file(&self) -> Result<(), String> {
+    pub fn save_to_file(&self) -> Result<(), ErrorResponse> {
         let notebook_data_dir = get_notebook_data_dir();
         //?  Get the storage Dir and make a new file with the data
 
         let new_filepath = notebook_data_dir.join(self.__id.to_owned() + ".nb");
-        let mut file =
-            fs::File::create(new_filepath).map_err(|err| format!("Error creating file {}", err))?;
+        let mut file = fs::File::create(new_filepath).map_err(|err| {
+            ErrorResponse::new(ErrorCode::IoError, format!("Error creating file {}", err))
+        })?;
 
         let file_header = FileHeader::new();
 
         //? Serialize the data and file header
-        let serialized_header = bincode::serialize(&file_header)
-            .map_err(|err| format!("Error serializing Header{}", err))?;
-        let serialized_data =
-            bincode::serialize(&self).map_err(|err| format!("Error serializing Data{}", err))?;
+        let serialized_header = bincode::serialize(&file_header).map_err(|err| {
+            ErrorResponse::new(
+                ErrorCode::SerializationError,
+                format!("Error serializing Header {}", err),
+            )
+        })?;
+        let serialized_data = bincode::serialize(&self).map_err(|err| {
+            ErrorResponse::new(
+                ErrorCode::SerializationError,
+                format!("Error serializing Data{}", err),
+            )
+        })?;
 
-        file.write_all(&serialized_header)
-            .map_err(|err| format!("Error Writing to file {}", err))?;
-        file.write_all(&serialized_data)
-            .map_err(|err| format!("Error Writing to file {}", err))?;
+        file.write_all(&serialized_header).map_err(|err| {
+            ErrorResponse::new(ErrorCode::IoError, format!("Error Writing to file {}", err))
+        })?;
+        file.write_all(&serialized_data).map_err(|err| {
+            ErrorResponse::new(ErrorCode::IoError, format!("Error Writing to file {}", err))
+        })?;
 
         Ok(())
     }

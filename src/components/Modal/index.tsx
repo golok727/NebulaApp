@@ -51,12 +51,16 @@ const Modal = () => {
         return <></>
     }
   }, [currentModal])
+
   return (
     <div
       ref={modalContainerRef}
       style={{
         ...(currentModal !== null
-          ? { top: `${currentModal.y}px`, left: `${currentModal.x}px` }
+          ? {
+              top: `${currentModal.y}px`,
+              left: `${currentModal.x}px`,
+            }
           : { display: 'none' }),
       }}
       className="app__modal"
