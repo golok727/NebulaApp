@@ -19,8 +19,10 @@ fn main() {
             notebook::create_nebula_notebook,
             notebook::load_nebula_notebooks,
             notebook::load_nebula_notebook,
+            notebook::save_notebook,
             page::load_page,
-            page::add_page
+            page::add_page,
+            page::update_page
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application")

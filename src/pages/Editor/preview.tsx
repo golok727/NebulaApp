@@ -38,6 +38,9 @@ const schema = {
 const Preview = ({}: Props) => {
   const dispatch = useDispatch()
   const doc = useSelector((state: RootState) => state.editor.currentDoc)
+  const currentPageName = useSelector(
+    (state: RootState) => state.editor.currentPage?.title ?? ''
+  )
   const { preview: showPreview, appMode } = useSelector(isInView)
   const handleDoubleClick = () => {
     if (appMode === 'preview-only') {
@@ -61,7 +64,9 @@ const Preview = ({}: Props) => {
           img: RemarkImg,
         },
       })
-      .processSync(doc).result
+      .processSync(
+        doc !== '' ? doc : `# Start writing in '${currentPageName}...'`
+      ).result
   }
   return (
     <div

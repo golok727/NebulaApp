@@ -8,6 +8,8 @@
   font-weight: bold;
   display: flex;
   justify-content: space-between;
+  margin-bottom: 0.2rem;
+  padding: 0.2rem 0.3rem;
 }
 
 .sidebar__group__header .controls button {
@@ -21,7 +23,9 @@
   transition: opacity 0.2s ease;
 }
 .sidebar__group__content {
-  padding: 0.3rem 0;
+  padding: 0.3rem 0.2rem;
+  max-height: 20rem;
+  overflow-y: auto;
 }
 .sidebar__group__content .no-pages-found {
   color: var(--text-gray);

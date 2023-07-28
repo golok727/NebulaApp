@@ -24,6 +24,9 @@ import { isInView } from '@/features/selectors'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 import Button from './Button'
+import { BsSave } from 'react-icons/bs'
+import { RootState } from '@/app/store'
+import { invoke } from '@tauri-apps/api/tauri'
 
 const TopBar = () => {
   const {
@@ -31,8 +34,20 @@ const TopBar = () => {
     preview: showPreview,
     appMode,
   } = useSelector(isInView)
+  const currentPageId = useSelector(
+    (state: RootState) => state.editor.currentPage?.__id
+  )
+  const currentDoc = useSelector((state: RootState) => state.editor.currentDoc)
   const dispatch = useDispatch()
-
+  const handleSave = async () => {
+    if (currentPageId !== undefined) {
+      let res = await invoke('update_page', {
+        pageId: currentPageId,
+        newContent: currentDoc,
+      })
+      console.log(res)
+    }
+  }
   const handleToggleSidebar = () => {
     dispatch(toggleSidebar())
   }
@@ -94,6 +109,10 @@ const TopBar = () => {
           variant="transparent"
         >
           {!showPreview ? <EyeIcon width={19} /> : <EyeSlashIcon width={19} />}
+        </Button>
+
+        <Button variant="transparent">
+          <BsSave onClick={handleSave} style={{ fontSize: 19 }} />
         </Button>
 
         <Button variant="transparent">

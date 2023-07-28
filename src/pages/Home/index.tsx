@@ -22,7 +22,7 @@ const Home = () => {
       const res = (await invoke('create_nebula_notebook', {
         notebookName: noteName.trim(),
       })) as any
-      navigate(`/editor/${res._id_}/`)
+      navigate(`/editor/${res.notebook.__id}/`)
 
       setNoteName('')
     } catch (error) {

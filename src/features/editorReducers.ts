@@ -2,6 +2,7 @@ import { PayloadAction } from '@reduxjs/toolkit'
 import { AppEditorState } from './editorSlice'
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import { invoke } from '@tauri-apps/api/tauri'
+
 const reducers = {
   setCurrentDoc: (state: AppEditorState, action: PayloadAction<string>) => {
     state.currentDoc = action.payload
@@ -15,6 +16,10 @@ const reducers = {
     }
   },
 
+  collapseAll: (state: AppEditorState) => {
+    state.expandedPages = []
+  },
+
   resetNotebookState: (state: AppEditorState) => {
     state.currentNotebook = null
     state.currentPage = null
@@ -25,9 +30,6 @@ const reducers = {
       message: '',
       code: '',
     }
-    state.expandedPages = []
-  },
-  collapseAll: (state: AppEditorState) => {
     state.expandedPages = []
   },
 
@@ -71,10 +73,13 @@ export const loadPage = createAsyncThunk(
   'editor/loadPage',
   async (payload: LoadPagePayload, thunkApi) => {
     try {
-      const page = await invoke<PageEntry>('load_page', {
-        pageId: payload.pageId,
-      })
-      return page
+      const res = await invoke<{ page: PageEntry; expanded: string[] }>(
+        'load_page',
+        {
+          pageId: payload.pageId,
+        }
+      )
+      return res
     } catch (error) {
       return thunkApi.rejectWithValue(error)
     }
@@ -85,15 +90,18 @@ type AddPagePayload = {
   title: string
   parentId: string | null
   insertAfterId: string | null
+  onPageAdded: (newPageId: string) => void
 }
 export const addPage = createAsyncThunk(
   'editor/addPage',
   async (payload: AddPagePayload, thunkApi) => {
     try {
-      const newSimplePages = await invoke<{ pages: PageSimple[] }>('add_page', {
+      const newSimplePages = await invoke<{
+        pages: PageSimple[]
+        new_page_id: string
+      }>('add_page', {
         ...payload,
       })
-      console.log(newSimplePages)
       return newSimplePages
     } catch (error) {
       return thunkApi.rejectWithValue(error)

@@ -18,7 +18,6 @@ const Editor = () => {
   useEffect(() => {
     if (notebookId !== undefined) {
       dispatch(loadNotebook({ notebookId: notebookId }))
-      console.log(currentNotebook)
     }
 
     return () => {

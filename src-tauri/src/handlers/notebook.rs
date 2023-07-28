@@ -5,17 +5,12 @@ use crate::{
     utils::Application::get_notebook_data_dir,
 };
 use serde::{Deserialize, Serialize};
-use std::fmt::format;
 use std::sync::{Arc, Mutex};
 use std::{
     fs,
     io::{Read, Write},
 };
 use tauri::State;
-#[derive(Serialize, Deserialize)]
-pub struct Response {
-    notebook: NebulaNotebook,
-}
 
 #[derive(Clone, Serialize, Deserialize)]
 pub struct NotebookMetadata {
@@ -99,9 +94,14 @@ pub fn add_notebook_to_metadata_file(
         Err(err) => err,
     }
 }
-
+#[derive(Serialize, Deserialize)]
+pub struct CreateNotebookResponse {
+    notebook: NebulaNotebook,
+}
 #[tauri::command]
-pub fn create_nebula_notebook(notebook_name: String) -> Result<Response, ErrorResponse> {
+pub fn create_nebula_notebook(
+    notebook_name: String,
+) -> Result<CreateNotebookResponse, ErrorResponse> {
     let new_notebook = NebulaNotebook::new(notebook_name);
     let meta_data = NotebookMetadata {
         __id: new_notebook.__id.clone(),
@@ -111,7 +111,7 @@ pub fn create_nebula_notebook(notebook_name: String) -> Result<Response, ErrorRe
 
     match new_notebook.save_to_file() {
         Ok(()) => {
-            let res = Response {
+            let res = CreateNotebookResponse {
                 notebook: new_notebook,
             };
             add_notebook_to_metadata_file(&meta_data)?;
@@ -179,5 +179,14 @@ pub fn load_nebula_notebook(
     }
 }
 
+#[tauri::command]
+pub fn save_notebook(state: State<'_, Arc<Mutex<AppState>>>) -> Result<String, ErrorResponse> {
+    let mut state = state.lock().unwrap();
+
+    state.use_notebook(|notebook| {
+        notebook.save_to_file()?;
+        Ok("Saved to file".to_string())
+    })?
+}
 // #[tauri::command]
 // pub fn unload_nebula_notebook() {}

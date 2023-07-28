@@ -6,18 +6,32 @@ use crate::{
 use serde::{Deserialize, Serialize};
 use std::sync::{Arc, Mutex};
 use tauri::State;
+
+#[derive(Serialize, Deserialize)]
+pub struct LoadPageResponse {
+    page: PageEntry,
+    expanded: Vec<String>,
+}
+
 #[tauri::command]
 pub fn load_page(
     state: State<Arc<Mutex<AppState>>>,
     page_id: String,
-) -> Result<PageEntry, ErrorResponse> {
+) -> Result<LoadPageResponse, ErrorResponse> {
     let mut state = state.lock().unwrap();
 
-    state.use_notebook(|notebook| notebook.get_page(&page_id))?
+    state.use_notebook(|notebook| {
+        let page = notebook.get_page(&page_id)?;
+        let expanded = notebook.pages_to_expand(&page.__id);
+        let res = LoadPageResponse { page, expanded };
+        Ok(res)
+    })?
 }
+
 #[derive(Serialize, Deserialize)]
 pub struct AddPageResponse {
     pages: Vec<PageSimple>,
+    new_page_id: String,
 }
 #[tauri::command]
 pub fn add_page(
@@ -29,10 +43,25 @@ pub fn add_page(
     let mut state = state.lock().unwrap();
 
     state.use_notebook(|notebook| {
-        notebook.add_page(title, parent_id, insert_after_id);
+        let new_page_id = notebook.add_page(title, parent_id, insert_after_id);
         let pages = notebook.get_simple_pages();
 
-        let res = AddPageResponse { pages };
+        let res = AddPageResponse { pages, new_page_id };
         Ok(res)
+    })?
+}
+#[tauri::command]
+pub fn update_page(
+    state: State<Arc<Mutex<AppState>>>,
+    page_id: String,
+    new_content: String,
+) -> Result<String, ErrorResponse> {
+    let mut state = state.lock().unwrap();
+
+    state.use_notebook(|notebook| {
+        if let Some(page) = notebook.page_map.get_mut(&page_id) {
+            page.content.body = new_content.to_owned();
+        }
+        Ok(new_content)
     })?
 }

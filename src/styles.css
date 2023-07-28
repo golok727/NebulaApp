@@ -63,10 +63,10 @@ html,
 }
 
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 7px;
 }
 
 ::-webkit-scrollbar-thumb {
-  border: 1px solid #43434380;
+  border: 1px solid #2c2c2c80;
   border-radius: 10px;
 }

@@ -83,8 +83,11 @@ const editorSlice = createSlice({
           error: false,
           message: '',
         }
-        state.currentPage = action.payload
-        state.currentDoc = action.payload.content.body
+        state.currentPage = action.payload.page
+        state.currentDoc = action.payload.page.content.body
+        state.expandedPages = [
+          ...new Set([...state.expandedPages, ...action.payload.expanded]),
+        ]
       })
       .addCase(loadPage.rejected, (state, action) => {
         handleRejectedStatus(state, action.payload)
@@ -119,6 +122,7 @@ const editorSlice = createSlice({
         ) {
           state.expandedPages = [...state.expandedPages, argParentId]
         }
+        action.meta.arg.onPageAdded(action.payload.new_page_id)
       })
       .addCase(addPage.rejected, (state, action) => {
         handleRejectedStatus(state, action.payload)

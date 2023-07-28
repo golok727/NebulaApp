@@ -106,6 +106,29 @@ impl NebulaNotebook {
             )),
         }
     }
+    pub fn pages_to_expand(&self, page_id: &str) -> Vec<String> {
+        let mut expanded_pages: Vec<String> = Vec::new();
+
+        // Helper function to perform the recursive backtrace
+        fn backtrace(
+            page: &PageEntry,
+            expanded_pages: &mut Vec<String>,
+            page_map: &HashMap<String, PageEntry>,
+        ) {
+            if let Some(parent_id) = &page.parent_id {
+                if let Some(parent) = page_map.get(parent_id) {
+                    expanded_pages.push(parent_id.to_string());
+                    backtrace(parent, expanded_pages, page_map);
+                }
+            }
+        }
+
+        if let Some(page) = self.page_map.get(page_id) {
+            backtrace(page, &mut expanded_pages, &self.page_map);
+        }
+
+        expanded_pages
+    }
 
     pub fn get_simple_pages(&self) -> Vec<PageSimple> {
         let mut simple_pages: Vec<PageSimple> = Vec::new();
@@ -144,7 +167,7 @@ impl NebulaNotebook {
         title: String,
         parent_id: Option<String>,
         insert_after: Option<String>,
-    ) {
+    ) -> String {
         let new_page = PageEntry::new(title, parent_id.to_owned());
         self.page_map
             .insert(new_page.__id.to_owned(), new_page.to_owned());
@@ -165,7 +188,7 @@ impl NebulaNotebook {
             }
             (Some(parent_id), None) => {
                 if let Some(parent_page) = self.page_map.get_mut(&parent_id) {
-                    parent_page.sub_pages.push(new_page.__id.to_owned());
+                    parent_page.sub_pages.insert(0, new_page.__id.to_owned());
                 }
             }
             (None, Some(insert_after_id)) => {
@@ -201,6 +224,7 @@ impl NebulaNotebook {
                 self.pages.insert(0, new_page.__id.to_owned());
             }
         }
+        new_page.__id.to_owned()
     }
 
     pub fn save_to_file(&self) -> Result<(), ErrorResponse> {

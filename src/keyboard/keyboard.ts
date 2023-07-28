@@ -4,8 +4,10 @@ import {
   toggleNoDistractionsMode,
   togglePreviewOnly,
   toggleSidebar,
+  toggleSplitMode,
 } from '@/features/appSlice'
 import { NebulaModal } from '@/features/modalSlice'
+import { invoke } from '@tauri-apps/api/tauri'
 
 export const isInEditor = () => window.location.pathname.startsWith('/editor')
 
@@ -13,8 +15,10 @@ export const shortcuts: Record<string, string> = {
   'ctrl+shift+?': 'view:toggle-sidebar',
   'ctrl+shift+d': 'view:toggle-no-distractions',
   'ctrl+/': 'view:toggle-preview-only',
+  'ctrl+\\': 'view:toggle-split-mode',
   'ctrl+n': 'core:add-page',
   'ctrl+shift+n': 'core:add-sub-page',
+  'ctrl+s': 'core:save-current-notebook',
 }
 export const handlers: Record<string, (dispatch: AppDispatch) => void> = {
   'core:add-page': (dispatch) => {
@@ -34,11 +38,16 @@ export const handlers: Record<string, (dispatch: AppDispatch) => void> = {
       )
     }
   },
+  'core:save-current-notebook': async (dispatch) => {
+    if (isInEditor()) {
+      // let res = await invoke('save_notebook')
+      // console.log(res)
+    }
+  },
 
   'core:add-sub-page': (dispatch) => {
     if (isInEditor()) {
       const currentPage = store.getState().editor.currentPage
-      console.log(currentPage?.title)
       if (currentPage) {
         dispatch(
           NebulaModal.showModal({
@@ -55,7 +64,11 @@ export const handlers: Record<string, (dispatch: AppDispatch) => void> = {
       }
     }
   },
-
+  'view:toggle-split-mode': (dispatch) => {
+    if (isInEditor()) {
+      dispatch(toggleSplitMode())
+    }
+  },
   'view:toggle-sidebar': (dispatch) => {
     if (isInEditor()) {
       dispatch(toggleSidebar())
