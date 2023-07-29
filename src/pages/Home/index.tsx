@@ -60,13 +60,15 @@ const Home = () => {
       </form>
 
       <ul>
-        {notebooks &&
-          notebooks.length > 0 &&
+        {notebooks && notebooks.length > 0 ? (
           notebooks.map((notebook) => (
             <li key={notebook.__id}>
               <Link to={`/editor/${notebook.__id}/`}>{notebook.name}</Link>
             </li>
-          ))}
+          ))
+        ) : (
+          <h2>No Notebooks yet</h2>
+        )}
       </ul>
     </div>
   )

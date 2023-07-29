@@ -2,7 +2,7 @@ use crate::state::AppState;
 use crate::utils::status::error::{ErrorCode, ErrorResponse};
 use crate::{
     nebula::NebulaNotebookFile::{NebulaNotebook, PageSimple},
-    utils::Application::get_notebook_data_dir,
+    utils::Application::{count_files_with_extension, get_notebook_data_dir},
 };
 use serde::{Deserialize, Serialize};
 use std::sync::{Arc, Mutex};
@@ -22,26 +22,45 @@ pub struct NotebookMetadata {
 pub struct MetaDataFile {
     notebooks: Vec<NotebookMetadata>,
 }
+
 pub fn load_notebooks_metadata() -> Result<MetaDataFile, ErrorResponse> {
     let notebooks_dir = get_notebook_data_dir();
     let notebooks_metadata_json = notebooks_dir.join("meta_data.json");
 
     match notebooks_metadata_json.exists() {
         true => {
-            let mut file =
-                fs::File::open(&notebooks_metadata_json).map_err(|error| ErrorResponse::new(ErrorCode::FileNotFound, format!("Error Opening Metadata File {}", error)))?;
+            let mut file = fs::File::open(&notebooks_metadata_json).map_err(|error| {
+                ErrorResponse::new(
+                    ErrorCode::FileNotFound,
+                    format!("Error Opening Metadata File {}", error),
+                )
+            })?;
 
             let mut json = String::new();
 
-            file.read_to_string(&mut json)
-                .map_err(|error| ErrorResponse::new(ErrorCode::IoError, format!("Error Reading File {}", error)))?;
+            file.read_to_string(&mut json).map_err(|error| {
+                ErrorResponse::new(ErrorCode::IoError, format!("Error Reading File {}", error))
+            })?;
 
-            let data: MetaDataFile =
-                serde_json::from_str(&json).map_err(|error| ErrorResponse::new(ErrorCode::DeserializationError, format!("Error deserializing metadata file {}", error)))?;
+            let data: MetaDataFile = serde_json::from_str(&json).map_err(|error| {
+                ErrorResponse::new(
+                    ErrorCode::DeserializationError,
+                    format!("Error deserializing metadata file {}", error),
+                )
+            })?;
 
             Ok(data)
         }
-        _ => Err(ErrorResponse::new(ErrorCode::NotebookMetadataNotFound, "No Metadata file available. May be it is deleted or corrupted please try auto recovery".to_string())),
+        _ => {
+            let nb_files_count = count_files_with_extension(&notebooks_dir, "nb");
+            if nb_files_count > 0 {
+                Err(ErrorResponse::new(ErrorCode::NotebookMetadataNotFound, "No Metadata file available. May be it is deleted or corrupted please try auto recovery".to_string()))
+            } else {
+                Ok(MetaDataFile {
+                    notebooks: Vec::new(),
+                })
+            }
+        }
     }
 }
 pub fn put_metadata(data: &MetaDataFile) -> Result<(), ErrorResponse> {
@@ -165,18 +184,13 @@ pub fn load_nebula_notebook(
     let notebooks_dir = get_notebook_data_dir();
     let file_path = notebooks_dir.join(notebook_id + ".nb");
 
-    let notebook = NebulaNotebook::load_from_file(&file_path);
-    match notebook {
-        Ok(notebook) => {
-            state.set_notebook(notebook);
-            state.use_notebook(|notebook| {
-                let simple_pages = notebook.get_simple_pages();
-                let response = NotebookResponse::new(notebook, simple_pages);
-                Ok(response)
-            })?
-        }
-        Err(error) => Err(ErrorResponse::new(ErrorCode::NotFoundError, error)),
-    }
+    let notebook = NebulaNotebook::load_from_file(&file_path)?;
+    state.set_notebook(notebook);
+    state.use_notebook(|notebook| {
+        let simple_pages = notebook.get_simple_pages();
+        let response = NotebookResponse::new(notebook, simple_pages);
+        Ok(response)
+    })?
 }
 
 #[tauri::command]

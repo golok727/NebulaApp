@@ -40,8 +40,8 @@ export const handlers: Record<string, (dispatch: AppDispatch) => void> = {
   },
   'core:save-current-notebook': async (dispatch) => {
     if (isInEditor()) {
-      // let res = await invoke('save_notebook')
-      // console.log(res)
+      let res = await invoke('save_notebook')
+      console.log(res)
     }
   },
 

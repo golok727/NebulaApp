@@ -30,6 +30,7 @@ pub struct PageEntry {
     pub tags: Option<Vec<String>>,
     pub parent_id: Option<String>,
     pub sub_pages: Vec<String>,
+    pub is_in_trash: bool,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -44,6 +45,7 @@ pub struct NebulaNotebook {
     pub author: Option<String>,
     pub assets: Vec<String>,
     pub last_accessed_at: String,
+    pub is_in_trash: bool,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -69,6 +71,7 @@ impl PageEntry {
             parent_id,
             sub_pages: Vec::new(),
             tags: None,
+            is_in_trash: false,
         }
     }
 }
@@ -95,6 +98,7 @@ impl NebulaNotebook {
             page_map: HashMap::new(),
             author: None,
             description: None,
+            is_in_trash: false,
         }
     }
     pub fn get_page(&self, page_id: &str) -> Result<PageEntry, ErrorResponse> {
@@ -262,23 +266,32 @@ impl NebulaNotebook {
         Ok(())
     }
 
-    pub fn load_from_file(filepath: &PathBuf) -> Result<Self, String> {
+    pub fn load_from_file(filepath: &PathBuf) -> Result<Self, ErrorResponse> {
         match filepath.is_file() {
             true => {
                 // ? Read File to buffer
-                let mut file = fs::File::open(filepath)
-                    .map_err(|err| format!("Error opening file {}", err))?;
+                let mut file = fs::File::open(filepath).map_err(|err| {
+                    ErrorResponse::new(ErrorCode::IoError, format!("Error opening file {}", err))
+                })?;
                 let mut buffer: Vec<u8> = Vec::new();
-                file.read_to_end(&mut buffer)
-                    .map_err(|err| format!("Error opening file {}", err))?;
+                file.read_to_end(&mut buffer).map_err(|err| {
+                    ErrorResponse::new(ErrorCode::IoError, format!("Error opening file {}", err))
+                })?;
 
                 //? Split The header and data Part
 
                 let header_size: usize = std::mem::size_of::<FileHeader>();
                 let header_data: &[u8] = &buffer[..header_size];
                 let notebook_data: &[u8] = &buffer[header_size..];
-                let header: FileHeader = bincode::deserialize::<FileHeader>(&header_data)
-                    .map_err(|err| format!("Error retrieving header {}", err))?;
+
+                let header: FileHeader =
+                    bincode::deserialize::<FileHeader>(&header_data).map_err(|err| {
+                        ErrorResponse::new(
+                            ErrorCode::DeserializationError,
+                            format!("Error retrieving header {}", err),
+                        )
+                    })?;
+
                 let file_version = header.__version__;
 
                 // ? Match the file version
@@ -286,16 +299,25 @@ impl NebulaNotebook {
                     FILE_FORMAT_CURRENT_VERSION => {
                         let mut notebook = bincode::deserialize::<NebulaNotebook>(&notebook_data)
                             .map_err(|err| {
-                            format!("Error deserializing notebook data {}", err)
+                            ErrorResponse::new(
+                                ErrorCode::DeserializationError,
+                                format!("Error deserializing notebook data {}", err),
+                            )
                         })?;
                         notebook.last_accessed_at = Utc::now().to_rfc3339().to_string();
                         Ok(notebook)
                     }
                     // Handle Migration logic
-                    _ => Err("Unsupported version of file".to_string()),
+                    _ => Err(ErrorResponse::new(
+                        ErrorCode::Unsupported,
+                        "This format is not supported".to_string(),
+                    )),
                 }
             }
-            _ => Err("File not found".to_string()),
+            _ => Err(ErrorResponse::new(
+                ErrorCode::NotFoundError,
+                "Notebook not found".to_string(),
+            )),
         }
     }
 }

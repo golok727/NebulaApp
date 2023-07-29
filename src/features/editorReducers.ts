@@ -63,6 +63,7 @@ export const loadNotebook = createAsyncThunk(
 
       return nebula_notebook
     } catch (error: any) {
+      console.log(error)
       return thunkApi.rejectWithValue(error)
     }
   }

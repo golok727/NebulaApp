@@ -30,3 +30,25 @@ pub fn initialize_app() {
         eprintln!("{}", err);
     }
 }
+
+pub fn count_files_with_extension(directory: &PathBuf, extension: &str) -> usize {
+    let mut count = 0;
+
+    if directory.is_dir() {
+        if let Ok(entries) = fs::read_dir(directory) {
+            for entry in entries {
+                if let Ok(entry) = entry {
+                    if entry.path().is_file() {
+                        if let Some(ext) = entry.path().extension() {
+                            if ext == extension {
+                                count += 1;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    count
+}
