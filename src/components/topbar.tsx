@@ -39,15 +39,6 @@ const TopBar = () => {
   )
   const currentDoc = useSelector((state: RootState) => state.editor.currentDoc)
   const dispatch = useDispatch()
-  const handleSave = async () => {
-    if (currentPageId !== undefined) {
-      let res = await invoke('update_page', {
-        pageId: currentPageId,
-        newContent: currentDoc,
-      })
-      console.log(res)
-    }
-  }
   const handleToggleSidebar = () => {
     dispatch(toggleSidebar())
   }
@@ -109,10 +100,6 @@ const TopBar = () => {
           variant="transparent"
         >
           {!showPreview ? <EyeIcon width={19} /> : <EyeSlashIcon width={19} />}
-        </Button>
-
-        <Button variant="transparent">
-          <BsSave onClick={handleSave} style={{ fontSize: 19 }} />
         </Button>
 
         <Button variant="transparent">

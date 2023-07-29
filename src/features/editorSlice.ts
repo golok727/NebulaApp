@@ -138,4 +138,5 @@ export const {
   setEditorStatus: setStatus,
   toggleExpanded,
   collapseAll,
+  unloadPage,
 } = editorSlice.actions

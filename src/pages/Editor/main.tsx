@@ -6,6 +6,7 @@ import { useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { setCurrentDoc } from '@/features/editorSlice'
 import { RootState } from '@/app/store'
+import SelectAPage from '@/components/select-a-page'
 
 const Main = () => {
   const dispatch = useDispatch()
@@ -26,7 +27,7 @@ const Main = () => {
           <Preview />
         </>
       ) : (
-        <h2>Please Select a page</h2>
+        <SelectAPage />
       )}
     </div>
   )

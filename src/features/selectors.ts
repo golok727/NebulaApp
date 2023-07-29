@@ -35,3 +35,18 @@ export const isExpanded = (
 ): ((state: RootState) => boolean) => {
   return (state: RootState) => state.editor.expandedPages.includes(page_id)
 }
+
+const getCurrentDoc = (state: RootState) => state.editor.currentDoc
+const getCurrentPageId = (state: RootState) => state.editor.currentPage?.__id
+const getPreviousContent = (state: RootState) =>
+  state.editor.currentPage?.content
+export const getSaveState = createSelector(
+  getCurrentDoc,
+  getCurrentPageId,
+  getPreviousContent,
+  (currentDoc, currentPageId, previousContent) => ({
+    currentDoc,
+    currentPageId,
+    previousContent,
+  })
+)

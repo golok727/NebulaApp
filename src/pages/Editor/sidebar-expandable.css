@@ -10,6 +10,7 @@
   align-items: center;
   cursor: pointer;
   border-radius: 6px;
+  user-select: none;
 }
 .sidebar-expandable_container__button:hover
   .sidebar-expandable_container__button__options,

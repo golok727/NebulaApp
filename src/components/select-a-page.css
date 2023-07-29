@@ -1,0 +1,59 @@
+.editor__select-a-page {
+  height: 100%;
+  flex: 1;
+  padding: var(--padding-container);
+  position: relative;
+}
+.editor__select-a-page-inner {
+  border: var(--editor-main-border);
+  padding-right: 0.2em;
+  border-radius: 0.2rem;
+  height: 100%;
+  max-height: 100%;
+  padding: var(--padding-1);
+  overflow-y: auto;
+  display: grid;
+  place-items: center;
+  animation: fade-in 1s ease;
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.editor__select-a-page-inner .tool-tip {
+  background-color: #222;
+  padding: 0.2rem 0.4rem;
+  border-radius: 10px;
+  letter-spacing: 0.2ch;
+  user-select: none;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.4);
+}
+
+.editor__select-a-page-inner code {
+  background-color: orange;
+  padding: 0 0.3rem;
+  border-radius: 7px;
+
+  letter-spacing: normal;
+  color: #000;
+}
+
+.editor__select-a-page-inner img {
+  user-select: none;
+  background-image: var(--grad-preview);
+  padding: 2rem 1.7rem;
+  border-radius: 10px;
+}
+
+.editor__select-a-page-inner h2 {
+  font-size: 1.6rem;
+  letter-spacing: 0.2ch;
+}
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

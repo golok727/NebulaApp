@@ -32,7 +32,9 @@ const reducers = {
     }
     state.expandedPages = []
   },
-
+  unloadPage: (state: AppEditorState) => {
+    state.currentPage = null
+  },
   resetEditorStatus: (state: AppEditorState) => {
     state.status = {
       ...state.status,

@@ -7,6 +7,7 @@ import {
   toggleSplitMode,
 } from '@/features/appSlice'
 import { NebulaModal } from '@/features/modalSlice'
+import { updatePage } from '@/utils/notebook'
 import { invoke } from '@tauri-apps/api/tauri'
 
 export const isInEditor = () => window.location.pathname.startsWith('/editor')
@@ -40,6 +41,13 @@ export const handlers: Record<string, (dispatch: AppDispatch) => void> = {
   },
   'core:save-current-notebook': async (dispatch) => {
     if (isInEditor()) {
+      let state = store.getState()
+      let currentPageId = state.editor.currentPage?.__id
+      let currentContent = state.editor.currentDoc
+      if (currentPageId) {
+        await updatePage(currentPageId, currentContent)
+      }
+
       let res = await invoke('save_notebook')
       console.log(res)
     }
