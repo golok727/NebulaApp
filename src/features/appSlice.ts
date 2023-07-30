@@ -41,7 +41,7 @@ export const {
   setView,
   switchToPreviousView,
   toggleNoDistractionsMode,
-  onNotebookUnload,
+  onEditorUnloadState,
   togglePreviewOnly,
 } = appSlice.actions
 export default appSlice.reducer

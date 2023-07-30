@@ -1,6 +1,5 @@
 import './editor.css'
 import { useEffect } from 'react'
-import TopBar from '@/components/topbar'
 import Main from './main'
 import { useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
@@ -9,7 +8,7 @@ import { AppDispatch, RootState } from '@/app/store'
 import { resetNotebookState, unloadPage } from '@/features/editorSlice'
 
 import useUpdatePage from '@/hooks/use-update-page'
-import { onNotebookUnload } from '@/features/appSlice'
+import { onEditorUnloadState } from '@/features/appSlice'
 const Editor = () => {
   const params = useParams()
   const dispatch = useDispatch<AppDispatch>()
@@ -27,8 +26,8 @@ const Editor = () => {
 
     return () => {
       console.log('Unload')
+      dispatch(onEditorUnloadState())
       dispatch(resetNotebookState())
-      dispatch(onNotebookUnload())
     }
   }, [dispatch, notebookId])
 
