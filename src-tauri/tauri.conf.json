@@ -60,10 +60,11 @@
         "resizable": true,
         "decorations": false,
         "title": "Nebula",
-        "width": 1200,
-        "height": 700,
+        "width": 1400,
+        "height": 800,
         "minHeight": 500,
-        "minWidth": 400
+        "minWidth": 400,
+        "theme": "Dark"
       }
     ]
   }

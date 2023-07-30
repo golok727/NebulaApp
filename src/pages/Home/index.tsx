@@ -34,6 +34,7 @@ const Home = () => {
     ;(async () => {
       try {
         const nebula_notebooks = await loadNebulaNotebooks()
+        console.log(nebula_notebooks)
         setNotebooks(nebula_notebooks.notebooks)
       } catch (error) {
         console.log(error)

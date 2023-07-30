@@ -1,33 +1,36 @@
 import AppLogo from '@/assets/logo-nebula.svg'
 import {
+  toggleNoDistractionsMode,
+  togglePreviewOnly,
+  toggleSidebar,
+  toggleSplitMode,
+} from '@/features/appSlice'
+import { currentPageAndNoteName, isInView } from '@/features/selectors'
+import useView from '@/hooks/use-view'
+import {
   ArchiveBoxIcon,
   ChevronDoubleLeftIcon,
   ChevronDoubleRightIcon,
   EllipsisHorizontalCircleIcon,
   EyeIcon,
   EyeSlashIcon,
-  HomeIcon,
   UserCircleIcon,
   ViewColumnsIcon,
 } from '@heroicons/react/24/outline'
+import { AiOutlineCloseCircle } from 'react-icons/ai'
+import { FiMaximize, FiMinimize } from 'react-icons/fi'
+import { TbMaximizeOff } from 'react-icons/tb'
 import { PiSlideshow, PiSlideshowFill } from 'react-icons/pi'
-import MenuButton from './Button'
-import './topbar.css'
-import { appWindow } from '@tauri-apps/api/window'
-import {
-  toggleNoDistractionsMode,
-  toggleSplitMode,
-  toggleSidebar,
-  togglePreviewOnly,
-} from '@/features/appSlice'
-import { currentPageAndNoteName, isInView } from '@/features/selectors'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
-import Button from './Button'
-import { FiMaximize, FiMinimize } from 'react-icons/fi'
-import { AiOutlineCloseCircle } from 'react-icons/ai'
-import useView from '@/hooks/use-view'
+import { default as Button, default as MenuButton } from './Button'
+import './topbar.css'
+import { appWindow } from '@tauri-apps/api/window'
+import { UnlistenFn } from '@tauri-apps/api/event'
+import { useCallback, useEffect, useState } from 'react'
 const TopBar = () => {
+  const [isWindowMaximized, setIsWindowMaximized] = useState(false)
+
   const currentView = useView()
   const {
     sidebar: showSidebar,
@@ -52,6 +55,23 @@ const TopBar = () => {
   const handleTogglePreviewOnly = () => {
     dispatch(togglePreviewOnly())
   }
+  const updateIsWindowMaximized = useCallback(async () => {
+    const resolvedPromise = await appWindow.isMaximized()
+    setIsWindowMaximized(resolvedPromise)
+  }, [])
+
+  useEffect(() => {
+    updateIsWindowMaximized()
+    let unlisten: UnlistenFn | undefined = undefined
+    const listen = async () => {
+      unlisten = await appWindow.onResized(() => {
+        updateIsWindowMaximized()
+      })
+    }
+    listen()
+    return () => unlisten && unlisten()
+  }, [updateIsWindowMaximized])
+  console.log(isWindowMaximized)
 
   return (
     <div data-tauri-drag-region className="top-bar">
@@ -138,7 +158,11 @@ const TopBar = () => {
             onClick={() => appWindow.toggleMaximize()}
             variant="title-bar-control maximize"
           >
-            <FiMaximize style={{ fontSize: 15 }} />
+            {isWindowMaximized ? (
+              <TbMaximizeOff style={{ fontSize: 15 }} />
+            ) : (
+              <FiMaximize style={{ fontSize: 15 }} />
+            )}
           </Button>
 
           <Button
