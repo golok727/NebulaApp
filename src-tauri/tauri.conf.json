@@ -18,6 +18,17 @@
         "all": false,
         "open": true
       },
+      "window": {
+        "all": false,
+        "close": true,
+        "hide": true,
+        "show": true,
+        "maximize": true,
+        "minimize": true,
+        "unmaximize": true,
+        "unminimize": true,
+        "startDragging": true
+      },
       "protocol": {
         "all": true,
         "asset": true,
@@ -47,6 +58,7 @@
       {
         "fullscreen": false,
         "resizable": true,
+        "decorations": false,
         "title": "Nebula",
         "width": 1200,
         "height": 700,

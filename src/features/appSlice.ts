@@ -21,8 +21,8 @@ const initialState: AppState = {
     sidebarWidth: 300,
   },
   imageUrlCache: {},
-  mode: 'edit-only',
-  prevMode: 'edit-only',
+  mode: 'preview-only',
+  prevMode: 'preview-only',
   notebooks: [],
 }
 
@@ -41,6 +41,7 @@ export const {
   setView,
   switchToPreviousView,
   toggleNoDistractionsMode,
+  onNotebookUnload,
   togglePreviewOnly,
 } = appSlice.actions
 export default appSlice.reducer

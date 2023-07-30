@@ -22,6 +22,10 @@ const reducers = {
     }
     state.sidebar.showSidebar = !state.sidebar.showSidebar
   },
+  onNotebookUnload: (state: AppState) => {
+    state.sidebar.showSidebar = true
+    state.prevMode = 'preview-only'
+  },
   setView: (state: AppState, action: PayloadAction<AppState['mode']>) => {
     state.prevMode = state.mode
     state.mode = action.payload

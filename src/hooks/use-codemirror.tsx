@@ -22,6 +22,8 @@ const transparentTheme = EditorView.theme({
     height: '100%',
     border: 'none !important',
     outline: 'none !important',
+    fontSize: '.9rem',
+    FontFamily: 'arial',
   },
   // For the line numbers gutter
   '& .cm-gutters': {
@@ -40,21 +42,21 @@ const transparentTheme = EditorView.theme({
   },
 
   '& .cm-line': {
-    borderTop: '1px solid transparent !important',
-    padding: '.2em .1em !important',
-    borderBottom: '1px solid transparent !important',
+    // borderTop: '1px solid transparent !important',
+    // padding: '.2em .1em !important',
+    // borderBottom: '1px solid transparent !important',
     backgroundColor: 'transparent !important',
   },
-  '& .cm-activeLine': {
-    borderTopColor: 'rgba(255, 255, 255, 0.09) !important',
-    borderBottomColor: 'rgba(255, 255, 255, 0.09) !important',
-    backgroundColor: 'transparent !important',
-  },
+  // '& .cm-activeLine': {
+  //   borderTopColor: 'rgba(255, 255, 255, 0.09) !important',
+  //   borderBottomColor: 'rgba(255, 255, 255, 0.09) !important',
+  //   backgroundColor: 'transparent !important',
+  // },
 })
 const syntaxHighlighting = HighlightStyle.define([
   {
     tag: tags.heading1,
-    fontSize: '1.6em ',
+    fontSize: '1.7em',
     fontWeight: 'bold',
   },
 
@@ -69,6 +71,7 @@ const syntaxHighlighting = HighlightStyle.define([
     fontSize: '1.2em',
     fontWeight: 'bold',
   },
+
   {
     tag: tags.brace,
     color: 'yellow',

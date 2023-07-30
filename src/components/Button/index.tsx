@@ -10,6 +10,9 @@ interface Props extends HTMLAttributes<HTMLButtonElement> {
     | 'default'
     | 'transparent'
     | 'transparent white'
+    | 'title-bar-control close'
+    | 'title-bar-control maximize'
+    | 'title-bar-control minimize'
 }
 const Button: React.FC<Props> = ({
   children,

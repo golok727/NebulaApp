@@ -9,12 +9,22 @@ mod handlers;
 use handlers::{notebook, page};
 use state::AppState;
 use std::sync::{Arc, Mutex};
+use tauri::Manager;
 use utils::Application;
+use window_shadows::set_shadow;
+
 fn main() {
     Application::initialize_app();
+    let app_state = Arc::new(Mutex::new(AppState::new()));
 
     tauri::Builder::default()
-        .manage(Arc::new(Mutex::new(AppState::new())))
+        .setup(|app| {
+            let main_window = app.get_window("main").unwrap();
+            set_shadow(&main_window, true).unwrap();
+
+            Ok(())
+        })
+        .manage(app_state)
         .invoke_handler(tauri::generate_handler![
             notebook::create_nebula_notebook,
             notebook::load_nebula_notebooks,
@@ -25,5 +35,5 @@ fn main() {
             page::update_page
         ])
         .run(tauri::generate_context!())
-        .expect("error while running tauri application")
+        .expect("error while running tauri application");
 }

@@ -33,7 +33,7 @@ export const handlers: Record<string, (dispatch: AppDispatch) => void> = {
           insertAfterId: currentPage !== null ? currentPage.__id : null,
           label: 'Create Page',
           x: window.innerWidth / 2 - 100,
-          y: 20,
+          y: window.innerHeight / 2 - 100,
           subtractHalfWidth: true,
         })
       )
@@ -65,7 +65,7 @@ export const handlers: Record<string, (dispatch: AppDispatch) => void> = {
             insertAfterId: null,
             label: 'Create Sub-Page',
             x: window.innerWidth / 2 - 100,
-            y: 20,
+            y: window.innerHeight / 2 - 100,
             subtractHalfWidth: true,
           })
         )

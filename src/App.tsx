@@ -4,10 +4,12 @@ import Home from '@/pages/Home'
 import Editor from '@/pages/Editor'
 import Modal from './components/Modal'
 import useKeyboard from './keyboard/use-keyboard'
+import TopBar from './components/topbar'
 function App() {
   useKeyboard()
   return (
     <div className="app-container">
+      <TopBar />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/editor/:notebook/:pageId" element={<Editor />} />

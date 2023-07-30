@@ -23,6 +23,7 @@ export const updatePage = async (
   currentPageId: string | undefined,
   currentDoc: string
 ) => {
+  console.log('update' + currentPageId)
   if (currentPageId !== undefined) {
     await invoke('update_page', {
       pageId: currentPageId,

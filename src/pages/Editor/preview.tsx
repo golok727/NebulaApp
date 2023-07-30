@@ -43,10 +43,10 @@ const Preview = ({}: Props) => {
   )
   const { preview: showPreview, appMode } = useSelector(isInView)
   const handleDoubleClick = () => {
-    if (appMode === 'preview-only') {
-      dispatch(switchToPreviousView())
-    } else {
+    if (appMode == 'both') {
       dispatch(setView('preview-only'))
+    } else {
+      dispatch(setView('edit-only'))
     }
   }
   let md = <></>

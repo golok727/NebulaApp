@@ -28,6 +28,21 @@
     background-color: transparent;
     color: var(--text-gray);
   }
+  &.title-bar-control {
+    border: none;
+    background-color: transparent !important;
+    padding: 0.2rem;
+  }
+  &.title-bar-control.close:hover {
+    color: red;
+  }
+
+  &.title-bar-control.maximize:hover {
+    color: mediumseagreen;
+  }
+  &.title-bar-control.minimize:hover {
+    color: yellow;
+  }
 
   &.transparent:hover {
     padding: 0.2rem;

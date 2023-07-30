@@ -5,16 +5,20 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: var(--padding-3);
+  padding: 0.5rem 1rem;
 }
-.top-bar__left {
+.top-bar__mid {
   display: flex;
+  user-select: none;
   align-items: center;
   gap: 0.2rem;
+  font-size: 0.7rem;
+  color: var(--text-gray);
 }
 
 .top-bar__left .app-logo {
-  width: 5rem;
+  width: 4em;
+  margin-inline: 0.2rem;
 }
 
 .top-bar__tray {
@@ -22,7 +26,7 @@
   list-style-type: none;
   gap: 0.4rem;
 }
-.top-bar__right {
+.top-bar__left {
   display: flex;
   align-items: center;
   gap: 0.2rem;
@@ -38,4 +42,19 @@
   &:hover {
     color: #d8d8d8;
   }
+}
+
+.top-bar__right {
+  display: flex;
+  gap: 1rem;
+}
+
+.top-bar__right .views {
+  display: flex;
+  gap: 0.2rem;
+}
+
+.top-bar__right .window-controls {
+  display: flex;
+  gap: 0.2rem;
 }

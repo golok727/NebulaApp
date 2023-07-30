@@ -9,15 +9,14 @@ import { AppDispatch, RootState } from '@/app/store'
 import { resetNotebookState, unloadPage } from '@/features/editorSlice'
 
 import useUpdatePage from '@/hooks/use-update-page'
+import { onNotebookUnload } from '@/features/appSlice'
 const Editor = () => {
   const params = useParams()
   const dispatch = useDispatch<AppDispatch>()
   const currentNotebook = useSelector(
     (state: RootState) => state.editor.currentNotebook
   )
-  const currentPage = useSelector(
-    (state: RootState) => state.editor.currentPage
-  )
+
   const notebookId = params.notebook
   const pageId = params.pageId
   useUpdatePage(2000)
@@ -29,6 +28,7 @@ const Editor = () => {
     return () => {
       console.log('Unload')
       dispatch(resetNotebookState())
+      dispatch(onNotebookUnload())
     }
   }, [dispatch, notebookId])
 
@@ -42,7 +42,6 @@ const Editor = () => {
 
   return (
     <div className="app__editor">
-      <TopBar />
       {currentNotebook ? <Main /> : <div>Notebook Not found</div>}
     </div>
   )

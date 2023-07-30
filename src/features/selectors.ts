@@ -1,5 +1,6 @@
 import { createSelector } from '@reduxjs/toolkit'
 import { RootState } from '@/app/store'
+import { C } from '@tauri-apps/api/shell-efff51a2'
 
 const getAppMode = (state: RootState) => state.app.mode
 const getSidebarVisibility = (state: RootState) => state.app.sidebar.showSidebar
@@ -48,5 +49,18 @@ export const getSaveState = createSelector(
     currentDoc,
     currentPageId,
     previousContent,
+  })
+)
+
+const getCurrentPageName = (state: RootState) => state.editor.currentPage?.title
+const getCurrentNotebookName = (state: RootState) =>
+  state.editor.currentNotebook?.name
+
+export const currentPageAndNoteName = createSelector(
+  getCurrentPageName,
+  getCurrentNotebookName,
+  (currentPageName, currentNotebookName) => ({
+    currentPageName,
+    currentNotebookName,
   })
 )
