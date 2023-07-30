@@ -11,7 +11,11 @@ interface Props {
   onChange: (doc: string) => void
 }
 const Repl = (props: Props) => {
-  const { repl: showRepl } = useSelector(isInView)
+  const {
+    repl: showRepl,
+    sidebar: showSidebar,
+    appMode,
+  } = useSelector(isInView)
   const { onChange } = props
   const currentPage = useSelector(
     (state: RootState) => state.editor.currentPage
@@ -45,7 +49,10 @@ const Repl = (props: Props) => {
   }, [showRepl, view])
 
   return (
-    <div className={`editor__repl-container ${showRepl ? ' ' : 'hidden'}`}>
+    <div
+      className={`editor__repl-container ${showRepl ? ' ' : 'hidden'}`}
+      style={{ flex: showSidebar && appMode === 'both' ? 2 : 1 }}
+    >
       <div ref={editorRef} className="editor__repl editor-hover" />
     </div>
   )

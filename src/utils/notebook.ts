@@ -1,4 +1,3 @@
-import store from '@/app/store'
 import { invoke } from '@tauri-apps/api/tauri'
 
 export type HomeNotebook = {

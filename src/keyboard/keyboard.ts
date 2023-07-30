@@ -13,10 +13,10 @@ import { invoke } from '@tauri-apps/api/tauri'
 export const isInEditor = () => window.location.pathname.startsWith('/editor')
 
 export const shortcuts: Record<string, string> = {
-  'ctrl+shift+?': 'view:toggle-sidebar',
+  'ctrl+.': 'view:toggle-sidebar',
   'ctrl+shift+d': 'view:toggle-no-distractions',
   'ctrl+/': 'view:toggle-preview-only',
-  'ctrl+\\': 'view:toggle-split-mode',
+  'ctrl+shift+?': 'view:toggle-split-mode',
   'ctrl+n': 'core:add-page',
   'ctrl+shift+n': 'core:add-sub-page',
   'ctrl+s': 'core:save-current-notebook',

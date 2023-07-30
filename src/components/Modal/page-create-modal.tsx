@@ -56,7 +56,7 @@ const PageCreationModal = ({ modal }: Props) => {
         className="modal__button"
         type="submit"
         value={'Create'}
-        disabled={pageTitle.length < 4}
+        disabled={pageTitle.length < 2}
       />
     </form>
   )
