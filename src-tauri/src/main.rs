@@ -6,7 +6,7 @@ mod state;
 mod utils;
 
 mod handlers;
-use handlers::{notebook, page};
+use handlers::{notebook, page, window};
 use state::AppState;
 use std::sync::{Arc, Mutex};
 use tauri::Manager;
@@ -21,7 +21,6 @@ fn main() {
         .setup(|app| {
             let main_window = app.get_window("main").unwrap();
             set_shadow(&main_window, true).unwrap();
-
             Ok(())
         })
         .manage(app_state)
@@ -32,7 +31,8 @@ fn main() {
             notebook::save_notebook,
             page::load_page,
             page::add_page,
-            page::update_page
+            page::update_page,
+            window::open_settings_window
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

@@ -27,10 +27,11 @@ import { default as Button, default as MenuButton } from './Button'
 import './topbar.css'
 import { appWindow } from '@tauri-apps/api/window'
 import { UnlistenFn } from '@tauri-apps/api/event'
+import { invoke } from '@tauri-apps/api/tauri'
 import { useCallback, useEffect, useState } from 'react'
 const TopBar = () => {
   const [isWindowMaximized, setIsWindowMaximized] = useState(false)
-
+  const [windowTitle, setWindowTitle] = useState('Nebula')
   const currentView = useView()
   const {
     sidebar: showSidebar,
@@ -46,6 +47,9 @@ const TopBar = () => {
   }
   const handleToggleDistractionMode = () => {
     dispatch(toggleNoDistractionsMode())
+  }
+  const openSettingsWindow = async () => {
+    await invoke('open_settings_window')
   }
 
   const handleToggleSplitMode = () => {
@@ -71,7 +75,12 @@ const TopBar = () => {
     listen()
     return () => unlisten && unlisten()
   }, [updateIsWindowMaximized])
-  console.log(isWindowMaximized)
+  useEffect(() => {
+    ;(async () => {
+      const title = await appWindow.title()
+      setWindowTitle(title)
+    })()
+  }, [])
 
   return (
     <div data-tauri-drag-region className="top-bar">
@@ -79,7 +88,7 @@ const TopBar = () => {
         <Link to="/" className="top-bar__link">
           <img src={AppLogo} alt="AppLogo" className="app-logo" />
         </Link>
-        {currentView === 'editor' && (
+        {currentView.editor && (
           <>
             <Button
               onClick={handleToggleSidebar}
@@ -94,28 +103,31 @@ const TopBar = () => {
             </Button>
           </>
         )}
+        {!currentView.settings && (
+          <>
+            <Button variant="transparent">
+              <ArchiveBoxIcon width={19} />
+            </Button>
 
-        <Button variant="transparent">
-          <ArchiveBoxIcon width={19} />
-        </Button>
+            <Button onClick={() => openSettingsWindow()} variant="transparent">
+              <EllipsisHorizontalCircleIcon width={19} />
+            </Button>
 
-        <Button variant="transparent">
-          <EllipsisHorizontalCircleIcon width={19} />
-        </Button>
-
-        <Button variant="transparent">
-          <UserCircleIcon width={19} />
-        </Button>
+            <Button variant="transparent">
+              <UserCircleIcon width={19} />
+            </Button>
+          </>
+        )}
       </div>
 
       <div className="top-bar__mid">
         {currentPageName && <span>{currentPageName} - </span>}
         {currentNotebookName && <span>{currentNotebookName} - </span>}
-        Nebula
+        {<span>{windowTitle}</span>}
         {/* <MenuItems /> */}
       </div>
       <div className="top-bar__right">
-        {currentView === 'editor' && (
+        {currentView.editor && (
           <div className="views">
             <Button
               onClick={handleTogglePreviewOnly}
@@ -155,6 +167,7 @@ const TopBar = () => {
           </Button>
 
           <Button
+            style={{ ...(currentView.settings ? { display: 'none' } : {}) }}
             onClick={() => appWindow.toggleMaximize()}
             variant="title-bar-control maximize"
           >

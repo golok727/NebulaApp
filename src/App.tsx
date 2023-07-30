@@ -14,6 +14,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/editor/:notebook/:pageId" element={<Editor />} />
         <Route path="/editor/:notebook/" element={<Editor />} />
+        <Route path="/settings" element={<div>Settings</div>} />
       </Routes>
       <Modal />
     </div>

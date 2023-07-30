@@ -5,11 +5,16 @@ const useView = () => {
 
   const currentView = useMemo(() => {
     if (location.pathname == '/') {
-      return 'home'
+      return { home: true, settings: false, editor: false }
     }
     if (location.pathname.startsWith('/editor')) {
-      return 'editor'
+      return { home: false, settings: false, editor: true }
     }
+
+    if (location.pathname.startsWith('/settings')) {
+      return { home: false, settings: true, editor: false }
+    }
+    return { home: false, settings: false, editor: false }
   }, [location])
 
   return currentView

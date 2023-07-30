@@ -1,9 +1,8 @@
 import { convertFileSrc } from '@tauri-apps/api/tauri'
 import { join, dataDir } from '@tauri-apps/api/path'
-import { useCallback, useEffect, useRef, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useCallback, useEffect, useState } from 'react'
+import { useSelector } from 'react-redux'
 import { RootState } from '@/app/store'
-import { NebulaCache } from '@/features/cacheSlice'
 
 export const NEBULA_PROTOCOL_REGEX = /nebula:\/\/assets\/?(?<file>.+\.\w+)/
 
