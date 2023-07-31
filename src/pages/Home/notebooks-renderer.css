@@ -1,0 +1,42 @@
+.home__notebooks {
+  padding: 0.2rem;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  max-height: 35rem;
+  gap: 0.4rem;
+  overflow: hidden;
+  overflow-y: auto;
+}
+.home__notebooks li {
+  list-style-type: none;
+  cursor: pointer;
+  opacity: 0.8;
+  transition: opacity 0.2s ease, scale 0.2s ease;
+}
+
+.home__notebooks li:hover {
+  opacity: 1;
+  scale: 1.02;
+}
+
+.home__notebook {
+  border-radius: 10px;
+  display: grid;
+  gap: 0.3rem;
+  grid-template-rows: 2;
+  width: fit-content;
+  padding: 0.4rem;
+  background-image: var(--grad-preview);
+  border: var(--editor-main-border);
+  overflow: hidden;
+}
+
+.home__notebook span {
+  font-weight: bold;
+  color: var(--clr-text-primary);
+  font-size: 0.7rem;
+}
+.home__notebook img {
+  width: 10em;
+  border-radius: 10px;
+}

@@ -4,6 +4,7 @@ import NebulaLogo from '../../assets/logo-nebula.svg'
 import { invoke } from '@tauri-apps/api/tauri'
 import { FormEvent, useEffect, useState } from 'react'
 import { HomeNotebook, loadNebulaNotebooks } from '@/utils/notebook'
+import NotebooksRenderer from './notebooks-renderer'
 const disabled = false
 
 const Home = () => {
@@ -59,18 +60,7 @@ const Home = () => {
           disabled={disabled || noteName.length <= 3}
         />
       </form>
-
-      <ul>
-        {notebooks && notebooks.length > 0 ? (
-          notebooks.map((notebook) => (
-            <li key={notebook.__id}>
-              <Link to={`/editor/${notebook.__id}/`}>{notebook.name}</Link>
-            </li>
-          ))
-        ) : (
-          <h2>No Notebooks yet</h2>
-        )}
-      </ul>
+      {notebooks && <NotebooksRenderer notebooks={notebooks} />}
     </div>
   )
 }

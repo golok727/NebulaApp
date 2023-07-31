@@ -1,0 +1,4 @@
+.app__home {
+  display: grid;
+  place-items: center;
+}
