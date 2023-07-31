@@ -1,8 +1,17 @@
 .main__sidebar {
   padding: var(--padding-container);
   position: relative;
+  transition: all 0.2s ease;
+  animation: width-in 500ms ease forwards;
 }
-
+@keyframes width-in {
+  from {
+    width: 0;
+  }
+  to {
+    width: 200;
+  }
+}
 .main__sidebar.hidden {
   display: none;
 }
@@ -13,6 +22,20 @@
   border-radius: 0.2rem;
   padding: var(--padding-1);
   height: 100%;
+}
+
+.main__sidebar__modern > * {
+  opacity: 0;
+  animation: fade-over 300ms ease 300ms forwards;
+}
+
+@keyframes fade-over {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 .main__sidebar__modern:hover .controls,
 .main__sidebar__modern:focus-within .controls {

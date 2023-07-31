@@ -25,7 +25,13 @@
 .sidebar-expandable_container__button__text {
   font-size: 0.8rem;
 }
-
+.sub-pages-count {
+  margin-left: 0.5rem;
+  display: inline-block;
+  color: #626264;
+  font-weight: bold;
+  width: fit-content;
+}
 .sidebar-expandable_container__button:hover {
   background-color: rgba(255, 255, 255, 0.055);
 }

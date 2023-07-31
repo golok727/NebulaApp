@@ -9,6 +9,7 @@ import { resetNotebookState, unloadPage } from '@/features/editorSlice'
 
 import useUpdatePage from '@/hooks/use-update-page'
 import { onEditorUnloadState } from '@/features/appSlice'
+import { saveNotebook } from '@/utils/notebook'
 const Editor = () => {
   const params = useParams()
   const dispatch = useDispatch<AppDispatch>()
@@ -18,7 +19,7 @@ const Editor = () => {
 
   const notebookId = params.notebook
   const pageId = params.pageId
-  useUpdatePage(2000)
+  useUpdatePage(700)
   useEffect(() => {
     if (notebookId !== undefined) {
       dispatch(loadNotebook({ notebookId: notebookId }))
@@ -28,6 +29,7 @@ const Editor = () => {
       console.log('Unload')
       dispatch(onEditorUnloadState())
       dispatch(resetNotebookState())
+      saveNotebook()
     }
   }, [dispatch, notebookId])
 

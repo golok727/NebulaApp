@@ -1,3 +1,4 @@
+import store from '@/app/store'
 import { invoke } from '@tauri-apps/api/tauri'
 
 export type HomeNotebook = {
@@ -30,4 +31,8 @@ export const updatePage = async (
     })
   }
   return
+}
+export const saveNotebook = async () => {
+  let res = await invoke('save_notebook')
+  console.log(res)
 }

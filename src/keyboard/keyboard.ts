@@ -16,6 +16,7 @@ export const shortcuts: Record<string, string> = {
   'ctrl+.': 'view:toggle-sidebar',
   'ctrl+shift+d': 'view:toggle-no-distractions',
   'ctrl+/': 'view:toggle-preview-only',
+  'ctrl+e': 'view:toggle-preview-only',
   'ctrl+shift+?': 'view:toggle-split-mode',
   'ctrl+n': 'core:add-page',
   'ctrl+shift+n': 'core:add-sub-page',

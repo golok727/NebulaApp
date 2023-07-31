@@ -12,7 +12,6 @@ import { useNavigate } from 'react-router-dom'
 import './sidebar-expandable.css'
 import { NebulaModal } from '@/features/modalSlice'
 import { RootState } from '@/app/store'
-import { CgPathExclude } from 'react-icons/cg'
 interface Props {
   page: PageSimple
 }
@@ -67,6 +66,7 @@ const SidebarExpandable = (props: Props) => {
   return (
     <div className="sidebar-expandable_container">
       <PageButton
+        subPageCount={page.sub_pages.length}
         id={page.__id}
         onAddClick={handleAddPage}
         isActive={pageId === page.__id}
@@ -102,6 +102,7 @@ export default SidebarExpandable
 const PageButton = (props: {
   id: string
   children: string
+  subPageCount: number
   isExpanded?: boolean
   isActive?: boolean
   onClick?: MouseEventHandler<HTMLDivElement>
@@ -143,6 +144,10 @@ const PageButton = (props: {
 
         <span className="sidebar-expandable_container__button__text">
           {props.children}
+
+          {props.subPageCount > 0 && (
+            <span className="sub-pages-count">{props.subPageCount}</span>
+          )}
         </span>
       </div>
       <div className="sidebar-expandable_container__button__options">
