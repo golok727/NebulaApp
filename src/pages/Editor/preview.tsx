@@ -1,19 +1,19 @@
 import { useDispatch, useSelector } from 'react-redux'
 
-import React, { createElement } from 'react'
-import { setView, switchToPreviousView } from '@/features/appSlice'
+import { RootState } from '@/app/store'
+import { setView } from '@/features/appSlice'
 import { isInView } from '@/features/selectors'
-import { unified } from 'unified'
-import remarkParse from 'remark-parse'
-import remarkGfm from 'remark-gfm'
+import 'github-markdown-css/github-markdown.css'
+import { createElement } from 'react'
 import rehypeReact from 'rehype-react'
 import rehypeSanitize, { defaultSchema } from 'rehype-sanitize'
+import remarkGfm from 'remark-gfm'
+import remarkParse from 'remark-parse'
 import remarkRehype from 'remark-rehype'
-import 'github-markdown-css/github-markdown.css'
+import { unified } from 'unified'
+import './preview.css'
 import RemarkCode from './remark-code'
 import RemarkImg from './remark-image'
-import { RootState } from '@/app/store'
-import './preview.css'
 
 interface Props {}
 
@@ -30,7 +30,7 @@ const schema = {
       ...(defaultSchema.protocols !== undefined
         ? defaultSchema.protocols['src'] ?? []
         : []),
-      'nebula',
+      'nb',
     ],
   },
 }
