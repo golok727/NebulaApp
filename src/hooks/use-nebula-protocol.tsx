@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { RootState } from '@/app/store'
 
-export const NEBULA_PROTOCOL_REGEX = /nebula:\/\/assets\/?(?<file>.+\.\w+)/
+export const NEBULA_PROTOCOL_REGEX = /nb:\/\/assets\/?(?<file>.+\.\w+)/
 
 const useNebulaProtocol = (
   src: string,

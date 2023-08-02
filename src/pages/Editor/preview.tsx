@@ -30,7 +30,7 @@ const schema = {
       ...(defaultSchema.protocols !== undefined
         ? defaultSchema.protocols['src'] ?? []
         : []),
-      'nebula',
+      'nb',
     ],
   },
 }
