@@ -23,6 +23,15 @@ pub fn get_notebook_data_dir() -> PathBuf {
     }
     notebooks_directory
 }
+pub fn get_assets_dir() -> PathBuf {
+    let mut assets_dir = config_dir().expect("Failed to get app data data directory");
+
+    let paths: Vec<&str> = vec!["RadhikaSoftwares", "Nebula", "assets"];
+    for path in paths {
+        assets_dir.push(PathBuf::from(path));
+    }
+    assets_dir
+}
 
 pub fn initialize_app() {
     let directories = vec!["RadhikaSoftwares", "Nebula", "data", "notebooks"];

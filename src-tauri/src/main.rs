@@ -8,13 +8,48 @@ mod utils;
 mod handlers;
 use handlers::{notebook, page, window};
 use state::AppState;
+use std::fs;
+use std::io::Read;
 use std::sync::{Arc, Mutex};
-use tauri::Manager;
+use tauri::http::{header::*, ResponseBuilder};
+use tauri::{
+    http::{Request, Response},
+    AppHandle, Manager,
+};
 use utils::Application;
 use window_shadows::set_shadow;
+fn nb_protocol_handler(
+    _app: &AppHandle,
+    request: &Request,
+) -> Result<Response, Box<dyn std::error::Error>> {
+    let scope = request
+        .uri()
+        .strip_prefix("nb://localhost/assets/")
+        .unwrap_or_else(|| "/");
 
+    let response_builder = ResponseBuilder::new()
+        .status(200)
+        .header(ACCESS_CONTROL_ALLOW_ORIGIN, "http://localhost:1420");
+
+    let asset_file = Application::get_assets_dir().join(scope);
+
+    if asset_file.exists() && asset_file.is_file() {
+        let mut file = fs::File::open(asset_file)?;
+        let mut file_data = Vec::new();
+        file.read_to_end(&mut file_data)?;
+        let response = response_builder
+            .header(CONTENT_TYPE, "image/png")
+            .body(file_data);
+        return response;
+    }
+    return response_builder
+        .status(404)
+        .header(CONTENT_TYPE, "text/plain")
+        .body("Not found".into());
+}
 fn main() {
     Application::initialize_app();
+
     let app_state = Arc::new(Mutex::new(AppState::new()));
 
     tauri::Builder::default()
@@ -34,6 +69,7 @@ fn main() {
             page::update_page,
             window::open_settings_window
         ])
+        .register_uri_scheme_protocol("nb", nb_protocol_handler)
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

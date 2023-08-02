@@ -11,14 +11,7 @@ const initialState: AppCacheState = {
 const cacheSlice = createSlice({
   name: 'appCache',
   initialState,
-  reducers: {
-    setImageCache: (
-      state,
-      action: PayloadAction<{ identifier: string; url: string }>
-    ) => {
-      state.images[action.payload.identifier] = action.payload.url
-    },
-  },
+  reducers: {},
 })
 
 export default cacheSlice.reducer

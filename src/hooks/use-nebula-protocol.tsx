@@ -1,9 +1,15 @@
+/**
+ * 
+//! Depreciated now we use our actual custom protocol for assets
+ * 
+ * 
+ * 
+ */
 import { convertFileSrc } from '@tauri-apps/api/tauri'
 import { join, dataDir } from '@tauri-apps/api/path'
 import { useCallback, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { RootState } from '@/app/store'
-
 export const NEBULA_PROTOCOL_REGEX = /nb:\/\/assets\/?(?<file>.+\.\w+)/
 
 const useNebulaProtocol = (

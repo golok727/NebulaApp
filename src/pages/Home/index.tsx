@@ -1,10 +1,10 @@
-import './home.css'
-import { Link, useNavigate } from 'react-router-dom'
-import NebulaLogo from '../../assets/logo-nebula.svg'
+import { HomeNotebook, loadNebulaNotebooks } from '@/utils/notebook'
 import { invoke } from '@tauri-apps/api/tauri'
 import { FormEvent, useEffect, useState } from 'react'
-import { HomeNotebook, loadNebulaNotebooks } from '@/utils/notebook'
+import { useNavigate } from 'react-router-dom'
+import './home.css'
 import NotebooksRenderer from './notebooks-renderer'
+import { LogoNebula } from '@/assets'
 const disabled = false
 
 const Home = () => {
@@ -44,7 +44,7 @@ const Home = () => {
   }, [])
   return (
     <div className="app__home">
-      <img src={NebulaLogo} />
+      <img style={{ width: '10rem' }} src={LogoNebula} />
       <form onSubmit={handleCreateNewNotebook}>
         <input
           type="text"
