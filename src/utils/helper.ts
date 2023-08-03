@@ -14,3 +14,11 @@ export const getNebulaProtocolUrl = (url: string) => {
     return url
   }
 }
+
+export const dateFormatter = (date: string) => {
+  let dateFormatter = new Intl.DateTimeFormat('en', {
+    dateStyle: 'long',
+  })
+
+  return dateFormatter.format(new Date(date))
+}

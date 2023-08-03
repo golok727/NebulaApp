@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 pub mod error {
     use super::{Deserialize, Serialize};
 
-    #[derive(Debug, Serialize, Deserialize)]
+    #[derive(Debug, Serialize, Deserialize, Clone)]
     pub enum ErrorCode {
         NotFoundError,
         InternalError,
@@ -18,7 +18,7 @@ pub mod error {
         IoError,
         FileNotFound,
     }
-    #[derive(Debug, Serialize, Deserialize)]
+    #[derive(Debug, Serialize, Deserialize, Clone)]
     pub struct ErrorResponse {
         code: ErrorCode,
         message: String,

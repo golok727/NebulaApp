@@ -24,6 +24,7 @@ impl AppState {
             )),
         }
     }
+    #[allow(dead_code)]
     pub fn unload_notebook(&mut self) -> Result<bool, ErrorResponse> {
         match &self.notebook {
             Some(notebook) => {

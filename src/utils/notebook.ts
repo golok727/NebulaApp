@@ -1,10 +1,10 @@
-import store from '@/app/store'
 import { invoke } from '@tauri-apps/api/tauri'
 
 export type HomeNotebook = {
   __id: string
   name: string
   thumbnail: string | null
+  created_at: string
 }
 type HomeNotebooks = {
   notebooks: HomeNotebook[]

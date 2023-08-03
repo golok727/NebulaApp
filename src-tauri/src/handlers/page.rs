@@ -3,10 +3,10 @@ use crate::{
     state::AppState,
     utils::status::error::ErrorResponse,
 };
+use chrono::Utc;
 use serde::{Deserialize, Serialize};
 use std::sync::{Arc, Mutex};
 use tauri::State;
-
 #[derive(Serialize, Deserialize)]
 pub struct LoadPageResponse {
     page: PageEntry,
@@ -61,6 +61,7 @@ pub fn update_page(
     state.use_notebook(|notebook| {
         if let Some(page) = notebook.page_map.get_mut(&page_id) {
             page.content.body = new_content.to_owned();
+            page.updated_at = Utc::now().to_rfc3339().to_owned();
         }
         Ok(new_content)
     })?

@@ -218,7 +218,6 @@ impl NebulaNotebook {
                                 .iter()
                                 .position(|id| *id == insert_after_id)
                                 .unwrap_or_else(|| self.pages.len());
-                            println!("Idx {}", idx);
                             self.pages.insert(idx + 1, new_page.__id.to_owned());
                         }
                     }
@@ -297,14 +296,13 @@ impl NebulaNotebook {
                 // ? Match the file version
                 match file_version {
                     FILE_FORMAT_CURRENT_VERSION => {
-                        let mut notebook = bincode::deserialize::<NebulaNotebook>(&notebook_data)
+                        let notebook = bincode::deserialize::<NebulaNotebook>(&notebook_data)
                             .map_err(|err| {
-                            ErrorResponse::new(
-                                ErrorCode::DeserializationError,
-                                format!("Error deserializing notebook data {}", err),
-                            )
-                        })?;
-                        notebook.last_accessed_at = Utc::now().to_rfc3339().to_string();
+                                ErrorResponse::new(
+                                    ErrorCode::DeserializationError,
+                                    format!("Error deserializing notebook data {}", err),
+                                )
+                            })?;
                         Ok(notebook)
                     }
                     // Handle Migration logic

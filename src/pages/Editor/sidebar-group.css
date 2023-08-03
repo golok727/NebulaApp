@@ -3,13 +3,18 @@
 }
 
 .sidebar__group__header {
+  position: sticky;
+  top: 0;
   color: var(--text-gray);
   font-size: 0.7rem;
   font-weight: bold;
   display: flex;
+  align-items: center;
   justify-content: space-between;
-  margin-bottom: 0.2rem;
-  padding: 0.2rem 0.3rem;
+  /* margin-bottom: 0.2rem; */
+  padding: 0.4rem 0.5rem;
+  background-color: #1a1a1a;
+  border-radius: 10px;
 }
 
 .sidebar__group__header .controls button {
@@ -24,7 +29,7 @@
 }
 .sidebar__group__content {
   padding: 0.3rem 0.2rem;
-  max-height: 20rem;
+  /* max-height: 30rem; */
   overflow-y: auto;
 }
 .sidebar__group__content .no-pages-found {

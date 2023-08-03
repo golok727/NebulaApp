@@ -1,7 +1,6 @@
-import { getRandomNotebookImage } from '@/utils/helper'
+import { dateFormatter, getRandomNotebookImage } from '@/utils/helper'
 import { HomeNotebook } from '@/utils/notebook'
 import './notebooks-renderer.css'
-import React from 'react'
 import { Link } from 'react-router-dom'
 
 type Props = {
@@ -26,14 +25,21 @@ const EachNotebook = (props: { notebook: HomeNotebook }) => {
   const { notebook } = props
   return (
     <li>
-      <Link to={'/editor/' + notebook.__id}>
-        <div className="home__notebook">
-          <img src={getRandomNotebookImage()} />
-          <div>
-            <span>{notebook.name}</span>
-          </div>
+      <div className="home__notebook">
+        <img src={getRandomNotebookImage()} />
+        <div>
+          <span className="home__notebook__name">{notebook.name}</span>
+          <span className="home__notebook__last-accessed-at">
+            Created: {dateFormatter(notebook.created_at)}
+          </span>
         </div>
-      </Link>
+        <Link
+          className="home__notebook__open-btn"
+          to={'/editor/' + notebook.__id}
+        >
+          Open
+        </Link>
+      </div>
     </li>
   )
 }

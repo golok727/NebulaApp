@@ -1,11 +1,12 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
+mod handlers;
+mod migrator;
 mod nebula;
 mod state;
 mod utils;
 
-mod handlers;
 use handlers::{notebook, page, window};
 use state::AppState;
 use std::fs;

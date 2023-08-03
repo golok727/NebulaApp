@@ -11,14 +11,12 @@
   list-style-type: none;
   cursor: pointer;
   opacity: 0.8;
-  transition: opacity 0.2s ease, scale 0.2s ease;
+  transition: opacity 0.2s ease;
 }
 
 .home__notebooks li:hover {
   opacity: 1;
-  scale: 1.02;
 }
-
 .home__notebook {
   border-radius: 10px;
   display: grid;
@@ -31,12 +29,33 @@
   overflow: hidden;
 }
 
-.home__notebook span {
+.home__notebook .home__notebook__name {
   font-weight: bold;
   color: var(--clr-text-primary);
   font-size: 0.7rem;
 }
+
+.home__notebook__last-accessed-at {
+  display: block;
+  font-size: 0.7rem;
+  padding: 0.2rem 0;
+  color: var(--text-gray);
+}
+
 .home__notebook img {
   width: 10em;
   border-radius: 10px;
+}
+
+.home__notebook__open-btn {
+  padding: 0.2rem 0.5rem;
+  border: var(--editor-main-border);
+  width: fit-content;
+  border-radius: 10px;
+  font-weight: bold;
+  color: var(--clr-text-primary);
+}
+
+.home__notebook__open-btn:hover {
+  background-image: var(--grad-menu-btn);
 }

@@ -17,6 +17,7 @@ pub struct NotebookMetadata {
     __id: String,
     name: String,
     thumbnail: Option<String>,
+    created_at: String,
 }
 #[derive(Clone, Serialize, Deserialize)]
 pub struct MetaDataFile {
@@ -126,6 +127,7 @@ pub fn create_nebula_notebook(
         __id: new_notebook.__id.clone(),
         name: new_notebook.name.clone(),
         thumbnail: new_notebook.thumbnail.clone(),
+        created_at: new_notebook.created_at.clone(),
     };
 
     match new_notebook.save_to_file() {
@@ -194,10 +196,13 @@ pub fn load_nebula_notebook(
 }
 
 #[tauri::command]
-pub fn save_notebook(state: State<'_, Arc<Mutex<AppState>>>) -> Result<String, ErrorResponse> {
+pub async fn save_notebook(
+    state: State<'_, Arc<Mutex<AppState>>>,
+) -> Result<String, ErrorResponse> {
     let mut state = state.lock().unwrap();
 
     state.use_notebook(|notebook| {
+        notebook.last_accessed_at = chrono::Utc::now().to_rfc3339().to_string();
         notebook.save_to_file()?;
         Ok("Saved to file".to_string())
     })?

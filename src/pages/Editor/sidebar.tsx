@@ -17,6 +17,7 @@ const Sidebar = () => {
   const currentNotebookName = useSelector(
     (state: RootState) => state.editor.currentNotebook?.name ?? ''
   )
+  const appStatus = useSelector((state: RootState) => state.editor.status)
 
   const { sidebar: showSidebar } = useSelector(isInView)
   const currentPages = useSelector(getCurrentPages)
@@ -96,6 +97,8 @@ const Sidebar = () => {
             )}
           </SidebarGroup>
         </section>
+        {/* Status */}
+        <div className="sidebar__app-status">Up to date</div>
       </div>
       <div className="resizer" onMouseDown={handleMouseDown}></div>
     </div>

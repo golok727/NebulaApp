@@ -87,7 +87,7 @@ const SidebarExpandable = (props: Props) => {
             </div>
           ) : (
             <div className="sidebar-expandable_container__no-sub-pages">
-              No SubPages
+              No Sub-Pages
             </div>
           )}
         </>
