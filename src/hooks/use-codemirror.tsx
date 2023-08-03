@@ -22,9 +22,8 @@ const transparentTheme = EditorView.theme({
     height: '100%',
     border: 'none !important',
     outline: 'none !important',
-    fontSize: '.9rem',
-    FontFamily: 'arial',
   },
+
   // For the line numbers gutter
   '& .cm-gutters': {
     backgroundColor: 'transparent !important',
@@ -35,6 +34,9 @@ const transparentTheme = EditorView.theme({
 
   '& .cm-content': {
     backgroundColor: 'transparent !important',
+    fontFamily: "'Fira Code', monospace !important",
+    fontWeight: '500 !important',
+    fontSize: '1rem !important',
   },
 
   '& .cm-gutterElement': {
@@ -42,16 +44,8 @@ const transparentTheme = EditorView.theme({
   },
 
   '& .cm-line': {
-    // borderTop: '1px solid transparent !important',
-    // padding: '.2em .1em !important',
-    // borderBottom: '1px solid transparent !important',
     backgroundColor: 'transparent !important',
   },
-  // '& .cm-activeLine': {
-  //   borderTopColor: 'rgba(255, 255, 255, 0.09) !important',
-  //   borderBottomColor: 'rgba(255, 255, 255, 0.09) !important',
-  //   backgroundColor: 'transparent !important',
-  // },
 })
 const syntaxHighlighting = HighlightStyle.define([
   {
@@ -59,19 +53,24 @@ const syntaxHighlighting = HighlightStyle.define([
     fontSize: '1.7em',
     fontWeight: 'bold',
   },
+  {
+    tag: tags.monospace,
+    backgroundColor: '#222',
+    borderRadius: '10px',
+    color: '#888',
+    padding: '0 .2rem',
+  },
 
   {
     tag: tags.heading2,
     fontSize: '1.4em',
     fontWeight: 'bold',
   },
-
   {
     tag: tags.heading3,
     fontSize: '1.2em',
     fontWeight: 'bold',
   },
-
   {
     tag: tags.brace,
     color: 'yellow',
