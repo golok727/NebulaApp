@@ -45,8 +45,13 @@ const Home = () => {
   return (
     <div className="app__home">
       <img style={{ width: '10rem' }} src={LogoNebula} />
-      <form onSubmit={handleCreateNewNotebook}>
+      <form
+        className={'app__home__create_form'}
+        onSubmit={handleCreateNewNotebook}
+      >
+        <h3>Create a new Notebook</h3>
         <input
+          className="create_notebook_input"
           type="text"
           name="notebook_name"
           id="notebook_name"
@@ -55,6 +60,7 @@ const Home = () => {
           onChange={(ev) => setNoteName(ev.target.value)}
         />
         <input
+          className="create_notebook_submit"
           type="submit"
           value="Create Notebook"
           disabled={disabled || noteName.length <= 3}

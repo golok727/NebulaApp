@@ -1,5 +1,6 @@
 .home__notebooks {
   padding: 0.2rem;
+  margin-top: 0.7rem;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   max-height: 35rem;
