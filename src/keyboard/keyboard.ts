@@ -10,8 +10,7 @@ import { NebulaModal } from '@/features/modalSlice'
 import { updatePage } from '@/utils/notebook'
 import { invoke } from '@tauri-apps/api/tauri'
 import useView from '@/hooks/use-view'
-
-export const isInEditor = () => window.location.pathname.startsWith('/editor')
+import { INebulaCoreContext } from '@/context/nebula'
 
 export const findView = (): keyof IAPPShortcuts => {
   let currPath = window.location.pathname
@@ -67,7 +66,10 @@ export const applicationShortcuts: IAPPShortcuts = {
 }
 
 export interface IAppCoreKeyboardHandlers {
-  editor: Record<EditorCommands, (dispatch: AppDispatch) => void>
+  editor: Record<
+    EditorCommands,
+    (dispatch: AppDispatch, nebula: INebulaCoreContext) => void
+  >
   home: Record<HomeCommands, (dispatch: AppDispatch) => void>
   settings: Record<SettingsCommands, (dispatch: AppDispatch) => void>
 }
@@ -75,15 +77,34 @@ export interface IAppCoreKeyboardHandlers {
 export const applicationCoreKeyboardHandlers: IAppCoreKeyboardHandlers = {
   editor: {
     'core:add-page': (dispatch) => {
-      if (isInEditor()) {
-        const currentPage = store.getState().editor.currentPage
+      const currentPage = store.getState().editor.currentPage
+      dispatch(
+        NebulaModal.showModal({
+          type: 'page/create',
+          id: 'Create Page Keyboard',
+          parentId: currentPage !== null ? currentPage.parent_id : null,
+          insertAfterId: currentPage !== null ? currentPage.__id : null,
+          label: 'Create Page',
+          x: window.innerWidth / 2 - 100,
+          y: window.innerHeight / 2 - 100,
+          subtractHalfWidth: true,
+        })
+      )
+    },
+    'core:save-current-notebook': async (dispatch, nebula) => {
+      nebula.core.saveCurrentNotebook()
+    },
+
+    'core:add-sub-page': (dispatch) => {
+      const currentPage = store.getState().editor.currentPage
+      if (currentPage) {
         dispatch(
           NebulaModal.showModal({
             type: 'page/create',
-            id: 'Create Page Keyboard',
-            parentId: currentPage !== null ? currentPage.parent_id : null,
-            insertAfterId: currentPage !== null ? currentPage.__id : null,
-            label: 'Create Page',
+            id: 'Create Subpage Keyboard',
+            parentId: currentPage !== null ? currentPage.__id : null,
+            insertAfterId: null,
+            label: 'Create Sub-Page',
             x: window.innerWidth / 2 - 100,
             y: window.innerHeight / 2 - 100,
             subtractHalfWidth: true,
@@ -91,58 +112,17 @@ export const applicationCoreKeyboardHandlers: IAppCoreKeyboardHandlers = {
         )
       }
     },
-    'core:save-current-notebook': async (dispatch) => {
-      if (isInEditor()) {
-        let state = store.getState()
-        let currentPageId = state.editor.currentPage?.__id
-        let currentContent = state.editor.currentDoc
-        if (currentPageId) {
-          await updatePage(currentPageId, currentContent)
-        }
-
-        let res = await invoke('save_notebook')
-        console.log(res)
-      }
-    },
-
-    'core:add-sub-page': (dispatch) => {
-      if (isInEditor()) {
-        const currentPage = store.getState().editor.currentPage
-        if (currentPage) {
-          dispatch(
-            NebulaModal.showModal({
-              type: 'page/create',
-              id: 'Create Subpage Keyboard',
-              parentId: currentPage !== null ? currentPage.__id : null,
-              insertAfterId: null,
-              label: 'Create Sub-Page',
-              x: window.innerWidth / 2 - 100,
-              y: window.innerHeight / 2 - 100,
-              subtractHalfWidth: true,
-            })
-          )
-        }
-      }
-    },
     'view:toggle-split-mode': (dispatch) => {
-      if (isInEditor()) {
-        dispatch(toggleSplitMode())
-      }
+      dispatch(toggleSplitMode())
     },
     'view:toggle-sidebar': (dispatch) => {
-      if (isInEditor()) {
-        dispatch(toggleSidebar())
-      }
+      dispatch(toggleSidebar())
     },
     'view:toggle-no-distractions': (dispatch) => {
-      if (isInEditor()) {
-        dispatch(toggleNoDistractionsMode())
-      }
+      dispatch(toggleNoDistractionsMode())
     },
     'view:toggle-preview-only': (dispatch) => {
-      if (isInEditor()) {
-        dispatch(togglePreviewOnly())
-      }
+      dispatch(togglePreviewOnly())
     },
   },
   home: {

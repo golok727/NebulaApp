@@ -2,10 +2,12 @@ import { getSaveState } from '@/features/selectors'
 import { useSelector } from 'react-redux'
 import { useEffect } from 'react'
 import { useParams } from 'react-router-dom'
-import { updatePage } from '@/utils/notebook'
+import { useNebulaCore } from '@/context/nebula'
 
 const useUpdatePage = (saveTime: number = 1000) => {
   const saveState = useSelector(getSaveState)
+  const nebula = useNebulaCore()
+
   const params = useParams()
   const pageId = params.pageId
 
@@ -18,11 +20,11 @@ const useUpdatePage = (saveTime: number = 1000) => {
       previousContent !== undefined
     ) {
       if (currentPageId !== pageId && currentDoc !== previousContent.body) {
-        updatePage(currentPageId, currentDoc)
+        nebula.core.updatePage(currentPageId, currentDoc)
       }
       if (currentPageId === pageId && currentDoc !== previousContent.body) {
         timeout = setTimeout(() => {
-          updatePage(currentPageId, currentDoc)
+          nebula.core.updatePage(currentPageId, currentDoc)
         }, saveTime)
       }
     }

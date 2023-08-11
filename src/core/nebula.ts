@@ -1,12 +1,13 @@
-import store from '@/app/store'
+import type { Store } from '@/app/store'
 import { invoke } from '@tauri-apps/api/tauri'
-type Store = typeof store
+import { HomeNotebook, HomeNotebooks, updatePage } from '@/utils/notebook'
 
 export interface INebulaCore {
   store: Store
   createNotebook: (notebookName: string) => Promise<string>
-  createPage: (pageName: string) => Promise<void>
-  updatePage: (pageId: string) => Promise<void>
+  updatePage: (pageId: string | undefined, currDoc: string) => Promise<void>
+  saveCurrentNotebook: () => Promise<void>
+  loadHomeNotebooks: () => Promise<HomeNotebook[]>
 }
 
 export class NebulaCore implements INebulaCore {
@@ -15,6 +16,7 @@ export class NebulaCore implements INebulaCore {
   constructor(store: Store) {
     this.store = store
   }
+
   async createNotebook(notebookName: string) {
     try {
       const res = (await invoke('create_nebula_notebook', {
@@ -27,6 +29,33 @@ export class NebulaCore implements INebulaCore {
       console.log(error)
     }
   }
-  async createPage(pageName: string) {}
-  async updatePage(pageId: string) {}
+
+  async updatePage(pageId: string | undefined, currDoc: string) {
+    if (pageId !== undefined) {
+      console.log('update')
+      await invoke('update_page', {
+        pageId: pageId,
+        newContent: currDoc,
+      })
+    }
+  }
+  async saveCurrentNotebook() {
+    let state = this.store.getState()
+    let currentPageId = state.editor.currentPage?.__id
+    let currentContent = state.editor.currentDoc
+    if (currentPageId) {
+      await this.updatePage(currentPageId, currentContent)
+    }
+    let res = await invoke('save_notebook')
+  }
+  async loadHomeNotebooks() {
+    try {
+      const nebula_notebooks = await invoke<HomeNotebooks>(
+        'load_nebula_notebooks'
+      )
+      return nebula_notebooks.notebooks
+    } catch (error: any) {
+      throw error
+    }
+  }
 }

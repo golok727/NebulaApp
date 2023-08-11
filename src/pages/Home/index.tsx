@@ -3,25 +3,22 @@ import { useEffect, useState } from 'react'
 import './home.css'
 import NotebooksRenderer from './notebooks-renderer'
 import { LogoNebula } from '@/assets'
+import { useNebulaCore } from '@/context/nebula'
 
 const Home = () => {
+  const nebula = useNebulaCore()
   const [notebooks, setNotebooks] = useState<HomeNotebook[]>()
 
   useEffect(() => {
     ;(async () => {
-      try {
-        const nebula_notebooks = await loadNebulaNotebooks()
-        console.log(nebula_notebooks)
-        setNotebooks(nebula_notebooks.notebooks)
-      } catch (error) {
-        console.log(error)
-      }
+      let books = await nebula.core.loadHomeNotebooks()
+      setNotebooks(books)
     })()
   }, [])
 
   return (
     <div className="app__home">
-      <img style={{ width: '10rem' }} src={LogoNebula} />
+      <img style={{ width: '10rem', margin: '.7rem 0' }} src={LogoNebula} />
       {notebooks && <NotebooksRenderer notebooks={notebooks} />}
     </div>
   )

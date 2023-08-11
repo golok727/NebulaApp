@@ -6,7 +6,7 @@ export type HomeNotebook = {
   thumbnail: string | null
   created_at: string
 }
-type HomeNotebooks = {
+export type HomeNotebooks = {
   notebooks: HomeNotebook[]
 }
 export const loadNebulaNotebooks = async (): Promise<HomeNotebooks> => {
