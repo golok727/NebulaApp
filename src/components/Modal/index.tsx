@@ -6,6 +6,7 @@ import { RootState } from '@/app/store'
 import { NebulaModal } from '@/features/modalSlice'
 import PageCreationModal from './page-create-modal'
 import PageContextModal from './page-context-modal'
+import NotebookCreateModal from './notebook-create-modal'
 
 const Modal = () => {
   const modalContainerRef = useRef<HTMLDivElement | null>(null)
@@ -46,6 +47,9 @@ const Modal = () => {
       }
       case 'page/context': {
         return <PageContextModal modal={currentModal} />
+      }
+      case 'notebook/create': {
+        return <NotebookCreateModal modal={currentModal} />
       }
       default:
         return <></>

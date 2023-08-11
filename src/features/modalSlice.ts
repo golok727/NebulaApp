@@ -2,7 +2,7 @@ import { PayloadAction, createSlice } from '@reduxjs/toolkit'
 
 interface IAppModal {
   id: string
-  type: 'page/create' | 'page/context'
+  type: 'page/create' | 'page/context' | 'notebook/create'
   x: number
   y: number
   label?: string
@@ -20,7 +20,11 @@ export interface IPageContextModal extends IAppModal {
   pageId: string
 }
 
-type IModal = IPageContextModal | IPageCreationModal
+export interface INotebookCreationModal extends IAppModal {
+  type: 'notebook/create'
+}
+
+type IModal = IPageContextModal | IPageCreationModal | INotebookCreationModal
 
 interface IModalState {
   currentModal: IModal | null

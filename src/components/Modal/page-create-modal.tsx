@@ -12,7 +12,6 @@ type Props = {
 
 const PageCreationModal = ({ modal }: Props) => {
   const [pageTitle, setPageTitle] = useState('')
-  const inputRef = useRef<HTMLInputElement | null>(null)
   const dispatch = useDispatch<AppDispatch>()
   const currentNotebookId = useSelector(
     (state: RootState) => state.editor.currentNotebook?.__id
@@ -36,14 +35,11 @@ const PageCreationModal = ({ modal }: Props) => {
     )
     dispatch(NebulaModal.unloadModal())
   }
-  useEffect(() => {
-    if (inputRef.current) inputRef.current.focus()
-  }, [inputRef])
   return (
     <form onSubmit={handleAddPage} className="modal__page-create">
       {modal.label && <span className="modal__title">{modal.label}</span>}
       <input
-        ref={inputRef}
+        autoFocus
         aria-autocomplete="none"
         value={pageTitle}
         onChange={(ev) => setPageTitle(ev.target.value)}

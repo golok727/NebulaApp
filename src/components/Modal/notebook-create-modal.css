@@ -1,0 +1,26 @@
+.modal__notebook-create {
+  background-image: var(--grad-menu-btn);
+  padding: 0.5rem 0.5rem;
+  border: 1px solid #ffffff1e;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.5);
+  border-radius: 10px;
+  display: grid;
+  gap: 0.4rem;
+}
+.modal__notebook-create .modal__button {
+  color: greenyellow;
+}
+.modal__notebook-create .modal__button:disabled {
+  color: red;
+}
+.modal__notebook-create input[type='text']:focus {
+  outline: none;
+  border-color: var(--editor-main-border-hover);
+}
+.modal__notebook-create input[type='text'] {
+  background: transparent;
+  border: 1px solid #222;
+  padding: 0.2rem 0.4rem;
+  color: var(--clr-text-primary);
+  border-radius: 10px;
+}

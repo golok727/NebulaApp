@@ -2,29 +2,3 @@
   display: grid;
   place-items: center;
 }
-.app__home__create_form {
-  display: grid;
-  gap: 0.4rem;
-  border: var(--editor-main-border);
-  border-radius: 10px;
-  padding: 0.6rem 0.4rem;
-}
-
-.app__home__create_form h3 {
-  font-size: 0.8rem;
-  color: var(--clr-primary);
-}
-
-.app__home__create_form .create_notebook_input {
-  background: transparent;
-  border: var(--editor-main-border);
-  border-radius: 10px;
-  padding: 0.4rem;
-}
-
-.app__home__create_form .create_notebook_submit {
-  background-image: var(--grad-menu-btn);
-  border: var(--editor-main-border);
-  color: var(--text-gray);
-  border-radius: 10px;
-}

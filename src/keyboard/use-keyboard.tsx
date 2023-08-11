@@ -1,14 +1,17 @@
 import { useEffect, useCallback } from 'react'
 import { useDispatch } from 'react-redux'
 import { getCommand, getHandler, getKeyBindings } from './keyboard'
+import useView from '@/hooks/use-view'
 
 const useKeyboard = () => {
   const dispatch = useDispatch()
+  const currentView = useView()
+
   const handleKeyDown = useCallback((ev: KeyboardEvent) => {
     const binding = getKeyBindings(ev)
-    const command = getCommand(binding)
+    const command = getCommand(binding, currentView)
     if (command !== undefined) {
-      const handler = getHandler(command)
+      const handler = getHandler(command, currentView)
       if (handler) handler(dispatch)
     }
   }, [])
