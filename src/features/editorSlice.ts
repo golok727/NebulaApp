@@ -1,7 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit'
 
-import reducers, { addPage, loadNotebook, loadPage } from './editorReducers'
-import { P } from '@tauri-apps/api/event-41a9edf5'
+import reducers, {
+  addPage,
+  loadNotebook,
+  loadPage,
+  movePageToTrash,
+} from './editorReducers'
 
 export interface AppEditorState {
   currentDoc: string
@@ -37,6 +41,7 @@ const editorSlice = createSlice({
     // Load Notebook
 
     const handleRejectedStatus = (state: AppEditorState, payload: any) => {
+      //TODO Set timeout to clear the error
       const messageAndCode = {
         message: payload.message ?? '',
         code: payload.code ?? '',
@@ -125,6 +130,33 @@ const editorSlice = createSlice({
         action.meta.arg.onPageAdded(action.payload.new_page_id)
       })
       .addCase(addPage.rejected, (state, action) => {
+        handleRejectedStatus(state, action.payload)
+      })
+    // Move Page to trash
+
+    builder
+      .addCase(movePageToTrash.pending, (state) => {
+        state.status = {
+          ...state.status,
+          loading: true,
+          message: 'Moving Page To Trash',
+        }
+      })
+
+      .addCase(movePageToTrash.fulfilled, (state, action) => {
+        state.status = {
+          ...state.status,
+          loading: false,
+          code: '',
+          error: false,
+          message: '',
+        }
+
+        if (state.currentNotebook) {
+          state.currentNotebook.pages = action.payload
+        }
+      })
+      .addCase(movePageToTrash.rejected, (state, action) => {
         handleRejectedStatus(state, action.payload)
       })
   },

@@ -1,0 +1,38 @@
+.modal__confirmation_modal_container {
+  display: grid;
+  place-items: center;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.modal__confirmation_modal {
+  background-image: var(--grad-menu-btn);
+  padding: var(--padding-3);
+  border-radius: 10px;
+  border: var(--editor-main-border);
+  display: grid;
+  gap: 1rem;
+}
+
+.modal__confirmation_modal header p {
+  white-space: pre-wrap;
+  color: var(--text-gray);
+}
+.modal__confirmation_modal_btn {
+  font-weight: 700;
+}
+.modal__confirmation_modal_btn.confirm {
+  background-color: rgb(48, 179, 37);
+  color: #000;
+}
+
+.modal__confirmation_modal_btn.confirm:hover {
+  background-color: rgb(43, 211, 28);
+}
+
+.confirmation_modal__actions {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.2rem;
+}

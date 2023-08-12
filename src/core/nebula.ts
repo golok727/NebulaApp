@@ -1,6 +1,8 @@
 import type { Store } from '@/app/store'
 import { invoke } from '@tauri-apps/api/tauri'
-import { HomeNotebook, HomeNotebooks, updatePage } from '@/utils/notebook'
+import { HomeNotebook, HomeNotebooks } from '@/utils/notebook'
+import { NebulaModal } from '@/features/modalSlice'
+import { movePageToTrash } from '@/features/editorReducers'
 
 export interface INebulaCore {
   store: Store
@@ -9,6 +11,7 @@ export interface INebulaCore {
   saveCurrentNotebook: () => Promise<void>
   loadHomeNotebooks: () => Promise<HomeNotebook[]>
   openSettings: () => Promise<void>
+  movePageToTrash: (pageId: string) => Promise<void>
 }
 
 export class NebulaCore implements INebulaCore {
@@ -47,7 +50,7 @@ export class NebulaCore implements INebulaCore {
     if (currentPageId) {
       await this.updatePage(currentPageId, currentContent)
     }
-    let res = await invoke('save_notebook')
+    await invoke('save_notebook')
   }
   async loadHomeNotebooks() {
     try {
@@ -61,5 +64,11 @@ export class NebulaCore implements INebulaCore {
   }
   async openSettings() {
     await invoke('open_settings_window')
+  }
+  async movePageToTrash(pageId: string) {
+    //Todo Make this
+    console.log(`Moving ${pageId} to trash`)
+    this.store.dispatch(movePageToTrash({ pageId }))
+    this.store.dispatch(NebulaModal.unloadModal())
   }
 }

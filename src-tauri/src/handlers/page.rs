@@ -1,7 +1,7 @@
 use crate::{
     nebula::NebulaNotebookFile::{PageEntry, PageSimple},
     state::AppState,
-    utils::status::error::ErrorResponse,
+    utils::status::error::{ErrorCode, ErrorResponse},
 };
 use chrono::Utc;
 use serde::{Deserialize, Serialize};
@@ -64,5 +64,25 @@ pub fn update_page(
             page.updated_at = Utc::now().to_rfc3339().to_owned();
         }
         Ok(new_content)
+    })?
+}
+
+#[tauri::command]
+pub fn move_page_to_trash(
+    state: State<Arc<Mutex<AppState>>>,
+    page_id: String,
+) -> Result<Vec<PageSimple>, ErrorResponse> {
+    let mut state = state.lock().unwrap();
+    state.use_notebook(|notebook| {
+        if let Some(page) = notebook.page_map.get_mut(&page_id) {
+            page.add_to_trash();
+            notebook.save_to_file()?;
+            Ok(notebook.get_simple_pages())
+        } else {
+            Err(ErrorResponse::new(
+                ErrorCode::NotFoundError,
+                "page not found".to_owned(),
+            ))
+        }
     })?
 }

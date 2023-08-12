@@ -70,6 +70,20 @@ export const loadNotebook = createAsyncThunk(
     }
   }
 )
+type MovePageToTrashPayload = { pageId: string }
+export const movePageToTrash = createAsyncThunk(
+  'editor/movePageToTrash',
+  async (payload: MovePageToTrashPayload, thunkApi) => {
+    try {
+      let new_pages = await invoke<PageSimple[]>('move_page_to_trash', {
+        pageId: payload.pageId,
+      })
+      return new_pages
+    } catch (error) {
+      return thunkApi.rejectWithValue(error)
+    }
+  }
+)
 
 type LoadPagePayload = { pageId: string }
 export const loadPage = createAsyncThunk(

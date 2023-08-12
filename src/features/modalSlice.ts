@@ -2,13 +2,35 @@ import { PayloadAction, createSlice } from '@reduxjs/toolkit'
 
 interface IAppModal {
   id: string
-  type: 'page/create' | 'page/context' | 'notebook/create'
+  type: 'page/create' | 'page/context' | 'notebook/create' | 'context/confirm'
   x: number
   y: number
   label?: string
   subtractHalfWidth?: boolean
+  fullScreen?: boolean
+}
+interface ConfirmationProps {
+  type: 'removePage' | 'removeNotebook'
+}
+interface IRemovePageConfirmation extends ConfirmationProps {
+  type: 'removePage'
+  pageId: string
+}
+interface IRemoveNotebookConfirmation extends ConfirmationProps {
+  type: 'removeNotebook'
 }
 
+type IConfirmationModalProps =
+  | IRemovePageConfirmation
+  | IRemoveNotebookConfirmation
+
+export interface IConfirmationModal extends IAppModal {
+  type: 'context/confirm'
+  information: string
+  for: string
+  dangerLevel: number
+  props: IConfirmationModalProps
+}
 export interface IPageCreationModal extends IAppModal {
   type: 'page/create'
   parentId: string | null
@@ -24,7 +46,11 @@ export interface INotebookCreationModal extends IAppModal {
   type: 'notebook/create'
 }
 
-type IModal = IPageContextModal | IPageCreationModal | INotebookCreationModal
+type IModal =
+  | IPageContextModal
+  | IPageCreationModal
+  | INotebookCreationModal
+  | IConfirmationModal
 
 interface IModalState {
   currentModal: IModal | null

@@ -95,6 +95,10 @@ const Sidebar = () => {
               <span className="no-pages-found">Start your journey...</span>
             )}
           </SidebarGroup>
+
+          <SidebarGroup key={'trash'} groupTitle="Trash">
+            <span className="no-pages-found">Noting In Trash...</span>
+          </SidebarGroup>
         </section>
         {/* Status */}
         <div className="sidebar__app-status">Up to date</div>

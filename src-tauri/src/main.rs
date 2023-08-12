@@ -70,6 +70,7 @@ fn main() {
             page::load_page,
             page::add_page,
             page::update_page,
+            page::move_page_to_trash,
             window::open_settings_window
         ])
         .register_uri_scheme_protocol("nb", nb_protocol_handler)

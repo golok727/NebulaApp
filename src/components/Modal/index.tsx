@@ -7,6 +7,7 @@ import { NebulaModal } from '@/features/modalSlice'
 import PageCreationModal from './page-create-modal'
 import PageContextModal from './page-context-modal'
 import NotebookCreateModal from './notebook-create-modal'
+import ConfirmationModal from './confirmation_modal'
 
 const Modal = () => {
   const modalContainerRef = useRef<HTMLDivElement | null>(null)
@@ -18,7 +19,10 @@ const Modal = () => {
   useEffect(() => {
     const handleClick = (ev: MouseEvent) => {
       if (!modalContainerRef.current) return
-      if (!modalContainerRef.current.contains(ev.target as Node)) {
+      if (
+        !modalContainerRef.current.contains(ev.target as Node) ||
+        currentModal?.fullScreen === true
+      ) {
         if (currentModal) dispatch(NebulaModal.unloadModal())
       }
     }
@@ -51,6 +55,9 @@ const Modal = () => {
       case 'notebook/create': {
         return <NotebookCreateModal modal={currentModal} />
       }
+      case 'context/confirm': {
+        return <ConfirmationModal modal={currentModal} />
+      }
       default:
         return <></>
     }
@@ -62,8 +69,15 @@ const Modal = () => {
       style={{
         ...(currentModal !== null
           ? {
-              top: `${currentModal.y}px`,
-              left: `${currentModal.x}px`,
+              ...(currentModal.fullScreen !== true
+                ? {
+                    top: `${currentModal.y}px`,
+                    left: `${currentModal.x}px`,
+                  }
+                : {
+                    inset: 0,
+                    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+                  }),
             }
           : { display: 'none' }),
       }}

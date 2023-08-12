@@ -74,6 +74,19 @@ impl PageEntry {
             is_in_trash: false,
         }
     }
+
+    pub fn is_in_trash(&self) -> bool {
+        self.is_in_trash
+    }
+    #[allow(dead_code)]
+    pub fn add_to_trash(&mut self) {
+        self.is_in_trash = true;
+    }
+
+    #[allow(dead_code)]
+    pub fn remove_from_trash(&mut self) {
+        self.is_in_trash = false;
+    }
 }
 // Content Implementation
 impl PageContent {
@@ -139,8 +152,10 @@ impl NebulaNotebook {
 
         for page_id in &self.pages {
             if let Some(page) = self.page_map.get(page_id) {
-                let simple_page = self.recursive_convert(page);
-                simple_pages.push(simple_page);
+                if !page.is_in_trash() {
+                    let simple_page = self.recursive_convert(page);
+                    simple_pages.push(simple_page);
+                }
             }
         }
 
@@ -158,8 +173,10 @@ impl NebulaNotebook {
         if !page.sub_pages.is_empty() {
             for sub_page_id in &page.sub_pages {
                 if let Some(sub_page) = self.page_map.get(sub_page_id) {
-                    let sub_simple_page = self.recursive_convert(sub_page);
-                    simple_page.sub_pages.push(sub_simple_page);
+                    if !sub_page.is_in_trash() {
+                        let sub_simple_page = self.recursive_convert(sub_page);
+                        simple_page.sub_pages.push(sub_simple_page);
+                    }
                 }
             }
         }

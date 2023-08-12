@@ -21,7 +21,11 @@ const Button: React.FC<Props> = ({
   ...props
 }) => {
   return (
-    <button disabled={disabled} {...props} className={`app__button ${variant}`}>
+    <button
+      disabled={disabled}
+      {...props}
+      className={`app__button ${variant} ${props.className}`}
+    >
       {children}
     </button>
   )
