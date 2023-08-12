@@ -17,7 +17,6 @@ const Sidebar = () => {
   const currentNotebookName = useSelector(
     (state: RootState) => state.editor.currentNotebook?.name ?? ''
   )
-  const appStatus = useSelector((state: RootState) => state.editor.status)
 
   const { sidebar: showSidebar } = useSelector(isInView)
   const currentPages = useSelector(getCurrentPages)

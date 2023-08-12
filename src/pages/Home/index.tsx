@@ -18,8 +18,10 @@ const Home = () => {
 
   return (
     <div className="app__home">
-      <img style={{ width: '10rem', margin: '.7rem 0' }} src={LogoNebula} />
-      {notebooks && <NotebooksRenderer notebooks={notebooks} />}
+      <div className="app__home__container">
+        <img style={{ width: '10rem' }} src={LogoNebula} />
+        {notebooks && <NotebooksRenderer notebooks={notebooks} />}
+      </div>
     </div>
   )
 }
