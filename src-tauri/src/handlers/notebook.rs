@@ -12,16 +12,52 @@ use std::{
 };
 use tauri::State;
 
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct NotebookMetadata {
     __id: String,
     name: String,
     thumbnail: Option<String>,
     created_at: String,
 }
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct MetaDataFile {
     notebooks: Vec<NotebookMetadata>,
+}
+pub fn recover_meta_data_file() -> Result<MetaDataFile, ErrorResponse> {
+    let notebooks_dir = get_notebook_data_dir();
+    let entries = fs::read_dir(&notebooks_dir).map_err(|error| {
+        ErrorResponse::new(
+            ErrorCode::IoError,
+            format!("Error Reading Notebooks {error}"),
+        )
+    })?;
+    let mut new_notebook_metadata: Vec<NotebookMetadata> = Vec::new();
+
+    for entry in entries {
+        if let Ok(entry) = entry {
+            let file_path = entry.path();
+            if let Some(ext) = file_path.extension() {
+                if ext == "nb" {
+                    if let Ok(notebook) = NebulaNotebook::load_from_file(&file_path) {
+                        let meta_data = NotebookMetadata {
+                            __id: notebook.__id.clone(),
+                            created_at: notebook.created_at.clone(),
+                            name: notebook.name.clone(),
+                            thumbnail: notebook.thumbnail.clone(),
+                        };
+                        new_notebook_metadata.push(meta_data);
+                    }
+                }
+            }
+        }
+    }
+    let meta_data = MetaDataFile {
+        notebooks: new_notebook_metadata,
+    };
+    match put_metadata(&meta_data) {
+        Ok(_) => Ok(meta_data),
+        Err(error) => Err(error),
+    }
 }
 
 pub fn load_notebooks_metadata() -> Result<MetaDataFile, ErrorResponse> {
@@ -55,7 +91,11 @@ pub fn load_notebooks_metadata() -> Result<MetaDataFile, ErrorResponse> {
         _ => {
             let nb_files_count = count_files_with_extension(&notebooks_dir, "nb");
             if nb_files_count > 0 {
-                Err(ErrorResponse::new(ErrorCode::NotebookMetadataNotFound, "No Metadata file available. May be it is deleted or corrupted please try auto recovery".to_string()))
+                /*
+
+                */
+                let recovered = recover_meta_data_file()?;
+                Ok(recovered)
             } else {
                 Ok(MetaDataFile {
                     notebooks: Vec::new(),
@@ -186,13 +226,23 @@ pub fn load_nebula_notebook(
     let notebooks_dir = get_notebook_data_dir();
     let file_path = notebooks_dir.join(notebook_id + ".nb");
 
-    let notebook = NebulaNotebook::load_from_file(&file_path)?;
-    state.set_notebook(notebook);
-    state.use_notebook(|notebook| {
-        let simple_pages = notebook.get_simple_pages();
-        let response = NotebookResponse::new(notebook, simple_pages);
-        Ok(response)
-    })?
+    match NebulaNotebook::load_from_file(&file_path) {
+        Ok(notebook) => {
+            state.set_notebook(notebook);
+            state.use_notebook(|notebook| {
+                let simple_pages = notebook.get_simple_pages();
+                let response = NotebookResponse::new(notebook, simple_pages);
+                Ok(response)
+            })?
+        }
+        Err(error) => match error.code {
+            ErrorCode::NotFoundError => {
+                recover_meta_data_file()?;
+                Err(error)
+            }
+            _ => Err(error),
+        },
+    }
 }
 
 #[tauri::command]

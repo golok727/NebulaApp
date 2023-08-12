@@ -7,23 +7,28 @@ import {
   toggleSplitMode,
 } from '@/features/appSlice'
 import { NebulaModal } from '@/features/modalSlice'
-import { updatePage } from '@/utils/notebook'
-import { invoke } from '@tauri-apps/api/tauri'
 import useView from '@/hooks/use-view'
 import { INebulaCoreContext } from '@/context/nebula'
 
-export const findView = (): keyof IAPPShortcuts => {
-  let currPath = window.location.pathname
-  if (currPath === '/') {
-    return 'home'
-  } else if (currPath.startsWith('/editor')) {
-    return 'editor'
-  } else if (currPath.startsWith('/settings')) {
-    return 'settings'
-  }
-  return 'home'
-}
-export const applicationCommands = {
+const globalShortcuts = {
+  'ctrl+,': 'global:open-settings',
+  'ctrl+q': 'global:quit',
+} as const
+type GlobalShortcutsCommands =
+  (typeof globalShortcuts)[keyof typeof globalShortcuts]
+const globalShortcutCommands = Object.values(globalShortcuts)
+
+const globalHandlers: Record<
+  GlobalShortcutsCommands,
+  (dispatch: AppDispatch, nebula: INebulaCoreContext) => void
+> = {
+  'global:open-settings': (_, nebula) => {
+    nebula.core.openSettings()
+  },
+  'global:quit': () => {},
+} as const
+
+const applicationCommands = {
   editor: [
     'view:toggle-sidebar',
     'view:toggle-no-distractions',
@@ -33,14 +38,16 @@ export const applicationCommands = {
     'core:add-page',
     'core:add-sub-page',
     'core:save-current-notebook',
+    ...globalShortcutCommands,
   ] as const,
-  settings: [] as const,
-  home: ['core:new-notebook'] as const,
+  settings: [...globalShortcutCommands] as const,
+  home: ['core:new-notebook', ...globalShortcutCommands] as const,
 } as const
-
 type EditorCommands = (typeof applicationCommands.editor)[number]
 type HomeCommands = (typeof applicationCommands.home)[number]
 type SettingsCommands = (typeof applicationCommands.settings)[number]
+
+type ApplicationCommands = EditorCommands | HomeCommands | SettingsCommands
 
 interface IAPPShortcuts {
   editor: Record<string, EditorCommands>
@@ -48,21 +55,24 @@ interface IAPPShortcuts {
   settings: Record<string, SettingsCommands>
 }
 
-export const applicationShortcuts: IAPPShortcuts = {
+const applicationShortcuts: IAPPShortcuts = {
   home: {
+    ...globalShortcuts,
     'ctrl+n': 'core:new-notebook',
   },
   editor: {
+    ...globalShortcuts,
     'ctrl+.': 'view:toggle-sidebar',
     'ctrl+shift+d': 'view:toggle-no-distractions',
     'ctrl+/': 'view:toggle-preview-only',
     'ctrl+e': 'view:toggle-preview-only',
     'ctrl+shift+?': 'view:toggle-split-mode',
+    // ------------------------
     'ctrl+n': 'core:add-page',
     'ctrl+shift+n': 'core:add-sub-page',
     'ctrl+s': 'core:save-current-notebook',
   },
-  settings: {},
+  settings: { ...globalShortcuts },
 }
 
 export interface IAppCoreKeyboardHandlers {
@@ -70,12 +80,19 @@ export interface IAppCoreKeyboardHandlers {
     EditorCommands,
     (dispatch: AppDispatch, nebula: INebulaCoreContext) => void
   >
-  home: Record<HomeCommands, (dispatch: AppDispatch) => void>
-  settings: Record<SettingsCommands, (dispatch: AppDispatch) => void>
+  home: Record<
+    HomeCommands,
+    (dispatch: AppDispatch, nebula: INebulaCoreContext) => void
+  >
+  settings: Record<
+    SettingsCommands,
+    (dispatch: AppDispatch, nebula: INebulaCoreContext) => void
+  >
 }
 
 export const applicationCoreKeyboardHandlers: IAppCoreKeyboardHandlers = {
   editor: {
+    ...globalHandlers,
     'core:add-page': (dispatch) => {
       const currentPage = store.getState().editor.currentPage
       dispatch(
@@ -126,6 +143,7 @@ export const applicationCoreKeyboardHandlers: IAppCoreKeyboardHandlers = {
     },
   },
   home: {
+    ...globalHandlers,
     'core:new-notebook': (dispatch) => {
       dispatch(
         NebulaModal.showModal({
@@ -139,11 +157,11 @@ export const applicationCoreKeyboardHandlers: IAppCoreKeyboardHandlers = {
       )
     },
   },
-  settings: {},
+  settings: { ...globalHandlers },
 }
 
 export const getHandler = (
-  command: string,
+  command: ApplicationCommands,
   currentView: ReturnType<typeof useView>
 ) => {
   if (currentView.editor)
@@ -165,7 +183,7 @@ export const getHandler = (
 export const getCommand = (
   binding: string,
   currentView: ReturnType<typeof useView>
-): string | undefined => {
+): ApplicationCommands | undefined => {
   if (currentView.editor) return applicationShortcuts.editor[binding]
   else if (currentView.home) return applicationShortcuts.home[binding]
   else if (currentView.settings) return applicationShortcuts.settings[binding]

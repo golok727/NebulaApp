@@ -22,6 +22,36 @@
 .home__notebooks li:hover {
   opacity: 1;
 }
+
+.home__notebook.create {
+  cursor: pointer;
+  width: 100%;
+  display: grid;
+  place-items: center;
+  transition: all 0.2s ease;
+}
+.home__notebook.create:hover {
+  scale: 0.95;
+}
+
+.home__notebook.create:hover svg {
+  opacity: 0.3;
+  font-size: 4rem;
+}
+.home__notebook.create:focus {
+  scale: 0.95;
+}
+
+.home__notebook.create:focus svg {
+  opacity: 0.3;
+  font-size: 4rem;
+}
+.home__notebook.create svg {
+  font-size: 3rem;
+  opacity: 0.2;
+  transition: all 0.2s ease;
+}
+
 .home__notebook {
   border-radius: 10px;
   display: grid;
@@ -55,7 +85,7 @@
 .home__notebook__open-btn {
   padding: 0.2rem 0.5rem;
   border: var(--editor-main-border);
-  width: fit-content;
+  text-align: center;
   border-radius: 10px;
   font-weight: bold;
   color: var(--clr-text-primary);

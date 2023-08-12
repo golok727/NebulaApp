@@ -8,6 +8,7 @@ export interface INebulaCore {
   updatePage: (pageId: string | undefined, currDoc: string) => Promise<void>
   saveCurrentNotebook: () => Promise<void>
   loadHomeNotebooks: () => Promise<HomeNotebook[]>
+  openSettings: () => Promise<void>
 }
 
 export class NebulaCore implements INebulaCore {
@@ -57,5 +58,8 @@ export class NebulaCore implements INebulaCore {
     } catch (error: any) {
       throw error
     }
+  }
+  async openSettings() {
+    await invoke('open_settings_window')
   }
 }

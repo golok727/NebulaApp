@@ -20,8 +20,8 @@ pub mod error {
     }
     #[derive(Debug, Serialize, Deserialize, Clone)]
     pub struct ErrorResponse {
-        code: ErrorCode,
-        message: String,
+        pub code: ErrorCode,
+        pub message: String,
     }
     impl ErrorResponse {
         pub fn new(code: ErrorCode, message: String) -> Self {

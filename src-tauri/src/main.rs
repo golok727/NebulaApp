@@ -53,6 +53,8 @@ fn main() {
 
     let app_state = Arc::new(Mutex::new(AppState::new()));
 
+    let _ = notebook::recover_meta_data_file();
+
     tauri::Builder::default()
         .setup(|app| {
             let main_window = app.get_window("main").unwrap();

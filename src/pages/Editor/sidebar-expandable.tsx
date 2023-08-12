@@ -18,9 +18,6 @@ interface Props {
 const SidebarExpandable = (props: Props) => {
   const { page } = props
   const isPageExpanded = useSelector(isExpanded(page.__id))
-  const currentPage = useSelector(
-    (state: RootState) => state.editor.currentPage
-  )
   const { pageId, notebook: notebookId } = useParams()
   const dispatch = useDispatch()
   const navigate = useNavigate()
@@ -49,18 +46,16 @@ const SidebarExpandable = (props: Props) => {
 
   const handlePageContext = (ev: React.MouseEvent<HTMLButtonElement>) => {
     ev.stopPropagation()
-    if (currentPage) {
-      dispatch(
-        NebulaModal.showModal({
-          id: 'pageContext',
-          type: 'page/context',
-          pageId: currentPage.__id,
-          x: ev.currentTarget.getBoundingClientRect().left,
-          y: ev.currentTarget.getBoundingClientRect().top + 10,
-          label: 'Options',
-        })
-      )
-    }
+    dispatch(
+      NebulaModal.showModal({
+        id: 'pageContext',
+        type: 'page/context',
+        pageId: page.__id,
+        x: ev.currentTarget.getBoundingClientRect().left,
+        y: ev.currentTarget.getBoundingClientRect().top + 10,
+        label: 'Options',
+      })
+    )
   }
 
   return (
