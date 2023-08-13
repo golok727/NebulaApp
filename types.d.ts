@@ -32,5 +32,12 @@ interface NotebookInfo {
   created_at: string
   last_accessed_at: string
   pages: PagesSimple[]
+  trash_pages: TrashPage[]
   assets: string[]
+}
+
+interface TrashPage {
+  __id: string
+  title: string
+  days_remaining: number
 }

@@ -97,7 +97,22 @@ impl PageContent {
         }
     }
 }
-
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct TrashPage {
+    __id: String,
+    title: String,
+    days_remaining: i32,
+    //TODO Add Days remaining
+}
+impl TrashPage {
+    fn new(__id: String, title: String, days_remaining: i32) -> Self {
+        TrashPage {
+            __id,
+            title,
+            days_remaining,
+        }
+    }
+}
 impl NebulaNotebook {
     pub fn new(name: String) -> Self {
         NebulaNotebook {
@@ -181,6 +196,16 @@ impl NebulaNotebook {
             }
         }
         simple_page
+    }
+
+    pub fn get_trash_pages(&self) -> Vec<TrashPage> {
+        let mut trash_pages: Vec<TrashPage> = Vec::new();
+        for (_, page) in self.page_map.iter() {
+            if page.is_in_trash() {
+                trash_pages.push(TrashPage::new(page.__id.clone(), page.title.clone(), 30));
+            }
+        }
+        trash_pages
     }
 
     pub fn add_page(

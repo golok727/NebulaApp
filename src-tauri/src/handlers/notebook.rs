@@ -1,3 +1,4 @@
+use crate::nebula::current::TrashPage;
 use crate::state::AppState;
 use crate::utils::status::error::{ErrorCode, ErrorResponse};
 use crate::{
@@ -196,13 +197,18 @@ pub struct NotebookResponse {
     pub created_at: String,
     assets: Vec<String>,
     pub pages: Vec<PageSimple>,
+    pub trash_pages: Vec<TrashPage>,
     pub thumbnail: Option<String>,
     pub description: Option<String>,
     pub author: Option<String>,
 }
 
 impl NotebookResponse {
-    fn new(notebook: &NebulaNotebook, pages_simple: Vec<PageSimple>) -> Self {
+    fn new(
+        notebook: &NebulaNotebook,
+        pages_simple: Vec<PageSimple>,
+        trash_pages: Vec<TrashPage>,
+    ) -> Self {
         NotebookResponse {
             __id: notebook.__id.clone(),
             name: notebook.name.clone(),
@@ -210,6 +216,7 @@ impl NotebookResponse {
             created_at: notebook.created_at.clone(),
             assets: notebook.assets.clone(),
             pages: pages_simple,
+            trash_pages,
             thumbnail: notebook.thumbnail.clone(),
             description: notebook.description.clone(),
             author: notebook.author.clone(),
@@ -231,7 +238,8 @@ pub fn load_nebula_notebook(
             state.set_notebook(notebook);
             state.use_notebook(|notebook| {
                 let simple_pages = notebook.get_simple_pages();
-                let response = NotebookResponse::new(notebook, simple_pages);
+                let trash_pages = notebook.get_trash_pages();
+                let response = NotebookResponse::new(notebook, simple_pages, trash_pages);
                 Ok(response)
             })?
         }

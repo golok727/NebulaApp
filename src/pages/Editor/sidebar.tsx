@@ -20,6 +20,9 @@ const Sidebar = () => {
 
   const { sidebar: showSidebar } = useSelector(isInView)
   const currentPages = useSelector(getCurrentPages)
+  const trashPages = useSelector(
+    (state: RootState) => state.editor.currentNotebook?.trash_pages
+  )
   const [isDragging, setIsDragging] = useState(false)
 
   const dispatch = useDispatch()
@@ -97,7 +100,13 @@ const Sidebar = () => {
           </SidebarGroup>
 
           <SidebarGroup key={'trash'} groupTitle="Trash">
-            <span className="no-pages-found">Noting In Trash...</span>
+            {trashPages && trashPages.length > 0 ? (
+              trashPages.map((trashPage) => (
+                <li key={trashPage.__id}>{trashPage.title}</li>
+              ))
+            ) : (
+              <span className="no-pages-found">Noting In Trash...</span>
+            )}
           </SidebarGroup>
         </section>
         {/* Status */}

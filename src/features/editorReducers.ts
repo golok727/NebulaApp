@@ -62,7 +62,6 @@ export const loadNotebook = createAsyncThunk(
           notebookId: payload.notebookId,
         }
       )
-
       return nebula_notebook
     } catch (error: any) {
       console.log(error)
@@ -96,6 +95,7 @@ export const loadPage = createAsyncThunk(
           pageId: payload.pageId,
         }
       )
+
       return res
     } catch (error) {
       return thunkApi.rejectWithValue(error)
