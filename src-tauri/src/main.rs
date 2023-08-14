@@ -71,6 +71,7 @@ fn main() {
             page::add_page,
             page::update_page,
             page::move_page_to_trash,
+            page::delete_page_permanently,
             window::open_settings_window
         ])
         .register_uri_scheme_protocol("nb", nb_protocol_handler)

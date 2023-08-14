@@ -2,6 +2,7 @@ import { createSlice } from '@reduxjs/toolkit'
 
 import reducers, {
   addPage,
+  deletePagePermanent,
   loadNotebook,
   loadPage,
   movePageToTrash,
@@ -160,6 +161,15 @@ const editorSlice = createSlice({
       .addCase(movePageToTrash.rejected, (state, action) => {
         handleRejectedStatus(state, action.payload)
       })
+
+    builder.addCase(deletePagePermanent.fulfilled, (state, action) => {
+      if (state.currentNotebook) {
+        state.currentNotebook.trash_pages =
+          state.currentNotebook.trash_pages.filter(
+            (trashPage) => trashPage.__id !== action.payload
+          )
+      }
+    })
   },
 })
 

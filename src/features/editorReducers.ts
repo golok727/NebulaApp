@@ -87,6 +87,21 @@ export const movePageToTrash = createAsyncThunk(
   }
 )
 
+type DeletePagePermanentPayload = { pageId: string }
+export const deletePagePermanent = createAsyncThunk(
+  'editor/deletePagePermanent',
+  async (payload: DeletePagePermanentPayload, thunkApi) => {
+    try {
+      let deleted_page_id = await invoke<string>('delete_page_permanently', {
+        pageId: payload.pageId,
+      })
+      return deleted_page_id
+    } catch (error) {
+      return thunkApi.rejectWithValue(error)
+    }
+  }
+)
+
 type LoadPagePayload = { pageId: string }
 export const loadPage = createAsyncThunk(
   'editor/loadPage',

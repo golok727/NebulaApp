@@ -100,3 +100,17 @@ pub fn move_page_to_trash(
         }
     })?
 }
+
+#[tauri::command]
+pub fn delete_page_permanently(
+    state: State<Arc<Mutex<AppState>>>,
+    page_id: String,
+) -> Result<String, ErrorResponse> {
+    let mut state = state.lock().unwrap();
+    state.use_notebook(|notebook| {
+        let deleted_page = notebook.delete_page_permanently(&page_id);
+        let _ = notebook.save_to_file();
+
+        deleted_page
+    })?
+}

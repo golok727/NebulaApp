@@ -135,7 +135,7 @@ impl TrashPage {
         }
     }
 }
-impl NebulaNotebook {
+impl<'a> NebulaNotebook {
     pub fn new(name: String) -> Self {
         NebulaNotebook {
             __id: Uuid::new_v4().to_string(),
@@ -218,6 +218,32 @@ impl NebulaNotebook {
             }
         }
         simple_page
+    }
+    pub fn delete_page_permanently(&mut self, page_id: &'a str) -> Result<String, ErrorResponse> {
+        let page_to_remove = match self.page_map.get_mut(page_id) {
+            Some(page) => {
+                if !page.is_in_trash() {
+                    return Err(ErrorResponse::new(
+                        ErrorCode::ClientError,
+                        "This page is not in trash".into(),
+                    ));
+                } else {
+                    Ok(page.__id.clone())
+                }
+            }
+
+            _ => Err(ErrorResponse::new(
+                ErrorCode::NotFoundError,
+                "page not found".into(),
+            )),
+        };
+        match page_to_remove {
+            Ok(page_id) => {
+                self.page_map.remove(&page_id);
+                Ok(page_id)
+            }
+            Err(err) => Err(err),
+        }
     }
 
     pub fn get_trash_pages(&mut self) -> Vec<TrashPage> {

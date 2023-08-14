@@ -38,6 +38,10 @@ pub fn initialize_app() {
     if let Err(err) = make_directories(&directories) {
         eprintln!("{}", err);
     }
+    let assets_dir = get_assets_dir();
+    if let Err(err) = fs::create_dir_all(&assets_dir) {
+        eprintln!("{}", err);
+    }
 }
 
 pub fn count_files_with_extension(directory: &PathBuf, extension: &str) -> usize {

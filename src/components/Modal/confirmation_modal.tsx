@@ -27,6 +27,13 @@ const ConfirmationModal: React.FC<Props> = ({ modal }) => {
             }
           }
         }
+        case 'removePagePermanent': {
+          return () => {
+            if (modal.props.type === 'removePagePermanent') {
+              nebula.core.deletePagePermanent(modal.props.pageId)
+            }
+          }
+        }
       }
     },
     [dispatch, modal]

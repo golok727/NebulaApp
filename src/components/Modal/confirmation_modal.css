@@ -48,6 +48,14 @@
   background-color: rgb(43, 211, 28);
 }
 
+.modal__confirmation_modal_btn.confirm.danger {
+  background-color: rgb(218, 28, 28);
+}
+
+.modal__confirmation_modal_btn.confirm.danger:hover {
+  background-color: rgb(175, 22, 22);
+}
+
 .confirmation_modal__actions {
   display: grid;
   grid-template-columns: repeat(2, 1fr);

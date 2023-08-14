@@ -16,6 +16,7 @@ pub mod error {
         NotebookNotLoadedYet,
         NotebookMetadataNotFound,
         IoError,
+        ClientError,
         FileNotFound,
     }
     #[derive(Debug, Serialize, Deserialize, Clone)]

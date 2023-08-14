@@ -10,10 +10,14 @@ interface IAppModal {
   fullScreen?: boolean
 }
 interface ConfirmationProps {
-  type: 'removePage' | 'removeNotebook'
+  type: 'removePage' | 'removeNotebook' | 'removePagePermanent'
 }
 interface IRemovePageConfirmation extends ConfirmationProps {
   type: 'removePage'
+  pageId: string
+}
+interface IRemovePagePermanentConfirmation extends ConfirmationProps {
+  type: 'removePagePermanent'
   pageId: string
 }
 interface IRemoveNotebookConfirmation extends ConfirmationProps {
@@ -23,6 +27,7 @@ interface IRemoveNotebookConfirmation extends ConfirmationProps {
 type IConfirmationModalProps =
   | IRemovePageConfirmation
   | IRemoveNotebookConfirmation
+  | IRemovePagePermanentConfirmation
 
 export interface IConfirmationModal extends IAppModal {
   type: 'context/confirm'
