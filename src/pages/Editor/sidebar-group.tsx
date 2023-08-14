@@ -1,17 +1,17 @@
 import Button from '@/components/Button'
 import './sidebar-group.css'
 
+import { RootState } from '@/app/store'
+import { collapseAll } from '@/features/editorSlice'
+import { NebulaModal } from '@/features/modalSlice'
 import React, { useState } from 'react'
 import { AiOutlineReload } from 'react-icons/ai'
-import { MdDelete } from 'react-icons/md'
+import { BiCollapseVertical, BiExpandVertical } from 'react-icons/bi'
 import { CiStickyNote } from 'react-icons/ci'
-import { VscSaveAll, VscCollapseAll } from 'react-icons/vsc'
-import { useDispatch, useSelector } from 'react-redux'
-import { RootState } from '@/app/store'
-import { NebulaModal } from '@/features/modalSlice'
-import { collapseAll } from '@/features/editorSlice'
+import { MdDelete } from 'react-icons/md'
 import { TbRefreshDot } from 'react-icons/tb'
-import { BiExpandVertical, BiCollapseVertical } from 'react-icons/bi'
+import { VscCollapseAll } from 'react-icons/vsc'
+import { useDispatch, useSelector } from 'react-redux'
 export const GroupTypes = {
   Page: 'Page',
   Trash: 'Trash',
@@ -61,9 +61,6 @@ const SidebarGroup = ({ groupTitle, children, for: groupFor }: Props) => {
             {' '}
             <Button onClick={handleAddPage} variant="transparent">
               <CiStickyNote />
-            </Button>
-            <Button variant="transparent">
-              <VscSaveAll />
             </Button>
             <Button variant="transparent">
               <AiOutlineReload />

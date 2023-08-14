@@ -175,10 +175,14 @@ const editorSlice = createSlice({
     builder.addCase(recoverPage.fulfilled, (state, action) => {
       if (state.currentNotebook) {
         state.currentNotebook.pages = action.payload
+        const recoveredPage = action.meta.arg.trashPageId
         state.currentNotebook.trash_pages =
           state.currentNotebook.trash_pages.filter(
-            (trashPage) => trashPage.__id !== action.meta.arg.trashPageId
+            (trashPage) => trashPage.__id !== recoveredPage
           )
+        action.meta.arg.navigate(
+          `/editor/${state.currentNotebook.__id}/${recoveredPage}`
+        )
       }
     })
   },

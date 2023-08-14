@@ -6,11 +6,13 @@ import { MdDelete } from 'react-icons/md'
 import { useDispatch } from 'react-redux'
 import { NebulaModal } from '@/features/modalSlice'
 import { useNebulaCore } from '@/context/nebula'
+import { useNavigate } from 'react-router-dom'
 type Props = {
   trashPage: TrashPage
 }
 
 const TrashPage = ({ trashPage }: Props) => {
+  const navigate = useNavigate()
   const dispatch = useDispatch()
   const nebula = useNebulaCore()
   const handleDeletePagePermanent = (
@@ -38,7 +40,7 @@ const TrashPage = ({ trashPage }: Props) => {
   }
   const handleRecoverPage = (ev: React.MouseEvent<HTMLButtonElement>) => {
     ev.stopPropagation()
-    nebula.core.recoverPage(trashPage.__id)
+    nebula.core.recoverPage(trashPage.__id, navigate)
   }
 
   return (

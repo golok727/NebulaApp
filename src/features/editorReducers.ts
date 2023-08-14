@@ -2,6 +2,7 @@ import { PayloadAction } from '@reduxjs/toolkit'
 import { AppEditorState } from './editorSlice'
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import { invoke } from '@tauri-apps/api/tauri'
+import { NavigateFunction } from 'react-router-dom'
 
 const reducers = {
   setCurrentDoc: (state: AppEditorState, action: PayloadAction<string>) => {
@@ -101,7 +102,7 @@ export const deletePagePermanent = createAsyncThunk(
     }
   }
 )
-type RecoverPagePayload = { trashPageId: string }
+type RecoverPagePayload = { trashPageId: string; navigate: NavigateFunction }
 export const recoverPage = createAsyncThunk(
   'editor/recoverPage',
   async (payload: RecoverPagePayload, thunkApi) => {

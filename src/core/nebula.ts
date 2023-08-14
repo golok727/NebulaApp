@@ -7,6 +7,7 @@ import {
   deletePagePermanent,
   recoverPage,
 } from '@/features/editorReducers'
+import { NavigateFunction } from 'react-router-dom'
 export interface INebulaCore {
   store: Store
   createNotebook: (notebookName: string) => Promise<string>
@@ -16,7 +17,10 @@ export interface INebulaCore {
   openSettings: () => Promise<void>
   movePageToTrash: (pageId: string) => Promise<void>
   deletePagePermanent: (pageId: string) => Promise<void>
-  recoverPage: (trashPageId: string) => Promise<void>
+  recoverPage: (
+    trashPageId: string,
+    navigate: NavigateFunction
+  ) => Promise<void>
 }
 
 export class NebulaCore implements INebulaCore {
@@ -82,7 +86,7 @@ export class NebulaCore implements INebulaCore {
     this.store.dispatch(deletePagePermanent({ pageId }))
     this.store.dispatch(NebulaModal.unloadModal())
   }
-  async recoverPage(trashPageId: string) {
-    this.store.dispatch(recoverPage({ trashPageId }))
+  async recoverPage(trashPageId: string, navigate: NavigateFunction) {
+    this.store.dispatch(recoverPage({ trashPageId, navigate }))
   }
 }
