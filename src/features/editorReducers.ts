@@ -70,7 +70,7 @@ export const loadNotebook = createAsyncThunk(
     }
   }
 )
-type MovePageToTrashPayload = { pageId: string }
+type MovePageToTrashPayload = { pageId: string; navigate: NavigateFunction }
 export const movePageToTrash = createAsyncThunk(
   'editor/movePageToTrash',
   async (payload: MovePageToTrashPayload, thunkApi) => {

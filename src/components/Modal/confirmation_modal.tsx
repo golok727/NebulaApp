@@ -6,12 +6,14 @@ import { CgDanger } from 'react-icons/cg'
 import { useDispatch } from 'react-redux'
 import Button from '../Button'
 import './confirmation_modal.css'
+import { useNavigate } from 'react-router-dom'
 
 type Props = {
   modal: IConfirmationModal
 }
 const ConfirmationModal: React.FC<Props> = ({ modal }) => {
   const dispatch = useDispatch()
+  const navigate = useNavigate()
   const [submitTimeLeft, setSubmitTimeLeft] = useState(
     modal.dangerLevel > 1 ? 5 : -1
   )
@@ -23,7 +25,7 @@ const ConfirmationModal: React.FC<Props> = ({ modal }) => {
         case 'removePage': {
           return () => {
             if (modal.props.type === 'removePage') {
-              nebula.core.movePageToTrash(modal.props.pageId)
+              nebula.core.movePageToTrash(modal.props.pageId, navigate)
             }
           }
         }

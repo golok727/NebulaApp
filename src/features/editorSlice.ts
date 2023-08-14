@@ -8,6 +8,7 @@ import reducers, {
   movePageToTrash,
   recoverPage,
 } from './editorReducers'
+import { isGeneratorFunction } from 'util/types'
 
 export interface AppEditorState {
   currentDoc: string
@@ -153,10 +154,54 @@ const editorSlice = createSlice({
           error: false,
           message: '',
         }
+        const navigateTo = (
+          pages: PageSimple[],
+          movedPage: string
+        ): string | null => {
+          if (pages.length === 1) {
+            return null
+          }
+          let movedPageIdx = pages.findIndex((page) => page.__id === movedPage)
+          if (movedPageIdx < 0) {
+            for (const page of pages) {
+              return navigateTo(page.sub_pages, movedPage)
+            }
+          } else {
+            if (movedPageIdx === pages.length - 1) {
+              return pages[movedPageIdx - 1]?.__id ?? null
+            } else {
+              return pages[movedPageIdx + 1]?.__id ?? null
+            }
+          }
+          return null
+        }
 
         if (state.currentNotebook) {
-          state.currentNotebook.pages = action.payload.pages
-          state.currentNotebook.trash_pages = action.payload.trash_pages
+          const needToNavigate =
+            state.currentPage &&
+            state.currentPage.__id === action.meta.arg.pageId
+          if (needToNavigate) {
+            const movedPageId = action.meta.arg.pageId
+            const navigate = action.meta.arg.navigate
+            const navigateToPage = navigateTo(
+              state.currentNotebook.pages,
+              movedPageId
+            )
+
+            state.currentNotebook.pages = action.payload.pages
+            state.currentNotebook.trash_pages = action.payload.trash_pages
+
+            if (navigateToPage !== null) {
+              navigate(
+                `/editor/${state.currentNotebook.__id}/${navigateToPage}`
+              )
+            } else {
+              navigate(`/editor/${state.currentNotebook.__id}`)
+            }
+          } else {
+            state.currentNotebook.pages = action.payload.pages
+            state.currentNotebook.trash_pages = action.payload.trash_pages
+          }
         }
       })
       .addCase(movePageToTrash.rejected, (state, action) => {

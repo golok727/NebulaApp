@@ -15,7 +15,7 @@ export interface INebulaCore {
   saveCurrentNotebook: () => Promise<void>
   loadHomeNotebooks: () => Promise<HomeNotebook[]>
   openSettings: () => Promise<void>
-  movePageToTrash: (pageId: string) => Promise<void>
+  movePageToTrash: (pageId: string, navigate: NavigateFunction) => Promise<void>
   deletePagePermanent: (pageId: string) => Promise<void>
   recoverPage: (
     trashPageId: string,
@@ -74,10 +74,10 @@ export class NebulaCore implements INebulaCore {
   async openSettings() {
     await invoke('open_settings_window')
   }
-  async movePageToTrash(pageId: string) {
+  async movePageToTrash(pageId: string, navigate: NavigateFunction) {
     //Todo Make this
     console.log(`Moving ${pageId} to trash`)
-    this.store.dispatch(movePageToTrash({ pageId }))
+    this.store.dispatch(movePageToTrash({ pageId, navigate }))
     this.store.dispatch(NebulaModal.unloadModal())
   }
   async deletePagePermanent(pageId: string) {
