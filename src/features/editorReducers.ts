@@ -74,7 +74,10 @@ export const movePageToTrash = createAsyncThunk(
   'editor/movePageToTrash',
   async (payload: MovePageToTrashPayload, thunkApi) => {
     try {
-      let new_pages = await invoke<PageSimple[]>('move_page_to_trash', {
+      let new_pages = await invoke<{
+        pages: PageSimple[]
+        trash_pages: TrashPage[]
+      }>('move_page_to_trash', {
         pageId: payload.pageId,
       })
       return new_pages

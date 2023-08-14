@@ -153,7 +153,8 @@ const editorSlice = createSlice({
         }
 
         if (state.currentNotebook) {
-          state.currentNotebook.pages = action.payload
+          state.currentNotebook.pages = action.payload.pages
+          state.currentNotebook.trash_pages = action.payload.trash_pages
         }
       })
       .addCase(movePageToTrash.rejected, (state, action) => {

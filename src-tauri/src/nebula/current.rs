@@ -3,7 +3,7 @@ use crate::{
     nebula::Header::{FileHeader, FILE_FORMAT_CURRENT_VERSION},
     utils::Application::get_notebook_data_dir,
 };
-use chrono::Utc;
+use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use std::{
     collections::HashMap,
@@ -31,6 +31,7 @@ pub struct PageEntry {
     pub parent_id: Option<String>,
     pub sub_pages: Vec<String>,
     pub is_in_trash: bool,
+    pub deleted_date: Option<String>,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
@@ -72,20 +73,41 @@ impl PageEntry {
             sub_pages: Vec::new(),
             tags: None,
             is_in_trash: false,
+            deleted_date: None,
         }
     }
 
     pub fn is_in_trash(&self) -> bool {
         self.is_in_trash
     }
-    #[allow(dead_code)]
     pub fn add_to_trash(&mut self) {
         self.is_in_trash = true;
+        self.deleted_date = Some(Utc::now().to_rfc3339().to_string());
     }
 
     #[allow(dead_code)]
     pub fn remove_from_trash(&mut self) {
         self.is_in_trash = false;
+    }
+    pub fn get_remaining_days(&self) -> Option<i64> {
+        if !self.is_in_trash() {
+            return None;
+        }
+
+        match &self.deleted_date {
+            Some(deleted_date) => match DateTime::parse_from_rfc3339(&deleted_date) {
+                Ok(date_time) => {
+                    let thirty_days_later = date_time + chrono::Duration::days(30);
+                    let diff = thirty_days_later
+                        .signed_duration_since(Utc::now())
+                        .num_days();
+
+                    Some(diff)
+                }
+                Err(_) => None,
+            },
+            _ => None,
+        }
     }
 }
 // Content Implementation
@@ -101,11 +123,11 @@ impl PageContent {
 pub struct TrashPage {
     __id: String,
     title: String,
-    days_remaining: i32,
+    days_remaining: i64,
     //TODO Add Days remaining
 }
 impl TrashPage {
-    fn new(__id: String, title: String, days_remaining: i32) -> Self {
+    fn new(__id: String, title: String, days_remaining: i64) -> Self {
         TrashPage {
             __id,
             title,
@@ -198,12 +220,27 @@ impl NebulaNotebook {
         simple_page
     }
 
-    pub fn get_trash_pages(&self) -> Vec<TrashPage> {
+    pub fn get_trash_pages(&mut self) -> Vec<TrashPage> {
         let mut trash_pages: Vec<TrashPage> = Vec::new();
-        for (_, page) in self.page_map.iter() {
+        let mut pages_to_remove: Vec<String> = Vec::new();
+
+        for (_, page) in self.page_map.iter_mut() {
             if page.is_in_trash() {
-                trash_pages.push(TrashPage::new(page.__id.clone(), page.title.clone(), 30));
+                if let Some(remaining_days) = &page.get_remaining_days() {
+                    if *remaining_days == 0 {
+                        pages_to_remove.push(page.__id.clone());
+                    } else {
+                        trash_pages.push(TrashPage::new(
+                            page.__id.clone(),
+                            page.title.clone(),
+                            remaining_days.clone(),
+                        ));
+                    }
+                }
             }
+        }
+        for page_id in pages_to_remove {
+            self.page_map.remove(&page_id);
         }
         trash_pages
     }

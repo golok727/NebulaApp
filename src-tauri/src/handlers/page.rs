@@ -1,5 +1,8 @@
 use crate::{
-    nebula::NebulaNotebookFile::{PageEntry, PageSimple},
+    nebula::{
+        current::TrashPage,
+        NebulaNotebookFile::{PageEntry, PageSimple},
+    },
     state::AppState,
     utils::status::error::{ErrorCode, ErrorResponse},
 };
@@ -68,17 +71,27 @@ pub fn update_page(
     })?
 }
 
+#[derive(Serialize)]
+pub struct MovePageToTrashResponse {
+    pages: Vec<PageSimple>,
+    trash_pages: Vec<TrashPage>,
+}
+
 #[tauri::command]
 pub fn move_page_to_trash(
     state: State<Arc<Mutex<AppState>>>,
     page_id: String,
-) -> Result<Vec<PageSimple>, ErrorResponse> {
+) -> Result<MovePageToTrashResponse, ErrorResponse> {
     let mut state = state.lock().unwrap();
     state.use_notebook(|notebook| {
         if let Some(page) = notebook.page_map.get_mut(&page_id) {
             page.add_to_trash();
             notebook.save_to_file()?;
-            Ok(notebook.get_simple_pages())
+            let res = MovePageToTrashResponse {
+                pages: notebook.get_simple_pages(),
+                trash_pages: notebook.get_trash_pages(),
+            };
+            Ok(res)
         } else {
             Err(ErrorResponse::new(
                 ErrorCode::NotFoundError,
