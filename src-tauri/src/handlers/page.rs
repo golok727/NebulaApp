@@ -95,7 +95,35 @@ pub fn move_page_to_trash(
         } else {
             Err(ErrorResponse::new(
                 ErrorCode::NotFoundError,
-                "page not found".to_owned(),
+                "Page not found".to_owned(),
+            ))
+        }
+    })?
+}
+
+#[tauri::command]
+pub fn recover_page(
+    state: State<Arc<Mutex<AppState>>>,
+    trash_page_id: String,
+) -> Result<Vec<PageSimple>, ErrorResponse> {
+    let mut state = state.lock().unwrap();
+    state.use_notebook(|notebook| {
+        if let Some(page) = notebook.page_map.get_mut(&trash_page_id) {
+            if !page.is_in_trash() {
+                Err(ErrorResponse::new(
+                    ErrorCode::ClientError,
+                    "Page not in trash".to_owned(),
+                ))
+            } else {
+                page.remove_from_trash();
+
+                let _ = notebook.save_to_file();
+                Ok(notebook.get_simple_pages())
+            }
+        } else {
+            Err(ErrorResponse::new(
+                ErrorCode::NotFoundError,
+                "Page not found".to_owned(),
             ))
         }
     })?

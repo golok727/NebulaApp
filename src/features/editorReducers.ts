@@ -101,6 +101,20 @@ export const deletePagePermanent = createAsyncThunk(
     }
   }
 )
+type RecoverPagePayload = { trashPageId: string }
+export const recoverPage = createAsyncThunk(
+  'editor/recoverPage',
+  async (payload: RecoverPagePayload, thunkApi) => {
+    try {
+      let deleted_page_id = await invoke<PageSimple[]>('recover_page', {
+        trashPageId: payload.trashPageId,
+      })
+      return deleted_page_id
+    } catch (error) {
+      return thunkApi.rejectWithValue(error)
+    }
+  }
+)
 
 type LoadPagePayload = { pageId: string }
 export const loadPage = createAsyncThunk(

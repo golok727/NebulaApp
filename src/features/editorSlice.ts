@@ -6,6 +6,7 @@ import reducers, {
   loadNotebook,
   loadPage,
   movePageToTrash,
+  recoverPage,
 } from './editorReducers'
 
 export interface AppEditorState {
@@ -167,6 +168,16 @@ const editorSlice = createSlice({
         state.currentNotebook.trash_pages =
           state.currentNotebook.trash_pages.filter(
             (trashPage) => trashPage.__id !== action.payload
+          )
+      }
+    })
+
+    builder.addCase(recoverPage.fulfilled, (state, action) => {
+      if (state.currentNotebook) {
+        state.currentNotebook.pages = action.payload
+        state.currentNotebook.trash_pages =
+          state.currentNotebook.trash_pages.filter(
+            (trashPage) => trashPage.__id !== action.meta.arg.trashPageId
           )
       }
     })

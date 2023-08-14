@@ -2,7 +2,11 @@ import type { Store } from '@/app/store'
 import { invoke } from '@tauri-apps/api/tauri'
 import { HomeNotebook, HomeNotebooks } from '@/utils/notebook'
 import { NebulaModal } from '@/features/modalSlice'
-import { movePageToTrash, deletePagePermanent } from '@/features/editorReducers'
+import {
+  movePageToTrash,
+  deletePagePermanent,
+  recoverPage,
+} from '@/features/editorReducers'
 export interface INebulaCore {
   store: Store
   createNotebook: (notebookName: string) => Promise<string>
@@ -12,6 +16,7 @@ export interface INebulaCore {
   openSettings: () => Promise<void>
   movePageToTrash: (pageId: string) => Promise<void>
   deletePagePermanent: (pageId: string) => Promise<void>
+  recoverPage: (trashPageId: string) => Promise<void>
 }
 
 export class NebulaCore implements INebulaCore {
@@ -76,5 +81,8 @@ export class NebulaCore implements INebulaCore {
 
     this.store.dispatch(deletePagePermanent({ pageId }))
     this.store.dispatch(NebulaModal.unloadModal())
+  }
+  async recoverPage(trashPageId: string) {
+    this.store.dispatch(recoverPage({ trashPageId }))
   }
 }

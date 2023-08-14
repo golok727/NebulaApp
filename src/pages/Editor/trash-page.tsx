@@ -5,13 +5,18 @@ import './trash-page.css'
 import { MdDelete } from 'react-icons/md'
 import { useDispatch } from 'react-redux'
 import { NebulaModal } from '@/features/modalSlice'
+import { useNebulaCore } from '@/context/nebula'
 type Props = {
   trashPage: TrashPage
 }
 
 const TrashPage = ({ trashPage }: Props) => {
   const dispatch = useDispatch()
-  const handleDeletePagePermanent = () => {
+  const nebula = useNebulaCore()
+  const handleDeletePagePermanent = (
+    ev: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    ev.stopPropagation()
     dispatch(
       NebulaModal.showModal({
         id: 'removePagePermanent',
@@ -31,6 +36,11 @@ const TrashPage = ({ trashPage }: Props) => {
       })
     )
   }
+  const handleRecoverPage = (ev: React.MouseEvent<HTMLButtonElement>) => {
+    ev.stopPropagation()
+    nebula.core.recoverPage(trashPage.__id)
+  }
+
   return (
     <div className="sidebar__trash-page">
       <div className="sidebar__trash-page__left">
@@ -38,7 +48,7 @@ const TrashPage = ({ trashPage }: Props) => {
         <span className="trash-text">{trashPage.title}</span>
       </div>
       <div className="sidebar__trash-page__right">
-        <Button variant="transparent">
+        <Button onClick={handleRecoverPage} variant="transparent">
           <TbRefreshDot />
         </Button>
         <Button onClick={handleDeletePagePermanent} variant="transparent">
