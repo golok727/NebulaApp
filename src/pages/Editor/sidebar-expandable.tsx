@@ -42,19 +42,27 @@ const SidebarExpandable = (props: Props) => {
       })
     )
   }
-
-  const handlePageContext = (ev: React.MouseEvent<HTMLButtonElement>) => {
-    ev.stopPropagation()
+  const showContextMenu = (x: number, y: number) => {
     dispatch(
       NebulaModal.showModal({
         id: 'pageContext',
         type: 'page/context',
         pageId: page.__id,
-        x: ev.currentTarget.getBoundingClientRect().left,
-        y: ev.currentTarget.getBoundingClientRect().top + 10,
+        x: x,
+        y: y + 10,
         label: 'Options',
       })
     )
+  }
+  const handleContextMenu = (ev: React.MouseEvent<HTMLDivElement>) => {
+    ev.preventDefault()
+
+    showContextMenu(ev.clientX, ev.clientY)
+  }
+  const handlePageContext = (ev: React.MouseEvent<HTMLButtonElement>) => {
+    ev.stopPropagation()
+    let box = ev.currentTarget.getBoundingClientRect()
+    showContextMenu(box.left, box.top)
   }
 
   return (
@@ -62,11 +70,12 @@ const SidebarExpandable = (props: Props) => {
       <PageButton
         subPageCount={page.sub_pages.length}
         id={page.__id}
-        onAddClick={handleAddPage}
         isActive={pageId === page.__id}
-        onExpandClick={handleExpand}
         isExpanded={isPageExpanded}
+        onAddClick={handleAddPage}
+        onExpandClick={handleExpand}
         onClick={handleOnClick}
+        onContextMenu={handleContextMenu}
         onOptionsClick={handlePageContext}
       >
         {page.title}
@@ -103,11 +112,13 @@ const PageButton = (props: {
   onExpandClick?: () => void
   onAddClick?: React.MouseEventHandler<HTMLButtonElement>
   onOptionsClick?: React.MouseEventHandler<HTMLButtonElement>
+  onContextMenu?: React.MouseEventHandler<HTMLDivElement>
 }) => {
   const { isActive = false } = props
 
   return (
     <div
+      onContextMenu={props.onContextMenu}
       id={props.id}
       role="button"
       tabIndex={1}
