@@ -6,9 +6,10 @@ import { ChevronDoubleLeftIcon } from '@heroicons/react/24/outline'
 import { useCallback, useEffect, useState } from 'react'
 import { SlNotebook } from 'react-icons/sl'
 import { useDispatch, useSelector } from 'react-redux'
-import SidebarGroup from './sidebar-group'
+import SidebarGroup, { GroupTypes } from './sidebar-group'
 import './sidebar.css'
 import SidebarExpandable from './sidebar-expandable'
+import TrashPage from './trash-page'
 const Sidebar = () => {
   const sidebarWidth = useSelector(
     ({ app }: RootState) => app.sidebar.sidebarWidth
@@ -89,7 +90,7 @@ const Sidebar = () => {
         </header>
 
         <section className="sidebar__main">
-          <SidebarGroup groupTitle="Pages">
+          <SidebarGroup groupTitle="Pages" for={GroupTypes.Page}>
             {currentPages && currentPages.length > 0 ? (
               currentPages.map((page) => {
                 return <SidebarExpandable key={page.__id} page={page} />
@@ -99,10 +100,10 @@ const Sidebar = () => {
             )}
           </SidebarGroup>
 
-          <SidebarGroup key={'trash'} groupTitle="Trash">
+          <SidebarGroup key={'trash'} groupTitle="Trash" for={GroupTypes.Trash}>
             {trashPages && trashPages.length > 0 ? (
               trashPages.map((trashPage) => (
-                <li key={trashPage.__id}>{trashPage.title}</li>
+                <TrashPage key={trashPage.__id} trashPage={trashPage} />
               ))
             ) : (
               <span className="no-pages-found">Noting In Trash...</span>

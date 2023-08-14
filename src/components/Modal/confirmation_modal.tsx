@@ -1,15 +1,21 @@
-import React, { useCallback } from 'react'
-import { IConfirmationModal, NebulaModal } from '@/features/modalSlice'
-import './confirmation_modal.css'
-import Button from '../Button'
-import { useDispatch } from 'react-redux'
 import { useNebulaCore } from '@/context/nebula'
+import { IConfirmationModal, NebulaModal } from '@/features/modalSlice'
+import React, { useCallback, useEffect, useState } from 'react'
+import { AiOutlineWarning } from 'react-icons/ai'
+import { CgDanger } from 'react-icons/cg'
+import { useDispatch } from 'react-redux'
+import Button from '../Button'
+import './confirmation_modal.css'
 
 type Props = {
   modal: IConfirmationModal
 }
 const ConfirmationModal: React.FC<Props> = ({ modal }) => {
   const dispatch = useDispatch()
+  const [submitTimeLeft, setSubmitTimeLeft] = useState(
+    modal.dangerLevel > 1 ? 5 : -1
+  )
+
   const nebula = useNebulaCore()
   const getConfirmationHandler = useCallback(
     (modal: IConfirmationModal) => {
@@ -25,6 +31,21 @@ const ConfirmationModal: React.FC<Props> = ({ modal }) => {
     },
     [dispatch, modal]
   )
+  useEffect(() => {
+    let interval: NodeJS.Timer
+    if (modal.dangerLevel > 1) {
+      interval = setInterval(() => {
+        if (submitTimeLeft === -1) {
+          interval !== undefined && clearInterval(interval)
+          return
+        }
+        setSubmitTimeLeft((prev) => prev - 1)
+      }, 1000)
+    }
+    return () => {
+      interval !== undefined && clearTimeout(interval)
+    }
+  }, [])
 
   return (
     <div className="modal__confirmation_modal_container">
@@ -33,15 +54,24 @@ const ConfirmationModal: React.FC<Props> = ({ modal }) => {
         onClick={(ev) => ev.stopPropagation()}
       >
         <header>
-          <h3>{modal.for}</h3>
+          <div className="heading">
+            {modal.dangerLevel === 1 && (
+              <AiOutlineWarning style={{ color: 'yellow' }} />
+            )}
+            {modal.dangerLevel === 2 && <CgDanger style={{ color: 'red' }} />}
+            <h3>{modal.for}</h3>
+          </div>
           <p>{modal.information}</p>
         </header>
         <div className="confirmation_modal__actions">
           <Button
             onClick={getConfirmationHandler(modal)}
-            className="modal__confirmation_modal_btn confirm"
+            disabled={submitTimeLeft > -1}
+            className={`modal__confirmation_modal_btn confirm ${
+              modal.dangerLevel > 1 ? 'danger' : 'warning'
+            }`}
           >
-            Confirm
+            {submitTimeLeft < 0 ? 'Remove' : 'Wait ' + submitTimeLeft + ' (s)'}
           </Button>
           <Button
             onClick={() => dispatch(NebulaModal.unloadModal())}

@@ -11,7 +11,6 @@ import { toggleExpanded } from '@/features/editorSlice'
 import { useNavigate } from 'react-router-dom'
 import './sidebar-expandable.css'
 import { NebulaModal } from '@/features/modalSlice'
-import { RootState } from '@/app/store'
 interface Props {
   page: PageSimple
 }
@@ -119,6 +118,7 @@ const PageButton = (props: {
     >
       <div className="sidebar-expandable_container__button__left">
         <Button
+          className="expand-button"
           style={{ marginRight: '0.4rem' }}
           onClick={(ev) => {
             ev.stopPropagation()

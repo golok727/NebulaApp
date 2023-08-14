@@ -15,6 +15,16 @@
   gap: 1rem;
 }
 
+.modal__confirmation_modal header .heading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+}
+
+.modal__confirmation_modal header .heading svg {
+  font-size: 1rem;
+}
 .modal__confirmation_modal header p {
   white-space: pre-wrap;
   color: var(--text-gray);
@@ -23,8 +33,15 @@
   font-weight: 700;
 }
 .modal__confirmation_modal_btn.confirm {
-  background-color: rgb(48, 179, 37);
+  background-color: rgb(218, 214, 28);
   color: #000;
+}
+
+.modal__confirmation_modal_btn.confirm.danger {
+  background-color: rgb(218, 28, 28);
+}
+.modal__confirmation_modal_btn.confirm.warning {
+  background-color: rgb(218, 214, 28);
 }
 
 .modal__confirmation_modal_btn.confirm:hover {

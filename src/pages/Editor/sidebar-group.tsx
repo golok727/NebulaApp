@@ -1,20 +1,28 @@
 import Button from '@/components/Button'
 import './sidebar-group.css'
 
-import React from 'react'
+import React, { useState } from 'react'
 import { AiOutlineReload } from 'react-icons/ai'
-
+import { MdDelete } from 'react-icons/md'
 import { CiStickyNote } from 'react-icons/ci'
 import { VscSaveAll, VscCollapseAll } from 'react-icons/vsc'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '@/app/store'
 import { NebulaModal } from '@/features/modalSlice'
 import { collapseAll } from '@/features/editorSlice'
+import { TbRefreshDot } from 'react-icons/tb'
+import { BiExpandVertical, BiCollapseVertical } from 'react-icons/bi'
+export const GroupTypes = {
+  Page: 'Page',
+  Trash: 'Trash',
+} as const
+
 interface Props {
   groupTitle: string
   children: React.ReactNode
+  for: keyof typeof GroupTypes
 }
-const SidebarGroup = ({ groupTitle, children }: Props) => {
+const SidebarGroup = ({ groupTitle, children, for: groupFor }: Props) => {
   const currentPage = useSelector(
     (state: RootState) => state.editor.currentPage
   )
@@ -35,31 +43,59 @@ const SidebarGroup = ({ groupTitle, children }: Props) => {
   const handleCollapseAll = () => {
     dispatch(collapseAll())
   }
+  const [isExpanded, setIsExpanded] = useState(
+    groupFor === GroupTypes.Page ? true : false
+  )
   return (
     <div className="sidebar__group">
       <header className="sidebar__group__header">
-        <span>{groupTitle}</span>
-
-        <div className="controls">
-          <Button onClick={handleAddPage} variant="transparent">
-            <CiStickyNote />
+        <div className="sidebar__group__header__left">
+          <Button variant="menu" onClick={() => setIsExpanded((prev) => !prev)}>
+            {isExpanded ? <BiCollapseVertical /> : <BiExpandVertical />}
           </Button>
-
-          <Button variant="transparent">
-            <VscSaveAll />
-          </Button>
-
-          <Button variant="transparent">
-            <AiOutlineReload />
-          </Button>
-
-          <Button onClick={handleCollapseAll} variant="transparent">
-            <VscCollapseAll />
-          </Button>
+          <span>{groupTitle}</span>
         </div>
-      </header>
 
-      <section className="sidebar__group__content">{children}</section>
+        {groupFor === GroupTypes.Page && (
+          <div className="controls">
+            {' '}
+            <Button onClick={handleAddPage} variant="transparent">
+              <CiStickyNote />
+            </Button>
+            <Button variant="transparent">
+              <VscSaveAll />
+            </Button>
+            <Button variant="transparent">
+              <AiOutlineReload />
+            </Button>
+            <Button onClick={handleCollapseAll} variant="transparent">
+              <VscCollapseAll />
+            </Button>
+          </div>
+        )}
+
+        {groupFor === GroupTypes.Trash && (
+          <div className="controls">
+            <Button variant="transparent">
+              <TbRefreshDot />
+            </Button>
+            <Button variant="transparent">
+              <MdDelete />
+            </Button>
+          </div>
+        )}
+      </header>
+      <section
+        style={{
+          overflow: 'hidden',
+          display: 'grid',
+          gridTemplateRows: isExpanded ? '1fr' : '0fr',
+          transition: 'all .5s ease',
+        }}
+        className="sidebar__group__content"
+      >
+        <div style={{ overflow: 'hidden' }}>{children}</div>
+      </section>
     </div>
   )
 }

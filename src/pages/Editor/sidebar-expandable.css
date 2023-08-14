@@ -19,6 +19,10 @@
   opacity: 1;
 }
 
+.sidebar-expandable_container__button:hover .expand-button {
+  color: var(--clr-text-primary);
+}
+
 .sidebar-expandable_container__button__left {
   display: flex;
 }

@@ -1,0 +1,51 @@
+.sidebar__trash-page {
+  background-color: transparent;
+  padding: 0.2rem 0.4rem;
+  margin-bottom: 0.2rem;
+  color: #999999;
+  border: none;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  align-items: center;
+  cursor: pointer;
+  border-radius: 6px;
+  user-select: none;
+}
+.sidebar__trash-page:hover {
+  background-color: rgba(255, 255, 255, 0.055);
+}
+.sidebar__trash-page .trash-text {
+  font-size: 0.8rem;
+  color: var(--text-gray);
+}
+
+.sidebar__trash-page .trash-text-days-remaining {
+  font-size: 0.6rem;
+  color: #777;
+}
+.sidebar__trash-page__left {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.sidebar__trash-page__right {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.sidebar__trash-page:hover .sidebar__trash-page__right {
+  opacity: 1;
+}
+
+.sidebar__trash-page:hover .trash-page-button-icon {
+  color: var(--clr-text-primary);
+}
+
+.trash-page-button-icon {
+  color: #444;
+}
