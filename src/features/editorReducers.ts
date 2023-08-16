@@ -56,6 +56,12 @@ const reducers = {
   unloadPage: (state: AppEditorState) => {
     state.currentPage = null
   },
+  updateEditorState: (
+    state: AppEditorState,
+    action: PayloadAction<Partial<AppEditorState['status']>>
+  ) => {
+    state.status = { ...state.status, ...action.payload }
+  },
   resetEditorStatus: (state: AppEditorState) => {
     state.status = {
       ...state.status,

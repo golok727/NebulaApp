@@ -81,13 +81,6 @@ const editorSlice = createSlice({
     // Load Page
     builder
       .addCase(loadPage.fulfilled, (state, action) => {
-        state.status = {
-          ...state.status,
-          loading: false,
-          code: '',
-          error: false,
-          message: '',
-        }
         state.currentPage = action.payload.page
         state.currentDoc = action.payload.page.content.body
         state.expandedPages = [
@@ -240,4 +233,5 @@ export const {
   togglePageGroup,
   toggleTrashGroup,
   updatePageName,
+  updateEditorState,
 } = editorSlice.actions

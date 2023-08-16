@@ -21,7 +21,7 @@ const PageRenameModal: React.FC<Props> = ({ modal }) => {
 
   const handleRenamePage = async (ev: React.FormEvent) => {
     ev.preventDefault()
-    await nebula.core.renamePage(modal.pageId, currentPageName ?? '', newName)
+    await nebula.core.renamePage(modal.pageId, newName)
     dispatch(NebulaModal.unloadModal())
   }
   return (

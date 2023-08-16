@@ -63,8 +63,8 @@ impl PageEntry {
     pub fn new(title: String, parent_id: Option<String>) -> Self {
         PageEntry {
             __id: Uuid::new_v4().to_string(),
-            title,
-            content: PageContent::new(),
+            title: title.clone(),
+            content: PageContent::new(format!("# {}", title.clone())),
             created_at: Utc::now().to_rfc3339().to_string(),
             updated_at: Utc::now().to_rfc3339().to_string(),
             pinned: false,
@@ -113,10 +113,10 @@ impl PageEntry {
 }
 // Content Implementation
 impl PageContent {
-    fn new() -> Self {
+    fn new(body: String) -> Self {
         PageContent {
             doctype: "markdown".to_string(),
-            body: "".to_string(),
+            body,
         }
     }
 }

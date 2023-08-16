@@ -1,4 +1,4 @@
-import type { Store } from '@/app/store'
+import type { AppDispatch, Store } from '@/app/store'
 import { invoke } from '@tauri-apps/api/tauri'
 import { HomeNotebook, HomeNotebooks } from '@/utils/notebook'
 import { NebulaModal } from '@/features/modalSlice'
@@ -8,7 +8,7 @@ import {
   recoverPage,
 } from '@/features/editorReducers'
 import { NavigateFunction } from 'react-router-dom'
-import { updatePageName } from '@/features/editorSlice'
+import { updateEditorState, updatePageName } from '@/features/editorSlice'
 export interface INebulaCore {
   store: Store
   createNotebook: (notebookName: string) => Promise<string>
@@ -24,11 +24,7 @@ export interface INebulaCore {
   ) => Promise<void>
   recoverAll: () => Promise<void>
   deleteAllPermanently: () => Promise<void>
-  renamePage: (
-    pageId: string,
-    oldName: string,
-    newName: string
-  ) => Promise<void>
+  renamePage: (pageId: string, newName: string) => Promise<void>
 }
 
 export class NebulaCore implements INebulaCore {
@@ -88,12 +84,16 @@ export class NebulaCore implements INebulaCore {
   }
   async deletePagePermanent(pageId: string) {
     this.store.dispatch(deletePagePermanent({ pageId }))
+
+    putFadingMessage('Deleted Page', this.store.dispatch)
   }
   async recoverPage(
     trashPageId: string,
     navigate: NavigateFunction | undefined = undefined
   ) {
     this.store.dispatch(recoverPage({ trashPageId, navigate }))
+
+    putFadingMessage('Recovered 1 Page', this.store.dispatch)
   }
   async recoverAll() {
     let trashPages =
@@ -104,6 +104,12 @@ export class NebulaCore implements INebulaCore {
         this.store.dispatch(recoverPage({ trashPageId: toDelete }))
       }
     }
+
+    const message = `Recovered ${trashPages.length} ${
+      trashPages.length === 1 ? 'page' : 'pages'
+    }`
+
+    putFadingMessage(message, this.store.dispatch)
   }
   async deleteAllPermanently() {
     let trashPages =
@@ -114,12 +120,30 @@ export class NebulaCore implements INebulaCore {
         this.store.dispatch(deletePagePermanent({ pageId: toDelete }))
       }
     }
+
+    const message = `Deleted ${trashPages.length} ${
+      trashPages.length === 1 ? 'page' : 'pages'
+    }`
+    putFadingMessage(message, this.store.dispatch)
   }
 
-  async renamePage(pageId: string, oldName: string, newName: string) {
+  async renamePage(pageId: string, newName: string) {
     try {
       const res = await invoke<string>('rename_page', { pageId, newName })
       this.store.dispatch(updatePageName({ pageId, newName: res }))
+
+      putFadingMessage('Page Renamed', this.store.dispatch)
     } catch {}
   }
+}
+
+function putFadingMessage(
+  message: string,
+  dispatch: AppDispatch,
+  decay: number = 2000
+) {
+  dispatch(updateEditorState({ message }))
+  setTimeout(() => {
+    dispatch(updateEditorState({ message: 'Up To Date' }))
+  }, decay)
 }
