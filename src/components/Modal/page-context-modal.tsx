@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import React, { useEffect, useRef } from 'react'
 import './page-context-modal.css'
 import { IPageContextModal, NebulaModal } from '@/features/modalSlice'
 import { CgRename } from 'react-icons/cg'
@@ -12,6 +12,18 @@ type Props = {
 const PageContextModal = ({ modal }: Props) => {
   const containerRef = useRef<HTMLDivElement | null>(null)
   const dispatch = useDispatch()
+  const handleRenamePage = (ev: React.MouseEvent<HTMLButtonElement>) => {
+    dispatch(
+      NebulaModal.showModal({
+        id: 'renamePage',
+        type: 'page/rename',
+        pageId: modal.pageId,
+        label: 'Rename Page',
+        x: ev.pageX,
+        y: ev.pageY,
+      })
+    )
+  }
   const handleRemovePage = () => {
     dispatch(
       NebulaModal.showModal({
@@ -38,7 +50,7 @@ const PageContextModal = ({ modal }: Props) => {
   return (
     <div ref={containerRef} tabIndex={0} className="modal__page-context">
       {modal.label && <span className="modal__title">{modal.label}</span>}
-      <button className="modal__button">
+      <button onClick={handleRenamePage} className="modal__button">
         <CgRename />
         Rename
       </button>

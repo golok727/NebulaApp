@@ -8,6 +8,7 @@ import {
   recoverPage,
 } from '@/features/editorReducers'
 import { NavigateFunction } from 'react-router-dom'
+import { updatePageName } from '@/features/editorSlice'
 export interface INebulaCore {
   store: Store
   createNotebook: (notebookName: string) => Promise<string>
@@ -23,6 +24,11 @@ export interface INebulaCore {
   ) => Promise<void>
   recoverAll: () => Promise<void>
   deleteAllPermanently: () => Promise<void>
+  renamePage: (
+    pageId: string,
+    oldName: string,
+    newName: string
+  ) => Promise<void>
 }
 
 export class NebulaCore implements INebulaCore {
@@ -108,5 +114,12 @@ export class NebulaCore implements INebulaCore {
         this.store.dispatch(deletePagePermanent({ pageId: toDelete }))
       }
     }
+  }
+
+  async renamePage(pageId: string, oldName: string, newName: string) {
+    try {
+      const res = await invoke<string>('rename_page', { pageId, newName })
+      this.store.dispatch(updatePageName({ pageId, newName: res }))
+    } catch {}
   }
 }

@@ -1,5 +1,5 @@
 import { createSelector } from '@reduxjs/toolkit'
-import { RootState } from '@/app/store'
+import store, { RootState } from '@/app/store'
 import { C } from '@tauri-apps/api/shell-efff51a2'
 
 const getAppMode = (state: RootState) => state.app.mode
@@ -64,3 +64,23 @@ export const currentPageAndNoteName = createSelector(
     currentNotebookName,
   })
 )
+const getPageName = (pages: PageSimple[], pageId: string): string | null => {
+  for (const page of pages) {
+    if (page.__id === pageId) {
+      return page.title ?? null
+    }
+    const subPageResult = getPageName(page.sub_pages, pageId)
+    if (subPageResult !== null) {
+      return subPageResult
+    }
+  }
+  return null
+}
+
+export const getPageNameWithPageId = (pageId: string): string | null => {
+  let currentNotebook = store.getState().editor.currentNotebook
+  if (currentNotebook === null) return null
+  const pages = currentNotebook.pages
+
+  return getPageName(pages, pageId)
+}

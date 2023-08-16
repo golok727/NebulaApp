@@ -85,6 +85,7 @@ const ConfirmationModal: React.FC<Props> = ({ modal }) => {
         </header>
         <div className="confirmation_modal__actions">
           <Button
+            autoFocus
             onClick={getConfirmationHandler(modal)}
             disabled={submitTimeLeft > -1}
             className={`modal__confirmation_modal_btn confirm ${
@@ -96,7 +97,6 @@ const ConfirmationModal: React.FC<Props> = ({ modal }) => {
           <Button
             onClick={() => dispatch(NebulaModal.unloadModal())}
             className="modal__confirmation_modal_btn reject"
-            autoFocus
           >
             Cancel
           </Button>

@@ -4,6 +4,26 @@ import { createAsyncThunk } from '@reduxjs/toolkit'
 import { invoke } from '@tauri-apps/api/tauri'
 import { NavigateFunction } from 'react-router-dom'
 
+const updatePageName = (
+  state: AppEditorState,
+  action: PayloadAction<{ pageId: string; newName: string }>
+) => {
+  let pages = state.currentNotebook?.pages
+  if (!pages) return
+  const helper = (pages: PageSimple[], pageId: string, newName: string) => {
+    for (const page of pages) {
+      if (page.__id === pageId) {
+        page.title = newName
+        return
+      }
+      if (page.sub_pages.length > 0) {
+        helper(page.sub_pages, pageId, newName)
+      }
+    }
+  }
+  helper(pages, action.payload.pageId, action.payload.newName)
+}
+
 const reducers = {
   setCurrentDoc: (state: AppEditorState, action: PayloadAction<string>) => {
     state.currentDoc = action.payload
@@ -70,6 +90,7 @@ const reducers = {
   ) => {
     state.sidebarGroup.trash = action.payload
   },
+  updatePageName,
 }
 type LoadNotebookPayload = { notebookId: string }
 export const loadNotebook = createAsyncThunk(

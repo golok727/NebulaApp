@@ -54,9 +54,6 @@ const editorSlice = createSlice({
         code: payload.code ?? '',
       }
       state.status = { ...state.status, error: true, ...messageAndCode }
-      setTimeout(() => {
-        state.status = { ...state.status, error: false, code: '', message: '' }
-      }, 3000)
     }
 
     builder
@@ -129,6 +126,38 @@ const editorSlice = createSlice({
         handleRejectedStatus(state, action.payload)
       })
 
+    /// Helper to get the next page or previous or parent page
+    const navigateTo = (
+      pages: PageSimple[],
+      movedPage: string
+    ): string | null => {
+      for (const page of pages) {
+        if (page.__id === movedPage) {
+          const currentIndex = pages.indexOf(page)
+          if (pages.length === 1) return pages[currentIndex].parent_id
+
+          if (currentIndex === 0) {
+            return pages[currentIndex + 1]?.__id ?? null
+          } else if (currentIndex === pages.length - 1) {
+            return pages[currentIndex - 1]?.__id ?? null
+          } else {
+            return (
+              pages[currentIndex - 1]?.__id ??
+              pages[currentIndex + 1]?.__id ??
+              null
+            )
+          }
+        }
+
+        const subPageResult = navigateTo(page.sub_pages, movedPage)
+        if (subPageResult !== null) {
+          return subPageResult
+        }
+      }
+
+      return null
+    }
+
     // Move Page to trash
     builder
       .addCase(movePageToTrash.fulfilled, (state, action) => {
@@ -139,28 +168,6 @@ const editorSlice = createSlice({
           error: false,
           message: '',
         }
-        const navigateTo = (
-          pages: PageSimple[],
-          movedPage: string
-        ): string | null => {
-          let movedPageIdx = pages.findIndex((page) => page.__id === movedPage)
-
-          if (pages.length === 1) {
-            return pages[movedPageIdx]?.parent_id ?? null
-          }
-          if (movedPageIdx < 0) {
-            for (const page of pages) {
-              return navigateTo(page.sub_pages, movedPage)
-            }
-          } else {
-            if (movedPageIdx === pages.length - 1) {
-              return pages[movedPageIdx - 1]?.__id ?? null
-            } else {
-              return pages[movedPageIdx + 1]?.__id ?? null
-            }
-          }
-          return null
-        }
 
         if (state.currentNotebook) {
           const needToNavigate =
@@ -169,13 +176,14 @@ const editorSlice = createSlice({
           const navigate = action.meta.arg.navigate
           if (needToNavigate && navigate !== undefined) {
             const movedPageId = action.meta.arg.pageId
+
             const navigateToPage = navigateTo(
               state.currentNotebook.pages,
               movedPageId
             )
-            console.log(navigateToPage)
             state.currentNotebook.pages = action.payload.pages
             state.currentNotebook.trash_pages = action.payload.trash_pages
+
             if (navigateToPage !== null) {
               navigate(
                 `/editor/${state.currentNotebook.__id}/${navigateToPage}`
@@ -231,4 +239,5 @@ export const {
   setTrashGroupState,
   togglePageGroup,
   toggleTrashGroup,
+  updatePageName,
 } = editorSlice.actions

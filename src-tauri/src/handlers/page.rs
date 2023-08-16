@@ -142,3 +142,17 @@ pub fn delete_page_permanently(
         deleted_page
     })?
 }
+
+#[tauri::command]
+pub fn rename_page(
+    state: State<Arc<Mutex<AppState>>>,
+    page_id: String,
+    new_name: String,
+) -> Result<String, ErrorResponse> {
+    let mut state = state.lock().unwrap();
+    state.use_notebook(|notebook| {
+        let renamed = notebook.rename_page(&page_id, &new_name);
+        let _ = notebook.save_to_file();
+        renamed
+    })?
+}

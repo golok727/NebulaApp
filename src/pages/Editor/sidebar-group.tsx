@@ -126,10 +126,18 @@ const SidebarGroup = ({ groupTitle, children, for: groupFor }: Props) => {
 
         {groupFor === GroupTypes.Trash && (
           <div className="controls">
-            <Button onClick={handleRecoverAll} variant="transparent">
+            <Button
+              disabled={trashPagesLength === 0}
+              onClick={handleRecoverAll}
+              variant="transparent"
+            >
               <TbRefreshDot />
             </Button>
-            <Button onClick={handleDeleteAll} variant="transparent">
+            <Button
+              disabled={trashPagesLength === 0}
+              onClick={handleDeleteAll}
+              variant="transparent"
+            >
               <MdDelete />
             </Button>
           </div>

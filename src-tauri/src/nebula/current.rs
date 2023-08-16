@@ -335,7 +335,23 @@ impl<'a> NebulaNotebook {
         }
         new_page.__id.to_owned()
     }
+    pub fn rename_page(
+        &mut self,
+        page_id: &'a str,
+        new_name: &'a str,
+    ) -> Result<String, ErrorResponse> {
+        match self.page_map.get_mut(page_id) {
+            Some(page) => {
+                page.title = new_name.into();
+                Ok(new_name.to_string())
+            }
 
+            _ => Err(ErrorResponse::new(
+                ErrorCode::NotFoundError,
+                "Page not found".into(),
+            )),
+        }
+    }
     pub fn save_to_file(&self) -> Result<(), ErrorResponse> {
         let notebook_data_dir = get_notebook_data_dir();
         //?  Get the storage Dir and make a new file with the data

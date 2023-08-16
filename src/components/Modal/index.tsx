@@ -8,6 +8,7 @@ import PageCreationModal from './page-create-modal'
 import PageContextModal from './page-context-modal'
 import NotebookCreateModal from './notebook-create-modal'
 import ConfirmationModal from './confirmation_modal'
+import PageRenameModal from './page-rename-modal'
 
 const Modal = () => {
   const modalContainerRef = useRef<HTMLDivElement | null>(null)
@@ -57,6 +58,9 @@ const Modal = () => {
       }
       case 'context/confirm': {
         return <ConfirmationModal modal={currentModal} />
+      }
+      case 'page/rename': {
+        return <PageRenameModal modal={currentModal} />
       }
       default:
         return <></>

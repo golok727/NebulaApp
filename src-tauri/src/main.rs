@@ -73,6 +73,7 @@ fn main() {
             page::move_page_to_trash,
             page::delete_page_permanently,
             page::recover_page,
+            page::rename_page,
             window::open_settings_window
         ])
         .register_uri_scheme_protocol("nb", nb_protocol_handler)
