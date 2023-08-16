@@ -19,8 +19,10 @@ export interface INebulaCore {
   deletePagePermanent: (pageId: string) => Promise<void>
   recoverPage: (
     trashPageId: string,
-    navigate: NavigateFunction
+    navigate?: NavigateFunction
   ) => Promise<void>
+  recoverAll: () => Promise<void>
+  deleteAllPermanently: () => Promise<void>
 }
 
 export class NebulaCore implements INebulaCore {
@@ -52,6 +54,7 @@ export class NebulaCore implements INebulaCore {
       })
     }
   }
+
   async saveCurrentNotebook() {
     let state = this.store.getState()
     let currentPageId = state.editor.currentPage?.__id
@@ -75,18 +78,35 @@ export class NebulaCore implements INebulaCore {
     await invoke('open_settings_window')
   }
   async movePageToTrash(pageId: string, navigate: NavigateFunction) {
-    //Todo Make this
-    console.log(`Moving ${pageId} to trash`)
     this.store.dispatch(movePageToTrash({ pageId, navigate }))
-    this.store.dispatch(NebulaModal.unloadModal())
   }
   async deletePagePermanent(pageId: string) {
-    console.log('Permanent Delete ' + pageId)
-
     this.store.dispatch(deletePagePermanent({ pageId }))
-    this.store.dispatch(NebulaModal.unloadModal())
   }
-  async recoverPage(trashPageId: string, navigate: NavigateFunction) {
+  async recoverPage(
+    trashPageId: string,
+    navigate: NavigateFunction | undefined = undefined
+  ) {
     this.store.dispatch(recoverPage({ trashPageId, navigate }))
+  }
+  async recoverAll() {
+    let trashPages =
+      this.store.getState().editor.currentNotebook?.trash_pages ?? []
+    if (trashPages.length > 0) {
+      for (let i = 0; i < trashPages.length; i++) {
+        let toDelete = trashPages[i].__id
+        this.store.dispatch(recoverPage({ trashPageId: toDelete }))
+      }
+    }
+  }
+  async deleteAllPermanently() {
+    let trashPages =
+      this.store.getState().editor.currentNotebook?.trash_pages ?? []
+    if (trashPages.length > 0) {
+      for (let i = 0; i < trashPages.length; i++) {
+        let toDelete = trashPages[i].__id
+        this.store.dispatch(deletePagePermanent({ pageId: toDelete }))
+      }
+    }
   }
 }

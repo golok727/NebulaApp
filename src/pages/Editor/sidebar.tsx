@@ -11,6 +11,8 @@ import './sidebar.css'
 import SidebarExpandable from './sidebar-expandable'
 import TrashPage from './trash-page'
 const Sidebar = () => {
+  const status = useSelector((state: RootState) => state.editor.status.message)
+
   const sidebarWidth = useSelector(
     ({ app }: RootState) => app.sidebar.sidebarWidth
   )
@@ -111,7 +113,9 @@ const Sidebar = () => {
           </SidebarGroup>
         </section>
         {/* Status */}
-        <div className="sidebar__app-status">Up to date</div>
+        <div className="sidebar__app-status">
+          {status ? status : 'Up to Date'}
+        </div>
       </div>
       <div className="resizer" onMouseDown={handleMouseDown}></div>
     </div>

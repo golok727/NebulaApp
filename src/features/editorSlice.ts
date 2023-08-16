@@ -8,13 +8,16 @@ import reducers, {
   movePageToTrash,
   recoverPage,
 } from './editorReducers'
-import { isGeneratorFunction } from 'util/types'
 
 export interface AppEditorState {
   currentDoc: string
   currentNotebook: NotebookInfo | null
   currentPage: PageEntry | null
   expandedPages: string[]
+  sidebarGroup: {
+    pages: boolean
+    trash: boolean
+  }
   status: {
     code: string
     loading: boolean
@@ -28,6 +31,10 @@ const initialState: AppEditorState = {
   currentNotebook: null,
   currentPage: null,
   expandedPages: [],
+  sidebarGroup: {
+    pages: true,
+    trash: false,
+  },
   status: {
     code: '',
     loading: false,
@@ -41,15 +48,15 @@ const editorSlice = createSlice({
   initialState,
   reducers,
   extraReducers: (builder) => {
-    // Load Notebook
-
     const handleRejectedStatus = (state: AppEditorState, payload: any) => {
-      //TODO Set timeout to clear the error
       const messageAndCode = {
         message: payload.message ?? '',
         code: payload.code ?? '',
       }
       state.status = { ...state.status, error: true, ...messageAndCode }
+      setTimeout(() => {
+        state.status = { ...state.status, error: false, code: '', message: '' }
+      }, 3000)
     }
 
     builder
@@ -76,13 +83,6 @@ const editorSlice = createSlice({
 
     // Load Page
     builder
-      .addCase(loadPage.pending, (state) => {
-        state.status = {
-          ...state.status,
-          loading: true,
-          message: 'Loading Page',
-        }
-      })
       .addCase(loadPage.fulfilled, (state, action) => {
         state.status = {
           ...state.status,
@@ -104,13 +104,6 @@ const editorSlice = createSlice({
     // Add Page
 
     builder
-      .addCase(addPage.pending, (state) => {
-        state.status = {
-          ...state.status,
-          loading: true,
-          message: 'Adding Page',
-        }
-      })
       .addCase(addPage.fulfilled, (state, action) => {
         state.status = {
           ...state.status,
@@ -135,17 +128,9 @@ const editorSlice = createSlice({
       .addCase(addPage.rejected, (state, action) => {
         handleRejectedStatus(state, action.payload)
       })
+
     // Move Page to trash
-
     builder
-      .addCase(movePageToTrash.pending, (state) => {
-        state.status = {
-          ...state.status,
-          loading: true,
-          message: 'Moving Page To Trash',
-        }
-      })
-
       .addCase(movePageToTrash.fulfilled, (state, action) => {
         state.status = {
           ...state.status,
@@ -158,10 +143,11 @@ const editorSlice = createSlice({
           pages: PageSimple[],
           movedPage: string
         ): string | null => {
-          if (pages.length === 1) {
-            return null
-          }
           let movedPageIdx = pages.findIndex((page) => page.__id === movedPage)
+
+          if (pages.length === 1) {
+            return pages[movedPageIdx]?.parent_id ?? null
+          }
           if (movedPageIdx < 0) {
             for (const page of pages) {
               return navigateTo(page.sub_pages, movedPage)
@@ -180,17 +166,16 @@ const editorSlice = createSlice({
           const needToNavigate =
             state.currentPage &&
             state.currentPage.__id === action.meta.arg.pageId
-          if (needToNavigate) {
+          const navigate = action.meta.arg.navigate
+          if (needToNavigate && navigate !== undefined) {
             const movedPageId = action.meta.arg.pageId
-            const navigate = action.meta.arg.navigate
             const navigateToPage = navigateTo(
               state.currentNotebook.pages,
               movedPageId
             )
-
+            console.log(navigateToPage)
             state.currentNotebook.pages = action.payload.pages
             state.currentNotebook.trash_pages = action.payload.trash_pages
-
             if (navigateToPage !== null) {
               navigate(
                 `/editor/${state.currentNotebook.__id}/${navigateToPage}`
@@ -225,9 +210,9 @@ const editorSlice = createSlice({
           state.currentNotebook.trash_pages.filter(
             (trashPage) => trashPage.__id !== recoveredPage
           )
-        action.meta.arg.navigate(
-          `/editor/${state.currentNotebook.__id}/${recoveredPage}`
-        )
+        const navigate = action.meta.arg.navigate
+        if (navigate)
+          navigate(`/editor/${state.currentNotebook.__id}/${recoveredPage}`)
       }
     })
   },
@@ -242,4 +227,8 @@ export const {
   toggleExpanded,
   collapseAll,
   unloadPage,
+  setPageGroupState,
+  setTrashGroupState,
+  togglePageGroup,
+  toggleTrashGroup,
 } = editorSlice.actions

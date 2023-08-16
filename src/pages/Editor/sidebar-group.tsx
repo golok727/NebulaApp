@@ -1,10 +1,15 @@
 import Button from '@/components/Button'
+import React, { useCallback, useMemo } from 'react'
 import './sidebar-group.css'
 
 import { RootState } from '@/app/store'
-import { collapseAll } from '@/features/editorSlice'
+import { useNebulaCore } from '@/context/nebula'
+import {
+  collapseAll,
+  togglePageGroup,
+  toggleTrashGroup,
+} from '@/features/editorSlice'
 import { NebulaModal } from '@/features/modalSlice'
-import React, { useState } from 'react'
 import { AiOutlineReload } from 'react-icons/ai'
 import { BiCollapseVertical, BiExpandVertical } from 'react-icons/bi'
 import { CiStickyNote } from 'react-icons/ci'
@@ -26,7 +31,12 @@ const SidebarGroup = ({ groupTitle, children, for: groupFor }: Props) => {
   const currentPage = useSelector(
     (state: RootState) => state.editor.currentPage
   )
+  const trashPagesLength = useSelector(
+    (state: RootState) => state.editor.currentNotebook?.trash_pages.length ?? 0
+  )
+
   const dispatch = useDispatch()
+  const nebula = useNebulaCore()
   const handleAddPage = (ev: React.MouseEvent<HTMLButtonElement>) => {
     dispatch(
       NebulaModal.showModal({
@@ -43,17 +53,60 @@ const SidebarGroup = ({ groupTitle, children, for: groupFor }: Props) => {
   const handleCollapseAll = () => {
     dispatch(collapseAll())
   }
-  const [isExpanded, setIsExpanded] = useState(
-    groupFor === GroupTypes.Page ? true : false
+  const handleRecoverAll = () => {
+    nebula.core.recoverAll()
+  }
+  const handleDeleteAll = () => {
+    dispatch(
+      NebulaModal.showModal({
+        id: 'removeAllPagesPermanent',
+        type: 'context/confirm',
+        x: 0,
+        y: 0,
+        label: 'Clear Trash',
+        dangerLevel: 2,
+        for: 'Delete Page',
+        information:
+          'You are about to delete all pages in trash and their sub pages Permanently.\nDeleted pages will not be available again',
+        fullScreen: true,
+        props: {
+          type: 'removeAllPagesPermanent',
+        },
+      })
+    )
+  }
+
+  const sidebarGroupState = useSelector(
+    (state: RootState) => state.editor.sidebarGroup
   )
+  const isExpanded = useMemo(() => {
+    if (groupFor === GroupTypes.Page) return sidebarGroupState.pages
+    if (groupFor === GroupTypes.Trash) return sidebarGroupState.trash
+  }, [groupFor, sidebarGroupState])
+
+  const getGroupHandler = useCallback(() => {
+    if (groupFor === GroupTypes.Page) {
+      return () => {
+        dispatch(togglePageGroup())
+      }
+    }
+    if (groupFor === GroupTypes.Trash) {
+      return () => {
+        dispatch(toggleTrashGroup())
+      }
+    }
+  }, [groupFor, sidebarGroupState])
   return (
     <div className="sidebar__group">
       <header className="sidebar__group__header">
         <div className="sidebar__group__header__left">
-          <Button variant="menu" onClick={() => setIsExpanded((prev) => !prev)}>
+          <Button variant="menu" onClick={getGroupHandler()}>
             {isExpanded ? <BiCollapseVertical /> : <BiExpandVertical />}
           </Button>
           <span>{groupTitle}</span>
+          {trashPagesLength > 0 && groupFor === GroupTypes.Trash && (
+            <span className="trash_pages_length">{`( ${trashPagesLength} )`}</span>
+          )}
         </div>
 
         {groupFor === GroupTypes.Page && (
@@ -73,10 +126,10 @@ const SidebarGroup = ({ groupTitle, children, for: groupFor }: Props) => {
 
         {groupFor === GroupTypes.Trash && (
           <div className="controls">
-            <Button variant="transparent">
+            <Button onClick={handleRecoverAll} variant="transparent">
               <TbRefreshDot />
             </Button>
-            <Button variant="transparent">
+            <Button onClick={handleDeleteAll} variant="transparent">
               <MdDelete />
             </Button>
           </div>

@@ -15,17 +15,18 @@ const ConfirmationModal: React.FC<Props> = ({ modal }) => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const [submitTimeLeft, setSubmitTimeLeft] = useState(
-    modal.dangerLevel > 1 ? 5 : -1
+    modal.dangerLevel > 1 ? 4 : -1
   )
 
   const nebula = useNebulaCore()
   const getConfirmationHandler = useCallback(
     (modal: IConfirmationModal) => {
-      switch (modal.id) {
+      switch (modal.props.type) {
         case 'removePage': {
           return () => {
             if (modal.props.type === 'removePage') {
               nebula.core.movePageToTrash(modal.props.pageId, navigate)
+              dispatch(NebulaModal.unloadModal())
             }
           }
         }
@@ -33,6 +34,16 @@ const ConfirmationModal: React.FC<Props> = ({ modal }) => {
           return () => {
             if (modal.props.type === 'removePagePermanent') {
               nebula.core.deletePagePermanent(modal.props.pageId)
+              dispatch(NebulaModal.unloadModal())
+            }
+          }
+        }
+        case 'removeAllPagesPermanent': {
+          return () => {
+            modal.props.type === 'removeAllPagesPermanent'
+            {
+              nebula.core.deleteAllPermanently()
+              dispatch(NebulaModal.unloadModal())
             }
           }
         }

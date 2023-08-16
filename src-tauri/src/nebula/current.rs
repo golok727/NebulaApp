@@ -88,6 +88,7 @@ impl PageEntry {
     #[allow(dead_code)]
     pub fn remove_from_trash(&mut self) {
         self.is_in_trash = false;
+        self.deleted_date = None;
     }
     pub fn get_remaining_days(&self) -> Option<i64> {
         if !self.is_in_trash() {

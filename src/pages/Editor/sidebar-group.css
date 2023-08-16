@@ -19,9 +19,12 @@
 
 .sidebar__group__header__left {
   display: flex;
+  align-items: center;
   gap: 0.6rem;
 }
-
+.sidebar__group__header__left .trash_pages_length {
+  color: #555;
+}
 .sidebar__group__header .controls button {
   font-size: 1rem;
 }

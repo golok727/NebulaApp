@@ -51,6 +51,25 @@ const reducers = {
   ) => {
     state.status = { ...state.status, ...action.payload }
   },
+  togglePageGroup: (state: AppEditorState) => {
+    state.sidebarGroup.pages = !state.sidebarGroup.pages
+  },
+  toggleTrashGroup: (state: AppEditorState) => {
+    state.sidebarGroup.trash = !state.sidebarGroup.trash
+  },
+  setPageGroupState: (
+    state: AppEditorState,
+    action: PayloadAction<boolean>
+  ) => {
+    state.sidebarGroup.pages = action.payload
+  },
+
+  setTrashGroupState: (
+    state: AppEditorState,
+    action: PayloadAction<boolean>
+  ) => {
+    state.sidebarGroup.trash = action.payload
+  },
 }
 type LoadNotebookPayload = { notebookId: string }
 export const loadNotebook = createAsyncThunk(
@@ -70,7 +89,7 @@ export const loadNotebook = createAsyncThunk(
     }
   }
 )
-type MovePageToTrashPayload = { pageId: string; navigate: NavigateFunction }
+type MovePageToTrashPayload = { pageId: string; navigate?: NavigateFunction }
 export const movePageToTrash = createAsyncThunk(
   'editor/movePageToTrash',
   async (payload: MovePageToTrashPayload, thunkApi) => {
@@ -102,7 +121,7 @@ export const deletePagePermanent = createAsyncThunk(
     }
   }
 )
-type RecoverPagePayload = { trashPageId: string; navigate: NavigateFunction }
+type RecoverPagePayload = { trashPageId: string; navigate?: NavigateFunction }
 export const recoverPage = createAsyncThunk(
   'editor/recoverPage',
   async (payload: RecoverPagePayload, thunkApi) => {
