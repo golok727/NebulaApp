@@ -22,6 +22,10 @@ const updatePageName = (
     }
   }
   helper(pages, action.payload.pageId, action.payload.newName)
+
+  if (state.currentPage && state.currentPage.__id === action.payload.pageId) {
+    state.currentPage.title = action.payload.newName
+  }
 }
 
 const reducers = {
