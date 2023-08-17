@@ -8,6 +8,7 @@ mod state;
 mod utils;
 
 use handlers::{notebook, page, window};
+use mime_guess::MimeGuess;
 use state::AppState;
 use std::fs;
 use std::io::Read;
@@ -35,14 +36,19 @@ fn nb_protocol_handler(
     let asset_file = Application::get_assets_dir().join(scope);
 
     if asset_file.exists() && asset_file.is_file() {
-        let mut file = fs::File::open(asset_file)?;
+        let mut file = fs::File::open(&asset_file)?;
         let mut file_data = Vec::new();
+
+        let mime_type = MimeGuess::from_path(&asset_file).first_or_octet_stream();
+
         file.read_to_end(&mut file_data)?;
         let response = response_builder
-            .header(CONTENT_TYPE, "image/png")
+            .header(CONTENT_TYPE, mime_type.to_string())
+            .header(CACHE_CONTROL, "max-age=3600")
             .body(file_data);
         return response;
     }
+
     return response_builder
         .status(404)
         .header(CONTENT_TYPE, "text/plain")
