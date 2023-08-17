@@ -23,12 +23,14 @@ import { TbMaximizeOff } from 'react-icons/tb'
 import { PiSlideshow, PiSlideshowFill } from 'react-icons/pi'
 import { useDispatch, useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { default as Button, default as MenuButton } from './Button'
+import { default as Button } from './Button'
+
 import './topbar.css'
 import { appWindow } from '@tauri-apps/api/window'
 import { UnlistenFn } from '@tauri-apps/api/event'
 import { invoke } from '@tauri-apps/api/tauri'
 import { useCallback, useEffect, useState } from 'react'
+import { NebulaAssetBrowser } from '@/features/assetsBrowserSlice'
 const TopBar = () => {
   const [isWindowMaximized, setIsWindowMaximized] = useState(false)
   const [windowTitle, setWindowTitle] = useState('Nebula')
@@ -50,6 +52,9 @@ const TopBar = () => {
   }
   const openSettingsWindow = async () => {
     await invoke('open_settings_window')
+  }
+  const openAssetsBrowser = () => {
+    dispatch(NebulaAssetBrowser.open())
   }
 
   const handleToggleSplitMode = () => {
@@ -105,7 +110,7 @@ const TopBar = () => {
         )}
         {!currentView.settings && (
           <>
-            <Button variant="transparent">
+            <Button variant="transparent" onClick={openAssetsBrowser}>
               <ArchiveBoxIcon width={19} />
             </Button>
 
@@ -191,14 +196,3 @@ const TopBar = () => {
 }
 
 export default TopBar
-const MenuItems = () => {
-  return (
-    <ul className="top-bar__tray">
-      {['File', 'Edit', 'View', 'Help'].map((item, idx) => (
-        <li key={idx}>
-          <MenuButton variant="menu">{item}</MenuButton>
-        </li>
-      ))}
-    </ul>
-  )
-}

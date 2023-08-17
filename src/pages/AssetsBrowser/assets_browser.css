@@ -1,0 +1,80 @@
+.app__assets-browser {
+  background-color: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(7px);
+  -webkit-backdrop-filter: blur(7px);
+  position: absolute;
+  inset: 0;
+  color: white;
+  display: grid;
+  z-index: 1000;
+  place-content: center;
+}
+
+.app__assets-browser.hide {
+  display: none;
+}
+.app__assets-browser__main {
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background-color: rgba(0, 0, 0, 0.6);
+  display: grid;
+  grid-template-columns: auto 1fr;
+  border-radius: 10px;
+  aspect-ratio: 16 / 9;
+  height: 40em;
+  max-width: 100%;
+  max-height: 100%;
+}
+.app__assets-browser__main__left {
+  padding: 0.4rem 0.5rem;
+}
+.app__assets-browser__main__right {
+  padding: 0.4rem 0.5rem;
+}
+
+.app__assets-browser__main__left .filter-group {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.app__assets-browser__main__left .filter-group label {
+  color: var(--text-gray);
+  font-weight: bold;
+}
+.app__assets-browser__main__left .filter-group select {
+  background-color: transparent;
+  color: var(--clr-text-primary);
+  padding: 0.2rem 0.5rem;
+  border: none;
+}
+
+.app__assets-browser__main__left .filter-group select option {
+  background-color: black;
+}
+
+.app__assets-browser__main__right {
+  max-height: 100%;
+  overflow-y: auto;
+}
+.app__assets-browser__main__right__container {
+  display: grid;
+  place-content: center;
+  gap: 1.3rem;
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.asset-card {
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background-color: rgba(0, 0, 0, 0.6);
+  border-radius: 5px;
+  overflow: hidden;
+}
+.asset-card__image-container {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+}
+.asset-card__image-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}

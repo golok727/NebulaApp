@@ -3,6 +3,7 @@ import appReducer from '@/features/appSlice'
 import editorSlice from '@/features/editorSlice'
 import modalSlice from '@/features/modalSlice'
 import cacheSlice from '@/features/cacheSlice'
+import assetsBrowserSlice from '@/features/assetsBrowserSlice'
 
 const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ const store = configureStore({
     editor: editorSlice,
     modal: modalSlice,
     cache: cacheSlice,
+    assetBrowser: assetsBrowserSlice,
   },
 })
 

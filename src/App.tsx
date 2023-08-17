@@ -5,6 +5,7 @@ import Editor from '@/pages/Editor'
 import Modal from './components/Modal'
 import useKeyboard from './keyboard/use-keyboard'
 import TopBar from './components/topbar'
+import AssetBrowser from './pages/AssetsBrowser'
 function App() {
   useKeyboard()
   return (
@@ -16,6 +17,7 @@ function App() {
         <Route path="/editor/:notebook/" element={<Editor />} />
         <Route path="/settings" element={<div>Settings</div>} />
       </Routes>
+      <AssetBrowser />
       <Modal />
     </div>
   )

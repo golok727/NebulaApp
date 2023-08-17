@@ -1,7 +1,7 @@
+import { NebulaAssetBrowser } from './../features/assetsBrowserSlice'
 import type { AppDispatch, Store } from '@/app/store'
 import { invoke } from '@tauri-apps/api/tauri'
 import { HomeNotebook, HomeNotebooks } from '@/utils/notebook'
-import { NebulaModal } from '@/features/modalSlice'
 import {
   movePageToTrash,
   deletePagePermanent,
@@ -25,6 +25,7 @@ export interface INebulaCore {
   recoverAll: () => Promise<void>
   deleteAllPermanently: () => Promise<void>
   renamePage: (pageId: string, newName: string) => Promise<void>
+  loadAssets: (path?: string) => Promise<void>
 }
 
 export class NebulaCore implements INebulaCore {
@@ -135,6 +136,14 @@ export class NebulaCore implements INebulaCore {
       putFadingMessage('Page Renamed', this.store.dispatch)
     } catch {}
   }
+  async loadAssets(path: string = '/') {
+    try {
+      let res = await invoke<{ assets: NebulaAsset[] }>('fetch_assets', {
+        path,
+      })
+      this.store.dispatch(NebulaAssetBrowser.setAssets(res.assets))
+    } catch {}
+  }
 }
 
 function putFadingMessage(
@@ -144,6 +153,8 @@ function putFadingMessage(
 ) {
   dispatch(updateEditorState({ message }))
   setTimeout(() => {
-    dispatch(updateEditorState({ message: 'Up To Date' }))
+    dispatch(
+      updateEditorState({ message: 'Up To Date', code: '', error: false })
+    )
   }, decay)
 }

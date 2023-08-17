@@ -148,7 +148,7 @@ const SidebarGroup = ({ groupTitle, children, for: groupFor }: Props) => {
           overflow: 'hidden',
           display: 'grid',
           gridTemplateRows: isExpanded ? '1fr' : '0fr',
-          transition: 'all .5s ease',
+          transition: 'all .2s ease',
         }}
         className="sidebar__group__content"
       >

@@ -7,7 +7,7 @@ mod nebula;
 mod state;
 mod utils;
 
-use handlers::{notebook, page, window};
+use handlers::{assets, notebook, page, window};
 use mime_guess::MimeGuess;
 use state::AppState;
 use std::fs;
@@ -80,6 +80,8 @@ fn main() {
             page::delete_page_permanently,
             page::recover_page,
             page::rename_page,
+            assets::fetch_assets,
+            assets::fetch_assets_for_current_notebook,
             window::open_settings_window
         ])
         .register_uri_scheme_protocol("nb", nb_protocol_handler)

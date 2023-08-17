@@ -13,6 +13,11 @@ interface PageEntry {
   starred: boolean
   pinned: boolean
 }
+interface NebulaAsset {
+  name: string
+  asset_url: string
+  nb_protocol_url: string
+}
 
 interface PageSimple {
   __id: string
