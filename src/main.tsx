@@ -6,14 +6,17 @@ import { BrowserRouter } from 'react-router-dom'
 import { Provider } from 'react-redux'
 import store from './app/store'
 import NebulaCoreProvider from './context/nebula'
+import { CodeMirrorProvider } from './hooks/codemirror-context'
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
     <Provider store={store}>
       <NebulaCoreProvider>
-        <BrowserRouter>
-          <App />
-        </BrowserRouter>
+        <CodeMirrorProvider>
+          <BrowserRouter>
+            <App />
+          </BrowserRouter>
+        </CodeMirrorProvider>
       </NebulaCoreProvider>
     </Provider>
   </React.StrictMode>

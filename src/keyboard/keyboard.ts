@@ -9,10 +9,12 @@ import {
 import { NebulaModal } from '@/features/modalSlice'
 import useView from '@/hooks/use-view'
 import { INebulaCoreContext } from '@/context/nebula'
+import { NebulaAssetBrowser } from '@/features/assetsBrowserSlice'
 
 const globalShortcuts = {
   'ctrl+,': 'global:open-settings',
   'ctrl+q': 'global:quit',
+  'ctrl+shift+a': 'assets:open',
 } as const
 type GlobalShortcutsCommands =
   (typeof globalShortcuts)[keyof typeof globalShortcuts]
@@ -26,6 +28,14 @@ const globalHandlers: Record<
     nebula.core.openSettings()
   },
   'global:quit': () => {},
+  'assets:open': (dispatch) => {
+    const isOpen = store.getState().assetBrowser.isOpen
+    if (!isOpen) {
+      dispatch(NebulaAssetBrowser.open())
+    } else {
+      dispatch(NebulaAssetBrowser.close())
+    }
+  },
 } as const
 
 const applicationCommands = {
@@ -49,13 +59,13 @@ type SettingsCommands = (typeof applicationCommands.settings)[number]
 
 type ApplicationCommands = EditorCommands | HomeCommands | SettingsCommands
 
-interface IAPPShortcuts {
+interface IAppShortcuts {
   editor: Record<string, EditorCommands>
   home: Record<string, HomeCommands>
   settings: Record<string, SettingsCommands>
 }
 
-const applicationShortcuts: IAPPShortcuts = {
+const applicationShortcuts: IAppShortcuts = {
   home: {
     ...globalShortcuts,
     'ctrl+n': 'core:new-notebook',
@@ -200,6 +210,5 @@ export const getKeyBindings = (ev: KeyboardEvent) => {
 
   if (!['Control', 'Shift', 'Alt'].includes(ev.key))
     binding.push(ev.key.toLowerCase())
-
   return binding.join('+')
 }

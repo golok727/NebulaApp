@@ -7,6 +7,7 @@
   color: white;
   display: grid;
   z-index: 1000;
+  width: 100%;
   place-content: center;
 }
 
@@ -22,18 +23,35 @@
   border-radius: 10px;
   aspect-ratio: 16 / 9;
   height: 40em;
+
   max-width: 100%;
   max-height: 100%;
 }
 .app__assets-browser__main__left {
   padding: 0.9rem 0.8rem;
+  display: grid;
+  grid-template-rows: 1fr auto;
+}
+
+.app__assets-browser__main__left .footer {
+  display: flex;
+  gap: 0.2rem;
+  align-items: center;
+}
+
+.app__assets-browser__main__left .footer .info {
+  color: rgb(240, 93, 166);
+  font-size: 0.6rem;
+  transition: all 0.4s ease;
+  animation: fade-in 0.5s ease forwards;
 }
 .app__assets-browser__main__right {
   padding: 0.9rem 0.8rem;
 }
 
 .app__assets-browser__main__left .filter-group {
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: 0.2rem;
 }
 
@@ -45,7 +63,7 @@
   background-color: transparent;
   color: var(--clr-text-primary);
   padding: 0.2rem 0.5rem;
-  border: none;
+  border: 1px solid var(--clr-border);
 }
 
 .app__assets-browser__main__left .filter-group select option {
@@ -68,6 +86,11 @@
   background-color: rgba(0, 0, 0, 0.6);
   border-radius: 5px;
   overflow: hidden;
+  cursor: pointer;
+  transition: scale 0.2s ease;
+}
+.asset-card:hover {
+  scale: 1.0134;
 }
 .asset-card__image-container {
   width: 100%;
