@@ -9,6 +9,7 @@ import PageContextModal from './page-context-modal'
 import NotebookCreateModal from './notebook-create-modal'
 import ConfirmationModal from './confirmation_modal'
 import PageRenameModal from './page-rename-modal'
+import ImagePreviewModal from './image-preview-modal'
 
 const Modal = () => {
   const modalContainerRef = useRef<HTMLDivElement | null>(null)
@@ -62,6 +63,9 @@ const Modal = () => {
       case 'page/rename': {
         return <PageRenameModal modal={currentModal} />
       }
+      case 'asset/preview': {
+        return <ImagePreviewModal modal={currentModal} />
+      }
       default:
         return <></>
     }
@@ -81,6 +85,7 @@ const Modal = () => {
                 : {
                     inset: 0,
                     backgroundColor: 'rgba(0, 0, 0, 0.6)',
+                    backdropFilter: 'blur(7px)',
                   }),
             }
           : { display: 'none' }),

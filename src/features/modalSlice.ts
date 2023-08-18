@@ -8,6 +8,7 @@ interface IAppModal {
     | 'notebook/create'
     | 'context/confirm'
     | 'page/rename'
+    | 'asset/preview'
   x: number
   y: number
   label?: string
@@ -70,12 +71,18 @@ export interface IPageRenameModal extends IAppModal {
   pageId: string
 }
 
+export interface IImagePreviewModal extends IAppModal {
+  type: 'asset/preview'
+  url: string
+  name?: string
+}
 type IModal =
   | IPageContextModal
   | IPageCreationModal
   | INotebookCreationModal
   | IConfirmationModal
   | IPageRenameModal
+  | IImagePreviewModal
 
 interface IModalState {
   currentModal: IModal | null

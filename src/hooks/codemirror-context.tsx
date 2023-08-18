@@ -1,7 +1,7 @@
 import { EditorState } from '@codemirror/state'
 import { EditorView } from '@codemirror/view'
 
-import { createContext, useCallback } from 'react'
+import { createContext, useCallback, useContext } from 'react'
 
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '@/app/store'
@@ -48,4 +48,12 @@ export const CodeMirrorProvider = ({
       {children}
     </CodeMirrorContext.Provider>
   )
+}
+export const useCode = () => {
+  const context = useContext(CodeMirrorContext)
+  if (!context)
+    throw new Error(
+      'Use Code Hook should be used within the CodeMirrorProvider'
+    )
+  return context
 }

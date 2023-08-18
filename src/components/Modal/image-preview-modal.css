@@ -1,0 +1,13 @@
+.modal__image-preview-modal {
+  height: 100%;
+  width: 100%;
+  display: grid;
+  place-items: center;
+  transition: all 0.5s ease-in-out;
+  animation: fade-in 0.3s forwards;
+}
+
+.modal__image-preview-modal img {
+  max-height: 50em;
+  max-width: calc(100% - 2rem);
+}

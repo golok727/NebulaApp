@@ -1,6 +1,6 @@
 .app__modal {
   position: absolute;
-  z-index: 100;
+  z-index: 10000000;
 }
 
 .modal__title {

@@ -15,76 +15,8 @@ import { languages } from '@codemirror/language-data'
 import { bracketMatching } from '@codemirror/matchbrackets'
 import { oneDark } from '@codemirror/theme-one-dark'
 import { useEffect, useRef, useState } from 'react'
-
-const transparentTheme = EditorView.theme({
-  '&': {
-    backgroundColor: 'transparent !important',
-    height: '100%',
-    border: 'none !important',
-    outline: 'none !important',
-  },
-
-  // For the line numbers gutter
-  '& .cm-gutters': {
-    backgroundColor: 'transparent !important',
-    color: '#444 !important',
-    fontWeight: 'bold !important',
-    fontSize: '1.2em !important',
-  },
-
-  '& .cm-content': {
-    backgroundColor: 'transparent !important',
-    fontFamily: "'Fira Code', monospace !important",
-    fontWeight: '500 !important',
-    fontSize: '1rem !important',
-  },
-
-  '& .cm-gutterElement': {
-    padding: '0 1em !important',
-  },
-
-  '& .cm-line': {
-    backgroundColor: 'transparent !important',
-  },
-})
-const syntaxHighlighting = HighlightStyle.define([
-  {
-    tag: tags.heading1,
-    fontSize: '1.7em',
-    fontWeight: 'bold',
-  },
-  {
-    tag: tags.monospace,
-    backgroundColor: '#222',
-    borderRadius: '10px',
-    color: '#888',
-    padding: '0 .2rem',
-  },
-
-  {
-    tag: tags.heading2,
-    fontSize: '1.4em',
-    fontWeight: 'bold',
-  },
-  {
-    tag: tags.heading3,
-    fontSize: '1.2em',
-    fontWeight: 'bold',
-  },
-  {
-    tag: tags.brace,
-    color: 'yellow',
-  },
-  {
-    tag: tags.squareBracket,
-    color: 'pink',
-  },
-
-  {
-    tag: tags.bracket,
-    color: 'hotpink',
-  },
-])
+import { markdownCustomBindings } from './customKeymapping'
+import { syntaxHighlighting, transparentTheme } from './nebulaTheme'
 
 interface Props {
   initialDoc: string
@@ -104,7 +36,12 @@ const useCodeMirror = (
     const startState = EditorState.create({
       doc: props.initialDoc,
       extensions: [
-        keymap.of([...defaultKeymap, ...historyKeymap, indentWithTab]),
+        keymap.of([
+          ...defaultKeymap,
+          ...historyKeymap,
+          ...markdownCustomBindings,
+          indentWithTab,
+        ]),
         history(),
         highlightActiveLine(),
         bracketMatching(),
@@ -138,7 +75,7 @@ const useCodeMirror = (
       // Clean up the editor when the component is unmounted
       view?.destroy()
     }
-  }, [editorRef])
+  }, [props.initialDoc])
 
   return [editorRef, editorView]
 }

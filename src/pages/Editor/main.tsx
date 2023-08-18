@@ -1,22 +1,12 @@
-import './main.css'
-import Sidebar from './sidebar'
-import Repl from './repl'
-import Preview from './preview'
-import { useCallback } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { setCurrentDoc } from '@/features/editorSlice'
 import { RootState } from '@/app/store'
 import SelectAPage from '@/components/select-a-page'
+import { useSelector } from 'react-redux'
+import './main.css'
+import Preview from './preview'
+import Repl from './repl'
+import Sidebar from './sidebar'
 
 const Main = () => {
-  const dispatch = useDispatch()
-
-  const handleDocChange = useCallback(
-    (newDoc: string) => {
-      dispatch(setCurrentDoc(newDoc))
-    },
-    [dispatch]
-  )
   const currentPage = useSelector(
     (state: RootState) => state.editor.currentPage
   )
@@ -26,7 +16,7 @@ const Main = () => {
       <Sidebar />
       {currentPage ? (
         <>
-          <Repl onChange={handleDocChange} />
+          <Repl />
           <Preview />
         </>
       ) : (
