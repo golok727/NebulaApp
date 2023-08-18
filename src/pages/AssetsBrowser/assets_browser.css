@@ -26,10 +26,10 @@
   max-height: 100%;
 }
 .app__assets-browser__main__left {
-  padding: 0.4rem 0.5rem;
+  padding: 0.9rem 0.8rem;
 }
 .app__assets-browser__main__right {
-  padding: 0.4rem 0.5rem;
+  padding: 0.9rem 0.8rem;
 }
 
 .app__assets-browser__main__left .filter-group {
@@ -77,4 +77,19 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+.asset-card .actions {
+  padding: 0.4rem 0.6rem;
+}
+
+.asset-card .actions .filename {
+  display: block;
+  user-select: none;
+  background-image: linear-gradient(to bottom right, red, violet);
+  font-weight: bold;
+  width: fit-content;
+  padding: 0.1rem 0.4rem;
+  border-radius: 10px;
+  margin: 0.4rem 0;
 }

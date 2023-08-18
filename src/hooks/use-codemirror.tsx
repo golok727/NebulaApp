@@ -1,20 +1,20 @@
 import { EditorState } from '@codemirror/state'
-import { EditorView, keymap, highlightActiveLine } from '@codemirror/view'
+import { EditorView, highlightActiveLine, keymap } from '@codemirror/view'
 
-import { useEffect, useRef, useState } from 'react'
 import { defaultKeymap, indentWithTab } from '@codemirror/commands'
-import { historyKeymap, history } from '@codemirror/history'
 import { lineNumbers } from '@codemirror/gutter'
-import { indentOnInput } from '@codemirror/language'
-import { bracketMatching } from '@codemirror/matchbrackets'
 import {
-  defaultHighlightStyle,
   HighlightStyle,
+  defaultHighlightStyle,
   tags,
 } from '@codemirror/highlight'
+import { history, historyKeymap } from '@codemirror/history'
 import { markdown, markdownLanguage } from '@codemirror/lang-markdown'
+import { indentOnInput } from '@codemirror/language'
 import { languages } from '@codemirror/language-data'
+import { bracketMatching } from '@codemirror/matchbrackets'
 import { oneDark } from '@codemirror/theme-one-dark'
+import { useEffect, useRef, useState } from 'react'
 
 const transparentTheme = EditorView.theme({
   '&': {

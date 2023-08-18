@@ -5,9 +5,14 @@ import { RootState } from '@/app/store'
 import { NebulaAssetBrowser } from '@/features/assetsBrowserSlice'
 import Button from '@/components/Button'
 import { useNebulaCore } from '@/context/nebula'
+import useView from '@/hooks/use-view'
 
 const AssetBrowser = () => {
   const isOpen = useSelector((state: RootState) => state.assetBrowser.isOpen)
+  const isAnyPageSelected = useSelector(
+    (state: RootState) => state.editor.currentPage !== null
+  )
+  const { editor: editorView } = useView()
   const assets = useSelector(
     (state: RootState) => state.assetBrowser.currentAssets
   )
@@ -50,7 +55,12 @@ const AssetBrowser = () => {
         <div className="app__assets-browser__main__right">
           <div className="app__assets-browser__main__right__container">
             {assets && assets.length > 0 ? (
-              assets.map((asset) => <AssetCard asset={asset} />)
+              assets.map((asset) => (
+                <AssetCard
+                  insertDisabled={!editorView || !isAnyPageSelected}
+                  asset={asset}
+                />
+              ))
             ) : (
               <span>No Assets</span>
             )}
@@ -61,15 +71,25 @@ const AssetBrowser = () => {
   )
 }
 
-const AssetCard = ({ asset }: { asset: NebulaAsset }) => {
+const AssetCard = ({
+  asset,
+  insertDisabled,
+}: {
+  asset: NebulaAsset
+  insertDisabled: boolean
+}) => {
   return (
     <div className="asset-card">
       <div className="asset-card__image-container">
         <img src={asset.asset_url} alt={asset.name} />
       </div>
       <div>
-        <span>{asset.name}</span>
-        <Button variant="menu">Insert</Button>
+        <section className="actions">
+          <span className="filename">{asset.name}</span>
+          <Button disabled={insertDisabled} variant="transparent">
+            Insert
+          </Button>
+        </section>
       </div>
     </div>
   )

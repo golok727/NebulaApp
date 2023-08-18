@@ -11,9 +11,12 @@ import SelectAPage from '@/components/select-a-page'
 const Main = () => {
   const dispatch = useDispatch()
 
-  const handleDocChange = useCallback((newDoc: string) => {
-    dispatch(setCurrentDoc(newDoc))
-  }, [])
+  const handleDocChange = useCallback(
+    (newDoc: string) => {
+      dispatch(setCurrentDoc(newDoc))
+    },
+    [dispatch]
+  )
   const currentPage = useSelector(
     (state: RootState) => state.editor.currentPage
   )
