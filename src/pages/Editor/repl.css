@@ -17,3 +17,7 @@
   padding: var(--padding-1);
   overflow-y: auto;
 }
+
+.editor__repl .ͼ11.ͼ13 {
+  color: #444 !important;
+}

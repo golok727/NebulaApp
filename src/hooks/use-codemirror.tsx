@@ -3,11 +3,7 @@ import { EditorView, highlightActiveLine, keymap } from '@codemirror/view'
 
 import { defaultKeymap, indentWithTab } from '@codemirror/commands'
 import { lineNumbers } from '@codemirror/gutter'
-import {
-  HighlightStyle,
-  defaultHighlightStyle,
-  tags,
-} from '@codemirror/highlight'
+import { defaultHighlightStyle } from '@codemirror/highlight'
 import { history, historyKeymap } from '@codemirror/history'
 import { markdown, markdownLanguage } from '@codemirror/lang-markdown'
 import { indentOnInput } from '@codemirror/language'
@@ -52,6 +48,7 @@ const useCodeMirror = (
           base: markdownLanguage,
           codeLanguages: languages,
           addKeymap: true,
+          extensions: [],
         }),
         oneDark,
         transparentTheme,

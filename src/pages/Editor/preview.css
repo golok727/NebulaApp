@@ -23,6 +23,68 @@
   overflow-y: auto;
 }
 
+.editor__preview.markdown-body {
+  font-size: 1rem;
+  line-height: 1.6;
+  font-family: 'Fira Code', monospace;
+}
+
+.editor__preview.markdown-body h1 {
+  font-weight: bold;
+  color: rgb(236, 77, 77);
+}
+
+.editor__preview.markdown-body p {
+  line-height: 1.4;
+}
+
+.editor__preview.markdown-body h1:hover:before {
+  content: '# ';
+  color: #333;
+}
+.editor__preview.markdown-body h2:hover:before {
+  content: '## ';
+  color: #333;
+}
+
+.editor__preview.markdown-body h3:hover:before {
+  content: '### ';
+  color: #333;
+}
+
+.editor__preview.markdown-body h4:hover:before {
+  content: '#### ';
+  color: #333;
+}
+.editor__preview.markdown-body h5:hover:before {
+  content: '##### ';
+  color: #333;
+}
+.editor__preview.markdown-body h6:hover:before {
+  content: '###### ';
+  color: #333;
+}
+.editor__preview.markdown-body h2,
+h3,
+h4,
+h5,
+h6 {
+  color: rgb(36, 240, 128);
+}
+
+.editor__preview.markdown-body :not(pre) > code {
+  background-color: #222;
+  color: hotpink;
+  font-weight: bold;
+  font-style: italic;
+
+  border: 1px solid var(--clr-border);
+}
+
+.editor__preview.markdown-body img {
+  border-radius: 7px;
+  cursor: pointer;
+}
 .editor__preview.markdown-body pre {
   background-color: rgba(27, 31, 35, 0.164) !important;
   border-radius: 6px;
@@ -31,7 +93,11 @@
   padding: var(--padding-2);
   border: 1px solid #272727;
 }
-
+@media (min-width: 40em) {
+  .editor__preview.markdown-body pre {
+    max-width: 40em;
+  }
+}
 .editor__preview.markdown-body * p {
   word-break: break-all !important;
   white-space: pre-wrap !important;

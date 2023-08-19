@@ -32,29 +32,49 @@ export const transparentTheme = EditorView.theme({
     backgroundColor: 'transparent !important',
   },
 })
+
 export const syntaxHighlighting = HighlightStyle.define([
   {
     tag: tags.heading1,
     fontSize: '1.7em',
     fontWeight: 'bold',
+    color: 'rgb(236, 77, 77) !important',
   },
   {
     tag: tags.monospace,
-    backgroundColor: '#222',
+    backgroundColor: '#333',
     borderRadius: '10px',
-    color: '#888',
-    padding: '0 .2rem',
+    color: 'hotpink',
+    fontStyle: 'italic',
+    padding: '0 .3rem',
   },
 
   {
     tag: tags.heading2,
     fontSize: '1.4em',
     fontWeight: 'bold',
+    color: 'rgb(236, 77, 77) !important',
   },
   {
     tag: tags.heading3,
     fontSize: '1.2em',
     fontWeight: 'bold',
+    color: 'rgb(236, 77, 77) !important',
+  },
+
+  {
+    tag: tags.heading4,
+    color: 'rgb(236, 77, 77) !important',
+  },
+
+  {
+    tag: tags.heading5,
+    color: 'rgb(236, 77, 77) !important',
+  },
+
+  {
+    tag: tags.heading6,
+    color: 'rgb(236, 77, 77) !important',
   },
   {
     tag: tags.brace,
