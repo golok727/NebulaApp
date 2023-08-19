@@ -26,7 +26,6 @@ const Editor = () => {
     }
 
     return () => {
-      console.log('Unload')
       dispatch(onEditorUnloadState())
       dispatch(resetNotebookState())
       saveNotebook()

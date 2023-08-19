@@ -160,7 +160,6 @@ const addHr: StateCommand = ({ state, dispatch }) => {
   const currentPosition = state.selection.main.from
   const line = state.doc.lineAt(currentPosition)
   const hr = '\n' + '-'.repeat(Math.min(50, Math.max(3, line.length)))
-  console.log(hr)
   const transaction = state.update({
     changes: {
       from: line.to,

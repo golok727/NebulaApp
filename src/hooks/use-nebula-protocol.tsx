@@ -40,7 +40,7 @@ const useNebulaProtocol = (
         const url = convertFileSrc(filePath)
         setImgSrc(url)
       } catch (error) {
-        console.log('Not found')
+        console.error(error)
       }
     } else {
       setImgSrc(src)

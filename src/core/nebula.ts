@@ -50,7 +50,6 @@ export class NebulaCore implements INebulaCore {
 
   async updatePage(pageId: string | undefined, currDoc: string) {
     if (pageId !== undefined) {
-      console.log('update')
       await invoke('update_page', {
         pageId: pageId,
         newContent: currDoc,

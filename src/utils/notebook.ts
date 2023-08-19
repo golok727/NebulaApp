@@ -23,7 +23,6 @@ export const updatePage = async (
   currentPageId: string | undefined,
   currentDoc: string
 ) => {
-  console.log('update' + currentPageId)
   if (currentPageId !== undefined) {
     await invoke('update_page', {
       pageId: currentPageId,
@@ -33,6 +32,5 @@ export const updatePage = async (
   return
 }
 export const saveNotebook = async () => {
-  let res = await invoke('save_notebook')
-  console.log(res)
+  await invoke('save_notebook')
 }
