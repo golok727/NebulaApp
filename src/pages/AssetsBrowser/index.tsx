@@ -12,6 +12,7 @@ import { SlReload } from 'react-icons/sl'
 
 const AssetBrowser = () => {
   const [browserInfo, setBrowserInfo] = useState('')
+  const [isDraggingOver, setIsDraggingOver] = useState(false)
 
   const isOpen = useSelector((state: RootState) => state.assetBrowser.isOpen)
   const isAnyPageSelected = useSelector(
@@ -21,12 +22,19 @@ const AssetBrowser = () => {
   const assets = useSelector(
     (state: RootState) => state.assetBrowser.currentAssets
   )
+  const isAnyModelOpen = useSelector(
+    (state: RootState) => state.modal.currentModal !== null
+  )
+
   const nebula = useNebulaCore()
   const dispatch = useDispatch()
 
+  /**
+   * Escape key fn to close the asset browser
+   */
   useEffect(() => {
     const handleCloseBrowserOnEsc = (ev: KeyboardEvent) => {
-      if (ev.key === 'Escape') {
+      if (ev.key === 'Escape' && !isAnyModelOpen) {
         dispatch(NebulaAssetBrowser.close())
       }
     }
@@ -35,18 +43,30 @@ const AssetBrowser = () => {
     return () => {
       document.removeEventListener('keydown', handleCloseBrowserOnEsc)
     }
-  }, [dispatch])
+  }, [dispatch, isAnyModelOpen])
 
+  /**
+   * Reload the assets if something goes wrong and it is not showing the asset that
+   * you uploaded and is not visible in the browser.
+   * The assets will be only fetched at the start not each time you open
+   * the browser it also rerenders when you upload the asset
+   */
   const reloadAssets = () => {
     nebula.core.loadAssets()
     if (assets && assets.length > 0) {
       setInfoAutoFade(
-        `${assets.length} ${assets.length === 1 ? 'asset' : 'assets'} loaded`
+        `${assets.length} ${assets.length === 1 ? 'asset' : 'assets'} reloaded`
       )
     } else {
       setInfoAutoFade('Not assets yet')
     }
   }
+
+  /**
+   * Function to show and automatically fade
+   * the current browser info after a defined delay
+   */
+
   const setInfoAutoFade = useCallback(
     (info: string, decay: number = 2000) => {
       setBrowserInfo(info)
@@ -56,9 +76,26 @@ const AssetBrowser = () => {
     },
     [setBrowserInfo, browserInfo]
   )
+  /**
+   * Handler for each asset card
+   */
   const onInsert = (assetName: string) => {
     setInfoAutoFade(`Inserted: ${assetName}`)
   }
+  /**
+   * Handler for uploading assets by dropping it into the asset browser
+   */
+  const handleFileDrop = (ev: React.DragEvent<HTMLDivElement>) => {
+    ev.preventDefault()
+    ev.stopPropagation()
+
+    setIsDraggingOver(false)
+
+    console.log(ev.dataTransfer.files)
+  }
+  /**
+   * Load the assets on first run
+   */
   useEffect(() => {
     nebula.core.loadAssets()
   }, [nebula])
@@ -74,6 +111,7 @@ const AssetBrowser = () => {
       clearTimeout(timeout)
     }
   }, [])
+
   return (
     <div
       className={`app__assets-browser ${!isOpen ? 'hide' : ''}`}
@@ -81,7 +119,37 @@ const AssetBrowser = () => {
         if (ev.target === ev.currentTarget) dispatch(NebulaAssetBrowser.close())
       }}
     >
-      <div className="app__assets-browser__main">
+      <div
+        className="app__assets-browser__main"
+        onDrop={handleFileDrop}
+        onDragOver={(ev) => {
+          ev.preventDefault()
+          ev.stopPropagation()
+        }}
+        onDragEnter={(ev) => {
+          ev.preventDefault()
+          ev.stopPropagation()
+          setIsDraggingOver(true)
+        }}
+        onDragLeave={(ev) => {
+          ev.preventDefault()
+          ev.stopPropagation()
+          /**
+           *! Important
+           * Checks if the Leaved element is the drop area itself so that it does not check for events
+           * fired by other elements
+           */
+          console.log(ev.currentTarget)
+          if (ev.target === ev.currentTarget) {
+            setIsDraggingOver(false)
+          }
+        }}
+      >
+        {isDraggingOver && (
+          <div className="drop-here">
+            <span>Drop here to upload</span>
+          </div>
+        )}
         <div className="app__assets-browser__main__left">
           <section className="filter-group">
             <label htmlFor="filter">Show Assets In</label>
@@ -162,7 +230,7 @@ const AssetCard = ({
   return (
     <div className="asset-card">
       <div className="asset-card__image-container" onClick={handleShowPreview}>
-        <img src={asset.asset_url} alt={asset.name} />
+        <img draggable={false} src={asset.asset_url} alt={asset.name} />
       </div>
       <div>
         <section className="actions">
