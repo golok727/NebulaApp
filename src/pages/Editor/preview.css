@@ -35,7 +35,7 @@
 }
 
 .editor__preview.markdown-body p {
-  line-height: 1.4;
+  line-height: 1.7;
 }
 
 .editor__preview.markdown-body h1:hover:before {
@@ -69,7 +69,7 @@ h3,
 h4,
 h5,
 h6 {
-  color: rgb(36, 240, 128);
+  color: rgb(36, 240, 128) !important;
 }
 
 .editor__preview.markdown-body :not(pre) > code {
