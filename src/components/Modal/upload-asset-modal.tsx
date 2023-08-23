@@ -26,6 +26,7 @@ const UploadAssetModal = ({}: { modal: IUploadAssetsModal }) => {
   const [imageFiles, setImageFiles] = useState<ImageFile[]>([])
   const [uploadStatus, setUploadStatus] = useState({
     isUploading: false,
+    isUploaded: false,
     uploadingProgressInfo: '',
   })
 
@@ -90,14 +91,24 @@ const UploadAssetModal = ({}: { modal: IUploadAssetsModal }) => {
       const new_asset = await invoke<NebulaAsset>('upload_asset', {
         imageData: payload,
       })
+      setUploadStatus({
+        ...uploadStatus,
+        isUploading: true,
+        uploadingProgressInfo: `Adding ${new_asset.name}`,
+      })
       dispatch(NebulaAssetBrowser.addAsset(new_asset))
     }
 
     setUploadStatus({
       ...uploadStatus,
-      isUploading: true,
+      isUploading: false,
+      isUploaded: true,
       uploadingProgressInfo: `Assets Uploaded Successfully`,
     })
+
+    setTimeout(() => {
+      dispatch(NebulaModal.unloadModal())
+    }, 2000)
   }
 
   /**
@@ -141,55 +152,65 @@ const UploadAssetModal = ({}: { modal: IUploadAssetsModal }) => {
   }, [toUpload])
 
   return (
-    <div className="modal__upload-asset-modal-container">
-      {!uploadStatus.isUploading && imageFiles.length > 0 && (
-        <div
-          className="modal__upload-asset-modal__main"
-          onClick={(ev) => ev.stopPropagation()}
-        >
-          <>
-            <header>
-              <Button onClick={() => uploadAssets()} variant="menu">
-                <h3>
-                  Upload {imageFiles.length}{' '}
-                  {imageFiles.length > 1 ? 'Assets' : 'Asset'}
-                </h3>
-              </Button>
+    <div
+      className="modal__upload-asset-modal-container"
+      onClick={(ev) => {
+        if (uploadStatus.isUploading) {
+          ev.stopPropagation()
+        }
+      }}
+    >
+      {!uploadStatus.isUploading &&
+        !uploadStatus.isUploaded &&
+        imageFiles.length > 0 && (
+          <div
+            className="modal__upload-asset-modal__main"
+            onClick={(ev) => ev.stopPropagation()}
+          >
+            <>
+              <header>
+                <Button onClick={() => uploadAssets()} variant="menu">
+                  <h3>
+                    Upload {imageFiles.length}{' '}
+                    {imageFiles.length > 1 ? 'Assets' : 'Asset'}
+                  </h3>
+                </Button>
 
-              {showWarning &&
-                imageFiles.length &&
-                toUploadLength.current > processedFilesLength.current && (
-                  <span className="warning">
-                    {toUploadLength.current - processedFilesLength.current} of{' '}
-                    {toUploadLength.current} files were unsupported
-                  </span>
-                )}
-            </header>
-            <section className="image-previews">
-              {imageFiles.map((image) => (
-                <div
-                  key={image.__id}
-                  className="image-container"
-                  onClick={() => removeImage(image.__id)}
-                >
-                  <img src={image.uri} />
-                </div>
-              ))}
-            </section>
-          </>
-        </div>
-      )}
+                {showWarning &&
+                  imageFiles.length &&
+                  toUploadLength.current > processedFilesLength.current && (
+                    <span className="warning">
+                      {toUploadLength.current - processedFilesLength.current} of{' '}
+                      {toUploadLength.current} files were unsupported
+                    </span>
+                  )}
+              </header>
+              <section className="image-previews">
+                {imageFiles.map((image) => (
+                  <div
+                    key={image.__id}
+                    className="image-container"
+                    onClick={() => removeImage(image.__id)}
+                  >
+                    <img src={image.uri} />
+                  </div>
+                ))}
+              </section>
+            </>
+          </div>
+        )}
 
       {!uploadStatus.isUploading && imageFiles.length === 0 && (
         <span className="processing">{`Processing  ${toUploadLength.current} Images.....`}</span>
       )}
 
-      {uploadStatus.isUploading && (
-        <span className="processing">
-          {' '}
-          {uploadStatus.uploadingProgressInfo}
-        </span>
-      )}
+      {uploadStatus.isUploading ||
+        (uploadStatus.isUploaded && (
+          <span className="processing">
+            {' '}
+            {uploadStatus.uploadingProgressInfo}
+          </span>
+        ))}
     </div>
   )
 }
