@@ -22,3 +22,35 @@ export const dateFormatter = (date: string) => {
 
   return dateFormatter.format(new Date(date))
 }
+export const supportedMimeTypes = [
+  'image/jpeg',
+  'image/png',
+  'image/gif',
+  'image/bmp',
+  'image/webp',
+  'image/svg+xml',
+  'image/vnd.microsoft.icon',
+  'image/tiff',
+  'image/jp2',
+  'image/jxr',
+]
+
+export const generateRandomString = (length: number): string => {
+  const characters =
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
+  let result = ''
+  for (let i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * characters.length))
+  }
+  return result
+}
+
+export const convertToDataUri = (file: File): Promise<string> => {
+  return new Promise((resolve) => {
+    const reader = new FileReader()
+    reader.onload = () => {
+      resolve(reader.result as string)
+    }
+    reader.readAsDataURL(file)
+  })
+}

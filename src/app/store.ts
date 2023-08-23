@@ -13,6 +13,13 @@ const store = configureStore({
     cache: cacheSlice,
     assetBrowser: assetsBrowserSlice,
   },
+  middleware: (getDefaultMiddleWare) =>
+    getDefaultMiddleWare({
+      serializableCheck: {
+        ignoredActions: ['modal/showModal'],
+        ignoredStatePath: ['modal.currentModal'],
+      },
+    }),
 })
 
 export type RootState = ReturnType<typeof store.getState>

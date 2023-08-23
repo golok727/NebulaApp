@@ -3,7 +3,7 @@ use crate::{
     state::AppState,
     utils::status::error::{ErrorCode, ErrorResponse},
 };
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use std::fs;
 use std::sync::{Arc, Mutex};
 use tauri::State;
@@ -66,3 +66,14 @@ pub fn fetch_assets(path: String) -> Result<FetchAssetsResponse, ErrorResponse> 
 #[allow(unused_variables)]
 #[tauri::command]
 pub fn fetch_assets_for_current_notebook(state: State<Arc<Mutex<AppState>>>, path: String) {}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct UploadAssetPayload {
+    __id: String,
+    filename: String,
+    data: Vec<u8>,
+}
+#[tauri::command]
+pub fn upload_asset(image_data: UploadAssetPayload) {
+    println!("{}", (image_data.data.len()));
+}

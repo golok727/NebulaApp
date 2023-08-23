@@ -9,11 +9,12 @@ import useView from '@/hooks/use-view'
 import { useCode } from '@/hooks/codemirror-context'
 import { ModalTypes, NebulaModal } from '@/features/modalSlice'
 import { SlReload } from 'react-icons/sl'
+import { useFileUpload } from '@/context/file-upload-context'
 
 const AssetBrowser = () => {
   const [browserInfo, setBrowserInfo] = useState('')
   const [isDraggingOver, setIsDraggingOver] = useState(false)
-
+  const { setToUpload } = useFileUpload()
   const isOpen = useSelector((state: RootState) => state.assetBrowser.isOpen)
   const isAnyPageSelected = useSelector(
     (state: RootState) => state.editor.currentPage !== null
@@ -26,9 +27,9 @@ const AssetBrowser = () => {
     (state: RootState) => state.modal.currentModal !== null
   )
 
+  const dropOverlayRef = useRef<HTMLDivElement | null>(null)
   const nebula = useNebulaCore()
   const dispatch = useDispatch()
-  const dropOverlayRef = useRef<HTMLDivElement | null>(null)
   /**
    * Escape key fn to close the asset browser
    */
@@ -91,7 +92,20 @@ const AssetBrowser = () => {
 
     setIsDraggingOver(false)
 
-    console.log(ev.dataTransfer.files)
+    if (ev.dataTransfer.files.length > 0) {
+      setToUpload(ev.dataTransfer.files)
+
+      dispatch(
+        NebulaModal.showModal({
+          id: 'UploadAsset',
+          type: ModalTypes.CREATE_ASSET,
+          x: 0,
+          y: 0,
+          fullScreen: true,
+          label: 'Upload Assets',
+        })
+      )
+    }
     //TODO Load the upload modal
   }
   /**

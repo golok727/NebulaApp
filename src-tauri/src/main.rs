@@ -82,6 +82,7 @@ fn main() {
             page::rename_page,
             assets::fetch_assets,
             assets::fetch_assets_for_current_notebook,
+            assets::upload_asset,
             window::open_settings_window
         ])
         .register_uri_scheme_protocol("nb", nb_protocol_handler)

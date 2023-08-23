@@ -37,7 +37,6 @@ export interface INotebookCreationModal extends IAppModal {
 
 export interface IUploadAssetsModal extends IAppModal {
   type: 'asset/create'
-  assets: FileList
 }
 
 export interface IPageRenameModal extends IAppModal {
