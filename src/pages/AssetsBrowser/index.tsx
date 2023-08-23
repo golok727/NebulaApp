@@ -1,6 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux'
 import './assets_browser.css'
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState, useCallback, useRef } from 'react'
 import { RootState } from '@/app/store'
 import { NebulaAssetBrowser } from '@/features/assetsBrowserSlice'
 import Button from '@/components/Button'
@@ -28,7 +28,7 @@ const AssetBrowser = () => {
 
   const nebula = useNebulaCore()
   const dispatch = useDispatch()
-
+  const dropOverlayRef = useRef<HTMLDivElement | null>(null)
   /**
    * Escape key fn to close the asset browser
    */
@@ -139,14 +139,13 @@ const AssetBrowser = () => {
            * Checks if the Leaved element is the drop area itself so that it does not check for events
            * fired by other elements
            */
-          console.log(ev.currentTarget)
-          if (ev.target === ev.currentTarget) {
+          if (ev.target === dropOverlayRef.current) {
             setIsDraggingOver(false)
           }
         }}
       >
         {isDraggingOver && (
-          <div className="drop-here">
+          <div ref={dropOverlayRef} className="drop-here">
             <span>Drop here to upload</span>
           </div>
         )}
