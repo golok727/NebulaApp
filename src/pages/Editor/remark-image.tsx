@@ -27,8 +27,8 @@ const RemarkImg: React.FC<
     <img
       loading="lazy"
       style={{ maxWidth: '30em' }}
+      alt="Image"
       {...props}
-      alt=""
       onClick={showPreview}
       src={getNebulaProtocolUrl(props.src || '')}
     />

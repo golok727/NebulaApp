@@ -1,6 +1,6 @@
 import { RootState } from '@/app/store'
 import { isInView } from '@/features/selectors'
-import { useCode } from '@/hooks/codemirror-context'
+import { useCode } from '@/context/codemirror-context'
 import { useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import './repl.css'

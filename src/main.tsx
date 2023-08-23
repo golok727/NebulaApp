@@ -6,7 +6,7 @@ import { BrowserRouter } from 'react-router-dom'
 import { Provider } from 'react-redux'
 import store from './app/store'
 import NebulaCoreProvider from './context/nebula'
-import { CodeMirrorProvider } from './hooks/codemirror-context'
+import { CodeMirrorProvider } from './context/codemirror-context'
 import { FileUploadProvider } from './context/file-upload-context'
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
