@@ -5,6 +5,7 @@ use crate::{
 };
 use serde::{Deserialize, Serialize};
 use std::fs;
+use std::io::prelude::*;
 use std::sync::{Arc, Mutex};
 use tauri::State;
 #[derive(Debug, Clone, Serialize)]
@@ -12,6 +13,7 @@ pub struct NebulaAsset {
     name: String,
     asset_url: String,
     nb_protocol_url: String,
+    is_new: bool,
 }
 
 #[derive(Debug, Clone, Serialize)]
@@ -52,6 +54,7 @@ pub fn fetch_assets(path: String) -> Result<FetchAssetsResponse, ErrorResponse> 
                     name: filename.to_owned(),
                     asset_url,
                     nb_protocol_url,
+                    is_new: false,
                 };
                 assets.push(nebula_asset);
             }
@@ -74,6 +77,31 @@ pub struct UploadAssetPayload {
     data: Vec<u8>,
 }
 #[tauri::command]
-pub fn upload_asset(image_data: UploadAssetPayload) {
-    println!("{}", (image_data.data.len()));
+pub fn upload_asset(image_data: UploadAssetPayload) -> Result<NebulaAsset, ErrorResponse> {
+    let assets_dir = Application::get_assets_dir();
+    let mut new_asset = assets_dir.join(&image_data.filename);
+    let counter = 0;
+    while new_asset.exists() {
+        new_asset =
+            assets_dir.join(String::from(&image_data.filename).to_owned() + &counter.to_string());
+    }
+    let mut new_asset_file = fs::File::create(&new_asset).map_err(|err| {
+        ErrorResponse::new(ErrorCode::IoError, format!("Error Making Asset {}", err))
+    })?;
+
+    new_asset_file.write_all(&image_data.data).map_err(|err| {
+        ErrorResponse::new(
+            ErrorCode::IoError,
+            format!("Error writing to buffer {}", err),
+        )
+    })?;
+
+    let response = NebulaAsset {
+        asset_url: format!("https://nb.localhost/assets/{}", &image_data.filename),
+        name: image_data.filename.to_string(),
+        nb_protocol_url: format!("nb://assets/{}", &image_data.filename),
+        is_new: true,
+    };
+
+    Ok(response)
 }

@@ -11,6 +11,7 @@ import { v4 as uuidv4 } from 'uuid'
 import Button from '../Button'
 import { useDispatch } from 'react-redux'
 import { invoke } from '@tauri-apps/api'
+import { NebulaAssetBrowser } from '@/features/assetsBrowserSlice'
 
 type ImageFile = {
   uri: string
@@ -85,10 +86,11 @@ const UploadAssetModal = ({}: { modal: IUploadAssetsModal }) => {
         data: Array.from(new Uint8Array(buffer)),
         filename: sanitizedFilename,
       }
-      const res = await invoke('upload_asset', { imageData: payload })
-      console.log(res)
-      console.log(payload)
-      break
+
+      const new_asset = await invoke<NebulaAsset>('upload_asset', {
+        imageData: payload,
+      })
+      dispatch(NebulaAssetBrowser.addAsset(new_asset))
     }
 
     setUploadStatus({

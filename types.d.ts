@@ -17,6 +17,7 @@ interface NebulaAsset {
   name: string
   asset_url: string
   nb_protocol_url: string
+  is_new: boolean
 }
 
 interface PageSimple {

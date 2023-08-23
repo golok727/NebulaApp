@@ -242,7 +242,7 @@ const AssetCard = ({
     )
   }
   return (
-    <div className="asset-card">
+    <div className={`asset-card ${asset.is_new ? 'new' : ''}`}>
       <div className="asset-card__image-container" onClick={handleShowPreview}>
         <img draggable={false} src={asset.asset_url} alt={asset.name} />
       </div>
