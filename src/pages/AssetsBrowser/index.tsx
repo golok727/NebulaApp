@@ -1,15 +1,16 @@
+import { RootState } from '@/app/store'
+import Button from '@/components/Button'
+import { useFileUpload } from '@/context/file-upload-context'
+import { useNebulaCore } from '@/context/nebula'
+import { NebulaAssetBrowser } from '@/features/assetsBrowserSlice'
+import { ModalTypes, NebulaModal } from '@/features/modalSlice'
+import { useCode } from '@/hooks/codemirror-context'
+import useView from '@/hooks/use-view'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { CgInsertAfter } from 'react-icons/cg'
+import { SlReload } from 'react-icons/sl'
 import { useDispatch, useSelector } from 'react-redux'
 import './assets_browser.css'
-import { useEffect, useState, useCallback, useRef } from 'react'
-import { RootState } from '@/app/store'
-import { NebulaAssetBrowser } from '@/features/assetsBrowserSlice'
-import Button from '@/components/Button'
-import { useNebulaCore } from '@/context/nebula'
-import useView from '@/hooks/use-view'
-import { useCode } from '@/hooks/codemirror-context'
-import { ModalTypes, NebulaModal } from '@/features/modalSlice'
-import { SlReload } from 'react-icons/sl'
-import { useFileUpload } from '@/context/file-upload-context'
 
 const AssetBrowser = () => {
   const [browserInfo, setBrowserInfo] = useState('')
@@ -255,7 +256,7 @@ const AssetCard = ({
               disabled={insertDisabled}
               variant="menu"
             >
-              Insert
+              <CgInsertAfter />
             </Button>
           )}
         </section>

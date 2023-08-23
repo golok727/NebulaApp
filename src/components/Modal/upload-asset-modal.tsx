@@ -204,13 +204,12 @@ const UploadAssetModal = ({}: { modal: IUploadAssetsModal }) => {
         <span className="processing">{`Processing  ${toUploadLength.current} Images.....`}</span>
       )}
 
-      {uploadStatus.isUploading ||
-        (uploadStatus.isUploaded && (
-          <span className="processing">
-            {' '}
-            {uploadStatus.uploadingProgressInfo}
-          </span>
-        ))}
+      {(uploadStatus.isUploaded || uploadStatus.isUploading) && (
+        <span className="processing">
+          {' '}
+          {uploadStatus.uploadingProgressInfo}
+        </span>
+      )}
     </div>
   )
 }

@@ -8,16 +8,16 @@
   background-color: #1a1a1a;
   border-radius: 10px;
   border: 1px solid var(--clr-border);
-  max-width: calc(100% - 2rem);
   padding: 0 0.6rem;
   padding-bottom: 0.4rem;
   overflow: hidden;
-  max-height: 40em;
   overflow-y: auto;
   display: grid;
   gap: 0.7rem;
   text-align: center;
   position: relative;
+  max-height: 40em;
+  max-width: min(60em, calc(100% - 2rem));
 }
 
 .modal__upload-asset-modal__main header {
@@ -54,8 +54,10 @@
   font-weight: bold;
 }
 .modal__upload-asset-modal__main .image-previews {
-  display: grid;
-  grid-template-columns: repeat(4, auto);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
   gap: 0.8em;
 }
 .modal__upload-asset-modal__main .image-previews .image-container {

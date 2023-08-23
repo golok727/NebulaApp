@@ -140,6 +140,13 @@
 
 .asset-card .actions {
   padding: 0.4rem 0.6rem;
+  display: grid;
+  grid-template-rows: 1fr auto;
+  gap: 0.4rem;
+}
+
+.asset-card .actions button {
+  width: fit-content;
 }
 
 .asset-card .actions .filename {
