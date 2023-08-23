@@ -6,6 +6,7 @@ import {
   Transaction,
 } from '@codemirror/state'
 import { KeyBinding } from '@codemirror/view'
+import { AiOutlineConsoleSql } from 'react-icons/ai'
 
 const convertOrAddHeader = (tag: number): StateCommand => {
   return ({ state, dispatch }) => {
@@ -170,6 +171,54 @@ const addHr: StateCommand = ({ state, dispatch }) => {
   return true
 }
 
+const pairTags: Record<string, string> = {
+  '{': '}',
+  '[': ']',
+  '(': ')',
+}
+
+const pairSkipTags = [']', '}', ')']
+const autoCloseTag = (tag: string): StateCommand => {
+  return ({ state, dispatch }) => {
+    const changes = state.changeByRange((range) => {
+      const changes: ChangeSpec[] = []
+
+      const toInsert = pairTags[tag] ?? tag
+
+      const skipChar =
+        pairSkipTags.includes(tag) ||
+        state.sliceDoc(range.from, range.from + tag.length) === tag
+
+      if (skipChar) {
+        return {
+          changes,
+          range: EditorSelection.range(
+            range.from + tag.length,
+            range.to + tag.length
+          ),
+        }
+      }
+
+      changes.push({
+        from: range.from,
+        insert: Text.of([tag + toInsert]),
+      })
+
+      return {
+        changes,
+        range: EditorSelection.range(range.from + 1, range.to + 1),
+      }
+    })
+    dispatch(
+      state.update(changes, {
+        scrollIntoView: true,
+        annotations: Transaction.userEvent.of('input'),
+      })
+    )
+    return true
+  }
+}
+
 export const markdownCustomBindings: KeyBinding[] = [
   // Headers
   {
@@ -226,4 +275,13 @@ export const markdownCustomBindings: KeyBinding[] = [
     key: 'Alt-`',
     run: wrapWith('`'),
   },
+
+  ...autoCloseKeyBinder(`"'\`{}[]()`.split('')),
 ]
+
+function autoCloseKeyBinder(tags: string[]): KeyBinding[] {
+  return tags.map((tag) => ({
+    key: tag,
+    run: autoCloseTag(tag),
+  }))
+}
