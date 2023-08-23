@@ -10,7 +10,7 @@ import { isExpanded } from '@/features/selectors'
 import { toggleExpanded } from '@/features/editorSlice'
 import { useNavigate } from 'react-router-dom'
 import './sidebar-expandable.css'
-import { NebulaModal } from '@/features/modalSlice'
+import { ModalTypes, NebulaModal } from '@/features/modalSlice'
 interface Props {
   page: PageSimple
 }
@@ -33,7 +33,7 @@ const SidebarExpandable = (props: Props) => {
     dispatch(
       NebulaModal.showModal({
         id: 'pageCreate',
-        type: 'page/create',
+        type: ModalTypes.CREATE_PAGE,
         parentId: page.__id,
         insertAfterId: null,
         x: ev.currentTarget.getBoundingClientRect().left,
@@ -46,7 +46,7 @@ const SidebarExpandable = (props: Props) => {
     dispatch(
       NebulaModal.showModal({
         id: 'pageContext',
-        type: 'page/context',
+        type: ModalTypes.PAGE_CONTEXT_MENU,
         pageId: page.__id,
         x: x,
         y: y + 10,

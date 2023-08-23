@@ -1,4 +1,4 @@
-import { NebulaModal } from '@/features/modalSlice'
+import { ModalTypes, NebulaModal } from '@/features/modalSlice'
 import { getNebulaProtocolUrl } from '@/utils/helper'
 import React from 'react'
 import { useDispatch } from 'react-redux'
@@ -15,7 +15,7 @@ const RemarkImg: React.FC<
     dispatch(
       NebulaModal.showModal({
         id: 'ImagePreview',
-        type: 'asset/preview',
+        type: ModalTypes.ASSET_PREVIEW,
         fullScreen: true,
         url,
         x: 0,

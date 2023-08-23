@@ -7,7 +7,7 @@ import Button from '@/components/Button'
 import { useNebulaCore } from '@/context/nebula'
 import useView from '@/hooks/use-view'
 import { useCode } from '@/hooks/codemirror-context'
-import { NebulaModal } from '@/features/modalSlice'
+import { ModalTypes, NebulaModal } from '@/features/modalSlice'
 import { SlReload } from 'react-icons/sl'
 
 const AssetBrowser = () => {
@@ -92,6 +92,7 @@ const AssetBrowser = () => {
     setIsDraggingOver(false)
 
     console.log(ev.dataTransfer.files)
+    //TODO Load the upload modal
   }
   /**
    * Load the assets on first run
@@ -217,7 +218,7 @@ const AssetCard = ({
     dispatch(
       NebulaModal.showModal({
         id: 'ImagePreview',
-        type: 'asset/preview',
+        type: ModalTypes.ASSET_PREVIEW,
         url: asset.asset_url,
         x: 0,
         y: 0,

@@ -4,7 +4,7 @@ import { TiDocumentDelete } from 'react-icons/ti'
 import './trash-page.css'
 import { MdDelete } from 'react-icons/md'
 import { useDispatch } from 'react-redux'
-import { NebulaModal } from '@/features/modalSlice'
+import { ModalTypes, NebulaModal } from '@/features/modalSlice'
 import { useNebulaCore } from '@/context/nebula'
 import { useNavigate } from 'react-router-dom'
 type Props = {
@@ -22,7 +22,7 @@ const TrashPage = ({ trashPage }: Props) => {
     dispatch(
       NebulaModal.showModal({
         id: 'removePagePermanent',
-        type: 'context/confirm',
+        type: ModalTypes.CONFIRMATION,
         x: 0,
         y: 0,
         label: 'Confirm delete page',

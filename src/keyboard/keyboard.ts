@@ -6,7 +6,7 @@ import {
   toggleSidebar,
   toggleSplitMode,
 } from '@/features/appSlice'
-import { NebulaModal } from '@/features/modalSlice'
+import { ModalTypes, NebulaModal } from '@/features/modalSlice'
 import useView from '@/hooks/use-view'
 import { INebulaCoreContext } from '@/context/nebula'
 import { NebulaAssetBrowser } from '@/features/assetsBrowserSlice'
@@ -107,7 +107,7 @@ export const applicationCoreKeyboardHandlers: IAppCoreKeyboardHandlers = {
       const currentPage = store.getState().editor.currentPage
       dispatch(
         NebulaModal.showModal({
-          type: 'page/create',
+          type: ModalTypes.CREATE_PAGE,
           id: 'Create Page Keyboard',
           parentId: currentPage !== null ? currentPage.parent_id : null,
           insertAfterId: currentPage !== null ? currentPage.__id : null,
@@ -127,7 +127,7 @@ export const applicationCoreKeyboardHandlers: IAppCoreKeyboardHandlers = {
       if (currentPage) {
         dispatch(
           NebulaModal.showModal({
-            type: 'page/create',
+            type: ModalTypes.CREATE_PAGE,
             id: 'Create Subpage Keyboard',
             parentId: currentPage !== null ? currentPage.__id : null,
             insertAfterId: null,
@@ -158,7 +158,7 @@ export const applicationCoreKeyboardHandlers: IAppCoreKeyboardHandlers = {
       dispatch(
         NebulaModal.showModal({
           id: 'createNotebook',
-          type: 'notebook/create',
+          type: ModalTypes.CREATE_NOTEBOOK,
           label: 'Create Notebook',
           x: window.innerWidth / 2 - 100,
           y: window.innerHeight / 2 - 100,

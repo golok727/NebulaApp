@@ -3,7 +3,7 @@ import { HomeNotebook } from '@/utils/notebook'
 import { IoIosCreate } from 'react-icons/io'
 import { Link } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
-import { NebulaModal } from '@/features/modalSlice'
+import { ModalTypes, NebulaModal } from '@/features/modalSlice'
 import Button from '@/components/Button'
 import { SlOptions } from 'react-icons/sl'
 
@@ -19,7 +19,7 @@ const NotebooksRenderer = (props: Props) => {
     dispatch(
       NebulaModal.showModal({
         id: 'createNotebook',
-        type: 'notebook/create',
+        type: ModalTypes.CREATE_NOTEBOOK,
         label: 'Create Notebook',
         x: window.innerWidth / 2 - 100,
         y: window.innerHeight / 2 - 100,

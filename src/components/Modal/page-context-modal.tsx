@@ -1,6 +1,10 @@
 import React, { useEffect, useRef } from 'react'
 import './page-context-modal.css'
-import { IPageContextModal, NebulaModal } from '@/features/modalSlice'
+import {
+  IPageContextModal,
+  ModalTypes,
+  NebulaModal,
+} from '@/features/modalSlice'
 import { CgRename } from 'react-icons/cg'
 import { PiTrashSimple } from 'react-icons/pi'
 import { TbStatusChange, TbInfoSquareRounded } from 'react-icons/tb'
@@ -16,7 +20,7 @@ const PageContextModal = ({ modal }: Props) => {
     dispatch(
       NebulaModal.showModal({
         id: 'renamePage',
-        type: 'page/rename',
+        type: ModalTypes.RENAME_PAGE,
         pageId: modal.pageId,
         label: 'Rename Page',
         x: ev.pageX,
@@ -28,7 +32,7 @@ const PageContextModal = ({ modal }: Props) => {
     dispatch(
       NebulaModal.showModal({
         id: 'removePage',
-        type: 'context/confirm',
+        type: ModalTypes.CONFIRMATION,
         x: 0,
         y: 0,
         label: 'Confirm delete page',

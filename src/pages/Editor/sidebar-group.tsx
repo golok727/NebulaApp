@@ -9,7 +9,7 @@ import {
   togglePageGroup,
   toggleTrashGroup,
 } from '@/features/editorSlice'
-import { NebulaModal } from '@/features/modalSlice'
+import { ModalTypes, NebulaModal } from '@/features/modalSlice'
 import { AiOutlineReload } from 'react-icons/ai'
 import { BiCollapseVertical, BiExpandVertical } from 'react-icons/bi'
 import { CiStickyNote } from 'react-icons/ci'
@@ -41,7 +41,7 @@ const SidebarGroup = ({ groupTitle, children, for: groupFor }: Props) => {
     dispatch(
       NebulaModal.showModal({
         id: 'pageCreate',
-        type: 'page/create',
+        type: ModalTypes.CREATE_PAGE,
         parentId: currentPage !== null ? currentPage.parent_id : null,
         insertAfterId: currentPage !== null ? currentPage.__id : null,
         x: ev.currentTarget.getBoundingClientRect().left,
@@ -60,7 +60,7 @@ const SidebarGroup = ({ groupTitle, children, for: groupFor }: Props) => {
     dispatch(
       NebulaModal.showModal({
         id: 'removeAllPagesPermanent',
-        type: 'context/confirm',
+        type: ModalTypes.CONFIRMATION,
         x: 0,
         y: 0,
         label: 'Clear Trash',
