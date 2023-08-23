@@ -43,20 +43,22 @@ pub fn fetch_assets(path: String) -> Result<FetchAssetsResponse, ErrorResponse> 
     })?;
     for entry in entries {
         if let Ok(asset) = entry {
-            if let Some(filename) = asset.file_name().to_str() {
-                let suffix = format!("{}{}", &path, filename);
-                let mut asset_url = String::from("https://nb.localhost/assets");
-                asset_url.push_str(&suffix);
-                let mut nb_protocol_url = String::from("nb://assets");
-                nb_protocol_url.push_str(&suffix);
+            if asset.path().is_file() {
+                if let Some(filename) = asset.file_name().to_str() {
+                    let suffix = format!("{}{}", &path, filename);
+                    let mut asset_url = String::from("https://nb.localhost/assets");
+                    asset_url.push_str(&suffix);
+                    let mut nb_protocol_url = String::from("nb://assets");
+                    nb_protocol_url.push_str(&suffix);
 
-                let nebula_asset = NebulaAsset {
-                    name: filename.to_owned(),
-                    asset_url,
-                    nb_protocol_url,
-                    is_new: false,
-                };
-                assets.push(nebula_asset);
+                    let nebula_asset = NebulaAsset {
+                        name: filename.to_owned(),
+                        asset_url,
+                        nb_protocol_url,
+                        is_new: false,
+                    };
+                    assets.push(nebula_asset);
+                }
             }
         }
     }
