@@ -38,31 +38,37 @@
   line-height: 1.7;
 }
 
-.editor__preview.markdown-body h1:hover:before {
+.editor__preview.markdown-body h1:hover:after {
   content: '# ';
-  color: #333;
+  color: #444;
+  margin-left: 0.2rem;
 }
-.editor__preview.markdown-body h2:hover:before {
+.editor__preview.markdown-body h2:hover:after {
   content: '## ';
-  color: #333;
+  color: #444;
+  margin-left: 0.2rem;
 }
 
-.editor__preview.markdown-body h3:hover:before {
+.editor__preview.markdown-body h3:hover:after {
   content: '### ';
-  color: #333;
+  color: #444;
+  margin-left: 0.2rem;
 }
 
-.editor__preview.markdown-body h4:hover:before {
+.editor__preview.markdown-body h4:hover:after {
   content: '#### ';
-  color: #333;
+  color: #444;
+  margin-left: 0.2rem;
 }
-.editor__preview.markdown-body h5:hover:before {
+.editor__preview.markdown-body h5:hover:after {
   content: '##### ';
-  color: #333;
+  color: #444;
+  margin-left: 0.2rem;
 }
-.editor__preview.markdown-body h6:hover:before {
+.editor__preview.markdown-body h6:hover:after {
   content: '###### ';
-  color: #333;
+  color: #444;
+  margin-left: 0.2rem;
 }
 .editor__preview.markdown-body h2,
 h3,
