@@ -6,7 +6,7 @@ import { createContext, useCallback, useContext } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { RootState } from '@/app/store'
 import { setCurrentDoc } from '@/features/editorSlice'
-import useCodeMirror from '../hooks/use-codemirror'
+import useCodeMirror from '../core/codemirror/use-codemirror'
 // Context
 interface ICodeMirrorContext {
   editorRef: React.MutableRefObject<HTMLDivElement | null>
