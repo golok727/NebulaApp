@@ -6,7 +6,44 @@ Nebula is a markdown editor app using `tauri`
 
 ```bash
 yarn tauri dev
+# or
+npm run tauri dev
 ```
+
+# Build the application
+
+I haven't tested `Nebula` in other operating systems expect `Windows` the images may have some problems
+with other operating system as the way i configured the path to stream the images. I will fix it in the next release
+
+To build the application follow the steps
+
+- You need to change the `csp: Content Security Policy` in the `tauri.conf.json` in the `/src-tauri` to the
+  following value
+
+```json
+
+ "security": {
+
+      "csp": "default-src blob: data: filesystem: wss: https: http: tauri: 'unsafe-inline' asset: https://asset.localhost 'self'; img-src 'self' blob: data: asset: https://asset.localhost nb: https://nb.localhost; script-src 'self'; style-src https: tauri: 'unsafe-inline' https://tauri.localhost  'self'"
+
+    },
+
+```
+
+- If this is not properly set then the images will not be loaded and the editor will not be styled properly
+- I will make it default in my next commits for now please add this
+
+- Now open up a terminal and run the command in the root of the project
+
+```bash
+yarn tauri build
+#or
+npm run tauri build
+```
+
+- Wait for the build to finish
+- The application will be available in `src-tauri/target/release`
+- The installer will be in `src-tauri/target/release/build`
 
 # Getting Started
 
