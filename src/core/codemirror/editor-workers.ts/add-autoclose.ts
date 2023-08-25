@@ -43,7 +43,6 @@ export const createAutoCloseCommand = (
         triggerCharacter
       )
 
-      console.log(range.from, range.to)
       if (
         !shouldSkipAutoClose &&
         charBeforeCursor !== ' ' &&
