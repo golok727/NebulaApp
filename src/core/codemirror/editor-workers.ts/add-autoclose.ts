@@ -81,11 +81,15 @@ export const createAutoCloseCommand = (
       }
 
       /* Auto Close  */
-      let newText =
-        triggerCharacter +
-        state.sliceDoc(range.from, range.to) +
-        closingCharacter
-
+      let newText = ''
+      if (pairCharactersToSkipAutoClose.includes(triggerCharacter)) {
+        newText = triggerCharacter
+      } else {
+        newText =
+          triggerCharacter +
+          state.sliceDoc(range.from, range.to) +
+          closingCharacter
+      }
       return {
         changes: [
           {
