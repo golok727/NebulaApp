@@ -21,13 +21,11 @@ To build the application follow the steps
 
 ```json
 {
-
- "security": {
-
-      "csp": "default-src blob: data: filesystem: wss: https: http: tauri: 'unsafe-inline' asset: https://asset.localhost 'self'; img-src 'self' blob: data: asset: https://asset.localhost nb: https://nb.localhost; script-src 'self'; style-src https: tauri: 'unsafe-inline' https://tauri.localhost  'self'",
-
-    },
+   "security": {
+      "csp": "default-src blob: data: filesystem: wss: https: http: tauri: 'unsafe-inline' asset: https://asset.localhost 'self'; img-src 'self' blob: data: asset: https://asset.localhost nb: https://nb.localhost; script-src 'self'; style-src https: tauri: 'unsafe-inline' https://tauri.localhost 'self'"
+   }
 }
+
 ```
 
 - If this is not set correctly then the images will not be loaded and the editor will not be styled properly
