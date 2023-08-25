@@ -24,7 +24,7 @@ To build the application follow the steps
 
  "security": {
 
-      "csp": "default-src blob: data: filesystem: wss: https: http: tauri: 'unsafe-inline' asset: https://asset.localhost 'self'; img-src 'self' blob: data: asset: https://asset.localhost nb: https://nb.localhost; script-src 'self'; style-src https: tauri: 'unsafe-inline' https://tauri.localhost  'self'"
+      "csp": "default-src blob: data: filesystem: wss: https: http: tauri: 'unsafe-inline' asset: https://asset.localhost 'self'; img-src 'self' blob: data: asset: https://asset.localhost nb: https://nb.localhost; script-src 'self'; style-src https: tauri: 'unsafe-inline' https://tauri.localhost  'self'",
 
     },
 }
