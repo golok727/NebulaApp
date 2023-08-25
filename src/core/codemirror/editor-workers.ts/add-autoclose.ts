@@ -40,11 +40,16 @@ export const createAutoCloseCommand = (
       const shouldSkipAutoCloseIfPrevCharIsQuote = ["'", '`'].includes(
         triggerCharacter
       )
+
+      const hasSelection = range.from !== range.to
+
+      console.log(range.from, range.to)
       if (
         !shouldSkipAutoClose &&
         charBeforeCursor !== ' ' &&
         charBeforeCursor !== '\n' &&
         charBeforeCursor !== '' &&
+        !hasSelection &&
         shouldSkipAutoCloseIfPrevCharIsQuote
       ) {
         return {
@@ -77,14 +82,20 @@ export const createAutoCloseCommand = (
       }
 
       /* Auto Close  */
+      let newText =
+        triggerCharacter +
+        state.sliceDoc(range.from, range.to) +
+        closingCharacter
+
       return {
         changes: [
           {
             from: range.from,
-            insert: Text.of([triggerCharacter + closingCharacter]),
+            to: range.to,
+            insert: Text.of([newText]),
           },
         ],
-        range: EditorSelection.range(range.from + 1, range.to + 1),
+        range: EditorSelection.range(range.to + 1, range.to + 1),
       }
     })
     dispatch(

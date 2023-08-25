@@ -32,7 +32,7 @@ export const createWrapWithCommand = (character: string): StateCommand => {
         isWrapperCharAfter
           ? {
               from: range.to,
-              to: range.to + 2,
+              to: range.to + character.length,
               insert: Text.of(['']),
             }
           : {
