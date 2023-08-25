@@ -12,26 +12,26 @@ npm run tauri dev
 
 # Build the application
 
-I haven't tested `Nebula` in other operating systems expect `Windows` the images may have some problems
-with other operating system as the way i configured the path to stream the images. I will fix it in the next release
+I haven't tested `Nebula` in other operating systems except `Windows`. The images may have some problems
+with another operating system as the way I configured the path to stream the images. I will fix it in the next release
 
 To build the application follow the steps
 
-- You need to change the `csp: Content Security Policy` in the `tauri.conf.json` in the `/src-tauri` to the
-  following value
+- You need to change the `CSP: Content Security Policy` in the `tauri.conf.json` in the `/src-tauri` to the following value
 
 ```json
+{
 
  "security": {
 
       "csp": "default-src blob: data: filesystem: wss: https: http: tauri: 'unsafe-inline' asset: https://asset.localhost 'self'; img-src 'self' blob: data: asset: https://asset.localhost nb: https://nb.localhost; script-src 'self'; style-src https: tauri: 'unsafe-inline' https://tauri.localhost  'self'"
 
     },
-
+}
 ```
 
-- If this is not properly set then the images will not be loaded and the editor will not be styled properly
-- I will make it default in my next commits for now please add this
+- If this is not set correctly then the images will not be loaded and the editor will not be styled properly
+- I will make it default in my following commits for now please add this
 
 - Now open up a terminal and run the command in the root of the project
 
@@ -53,7 +53,7 @@ You can toggle between `Edit-Mode` and `Preview-Mode` with the help of
 
 `Ctrl` + `/` **or** `Ctrl` + `e` -> This will toggle b/w those two modes
 
-If you want live preview use the split screen mode
+If you want a live preview use the split-screen mode
 `Ctrl` + `Shift` + `/` -> This will toggle split screen mode
 
 ### Editing Shortcuts
@@ -81,7 +81,7 @@ const hello = () => {
 
 ### Adding Images
 
-You can add images from any source `Nebula` provides a `Asset Browser` to store all the image
+You can add images from any source `Nebula` provides an `Asset Browser` to store all the image
 assets in a single space so that you can access the assets in any notebook and reuse them without leaving the app.
 To open the `Asset Browser` use the `Box Icon` in the title bar or use the
 shortcut `Ctrl` + `Shift` + `A`
