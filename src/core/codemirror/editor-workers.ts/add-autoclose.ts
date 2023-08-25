@@ -27,9 +27,7 @@ export const createAutoCloseCommand = (
       const hasSelection = range.from !== range.to
 
       const shouldSkipAutoClose =
-        (pairCharactersToSkipAutoClose.includes(triggerCharacter) ||
-          charAfterCursor === triggerCharacter) &&
-        !hasSelection
+        charAfterCursor === triggerCharacter && !hasSelection
       /**
        * if the next char is not a char to be skipped or if it is a quote and if we have some prev character then just do the default behavior
        * This is to prevent auto closing if example:
@@ -79,11 +77,10 @@ export const createAutoCloseCommand = (
           ),
         }
       }
-
       /* Auto Close  */
       let newText = ''
       if (pairCharactersToSkipAutoClose.includes(triggerCharacter)) {
-        newText = triggerCharacter
+        newText = closingCharacter
       } else {
         newText =
           triggerCharacter +
