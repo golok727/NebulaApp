@@ -18,10 +18,7 @@ impl AppState {
         match &mut self.notebook {
             Some(notebook) => Ok(callback(notebook)),
 
-            _ => Err(ErrorResponse::new(
-                ErrorCode::NotebookNotLoadedYet,
-                "Notebook Not loaded yet".to_owned(),
-            )),
+            _ => Err(ErrorResponse::from(ErrorCode::NotebookNotLoadedYet, None)),
         }
     }
     #[allow(dead_code)]
@@ -32,9 +29,9 @@ impl AppState {
                 self.notebook = None;
                 Ok(true)
             }
-            _ => Err(ErrorResponse::new(
+            _ => Err(ErrorResponse::from(
                 ErrorCode::NotebookNotLoadedYet,
-                "No Notebook Active to unload".to_owned(),
+                Some("No Notebook Active to unload"),
             )),
         }
     }
