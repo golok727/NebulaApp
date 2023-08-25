@@ -24,10 +24,12 @@ export const createAutoCloseCommand = (
       const charBeforeCursor = state.sliceDoc(range.from - 1, range.from)
       const charAfterCursor = state.sliceDoc(range.to, range.to + 1)
 
-      const shouldSkipAutoClose =
-        pairCharactersToSkipAutoClose.includes(triggerCharacter) ||
-        charAfterCursor === triggerCharacter
+      const hasSelection = range.from !== range.to
 
+      const shouldSkipAutoClose =
+        (pairCharactersToSkipAutoClose.includes(triggerCharacter) ||
+          charAfterCursor === triggerCharacter) &&
+        !hasSelection
       /**
        * if the next char is not a char to be skipped or if it is a quote and if we have some prev character then just do the default behavior
        * This is to prevent auto closing if example:
@@ -40,11 +42,14 @@ export const createAutoCloseCommand = (
       const shouldSkipAutoCloseIfPrevCharIsQuote = ["'", '`'].includes(
         triggerCharacter
       )
+
+      console.log(range.from, range.to)
       if (
         !shouldSkipAutoClose &&
         charBeforeCursor !== ' ' &&
         charBeforeCursor !== '\n' &&
         charBeforeCursor !== '' &&
+        !hasSelection &&
         shouldSkipAutoCloseIfPrevCharIsQuote
       ) {
         return {
@@ -77,14 +82,20 @@ export const createAutoCloseCommand = (
       }
 
       /* Auto Close  */
+      let newText =
+        triggerCharacter +
+        state.sliceDoc(range.from, range.to) +
+        closingCharacter
+
       return {
         changes: [
           {
             from: range.from,
-            insert: Text.of([triggerCharacter + closingCharacter]),
+            to: range.to,
+            insert: Text.of([newText]),
           },
         ],
-        range: EditorSelection.range(range.from + 1, range.to + 1),
+        range: EditorSelection.range(range.to + 1, range.to + 1),
       }
     })
     dispatch(
