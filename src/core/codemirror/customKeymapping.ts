@@ -3,6 +3,7 @@ import { convertOrAddHeader } from './editor-workers.ts/add-headers'
 import { addHr } from './editor-workers.ts/add-hr'
 import { createWrapWithCommand } from './editor-workers.ts/wrap-with'
 import { createAutoCloseCommand } from './editor-workers.ts/add-autoclose'
+import { toggleCheckBox } from './editor-workers.ts/toggle'
 
 export const markdownCustomBindings: KeyBinding[] = [
   // Headers
@@ -59,6 +60,10 @@ export const markdownCustomBindings: KeyBinding[] = [
   {
     key: 'Alt-`',
     run: createWrapWithCommand('`'),
+  },
+  {
+    key: 'Ctrl-;',
+    run: toggleCheckBox,
   },
 
   ...autoCloseKeyBinder(`"'\`{}[]()`.split('')),

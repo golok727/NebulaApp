@@ -35,25 +35,20 @@
 }
 
 .editor__preview.markdown-body p {
-  line-height: 1.7;
-}
-.editor__preview.markdown-body p:has(input[type='checkbox']) {
-  display: flex;
-  gap: 0.6rem;
-  align-items: center;
+  line-height: 1.5;
 }
 
 .editor__preview.markdown-body input[type='checkbox'] {
   appearance: none;
   position: relative;
-
-  width: 20px;
-  height: 20px;
+  width: 15px;
+  margin-top: auto;
   aspect-ratio: 1 / 1;
 }
 
 .editor__preview.markdown-body input[type='checkbox']::before {
   content: '';
+
   border-radius: 5px;
   border: 1px solid #434343;
   position: absolute;
@@ -73,7 +68,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.7rem;
+  font-size: 0.6rem;
 }
 
 .editor__preview.markdown-body h1:hover:after {
@@ -121,7 +116,6 @@ h6 {
   color: hotpink;
   font-weight: bold;
   font-style: italic;
-
   border: 1px solid var(--clr-border);
 }
 
