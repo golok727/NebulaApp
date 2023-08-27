@@ -1,8 +1,11 @@
 ![logo-nebula](/assets/logo-nebula.svg)
 
-Nebula is a markdown editor app using `tauri`
+Nebula is a markdown editor app made using `tauri`
 
-> To build and run the app in dev mode
+![logo-nebula](/assets/nebula-preview.png)
+
+
+> Tod run the application in dev mode
 
 ```bash
 yarn tauri dev
@@ -10,9 +13,9 @@ yarn tauri dev
 npm run tauri dev
 ```
 
-# Build the application
+# Build the application for your os
 
-I haven't tested `Nebula` in other operating systems except `Windows`. The images may have some problems
+I haven't tested `Nebula` in other operating systems other than `Windows`. The image previews may have some problems
 with another operating system as the way I configured the path to stream the images. I will fix it in the next release
 
 To build the application follow the steps
@@ -49,7 +52,7 @@ npm run tauri build
 
 You can toggle between `Edit-Mode` and `Preview-Mode` with the help of
 
-`Ctrl` + `/` **or** `Ctrl` + `e` -> This will toggle b/w those two modes
+`Ctrl + /` **or**  `Ctrl + e` -> This will toggle b/w those two modes
 
 If you want a live preview use the split-screen mode
 `Ctrl` + `Shift` + `/` -> This will toggle split screen mode
@@ -79,7 +82,7 @@ const hello = () => {
 
 ### Adding Images
 
-You can add images from any source `Nebula` provides an `Asset Browser` to store all the image
+You can add images from any source. `Nebula` provides an `Asset Browser` to store all the image
 assets in a single space so that you can access the assets in any notebook and reuse them without leaving the app.
 To open the `Asset Browser` use the `Box Icon` in the title bar or use the
 shortcut `Ctrl` + `Shift` + `A`
