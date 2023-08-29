@@ -41,7 +41,7 @@
     "bundle": {
       "active": true,
       "targets": "all",
-      "identifier": "com.tauri.dev",
+      "identifier": "com.nebula.dev",
       "icon": [
         "icons/32x32.png",
         "icons/128x128.png",
@@ -52,7 +52,7 @@
     },
 
     "security": {
-      "csp": "default-src 'self'; img-src 'self' asset: https://asset.localhost nb: https://nb.localhost"
+      "csp": "default-src tauri: blob: data: 'unsafe-inline' https://nb.localhost nb: 'self'; img-src 'self' tauri: blob: data: wss: ws: asset:  https://asset.localhost https: http: nb: https://nb.localhost"
     },
     "windows": [
       {

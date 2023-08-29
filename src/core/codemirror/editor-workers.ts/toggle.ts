@@ -39,7 +39,7 @@ export const toggleCheckBox: StateCommand = ({ state, dispatch }) => {
       }
     } else {
       /* If it is not a checkbox then make it one */
-      let newText = '- [ ] ' + currentLine.text
+      let newText = '- [ ] ' + currentLine.text.replace(/^-?(?:\s*)?/, '')
       return {
         changes: [
           {
@@ -49,8 +49,8 @@ export const toggleCheckBox: StateCommand = ({ state, dispatch }) => {
           },
         ],
         range: EditorSelection.range(
-          currentLine.to + newText.length,
-          currentLine.to + newText.length
+          currentLine.from + newText.length,
+          currentLine.from + newText.length
         ),
       }
     }
