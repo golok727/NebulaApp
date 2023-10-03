@@ -63,8 +63,10 @@ fn main() {
 
     tauri::Builder::default()
         .setup(|app| {
-            let main_window = app.get_window("main").unwrap();
-            set_shadow(&main_window, true).unwrap();
+            if cfg!(any(windows, target_os = "macos")) {
+                let main_window = app.get_window("main").unwrap();
+                set_shadow(&main_window, true).unwrap();
+            }
             Ok(())
         })
         .manage(app_state)
