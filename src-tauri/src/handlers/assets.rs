@@ -25,8 +25,11 @@ pub struct FetchAssetsResponse {
 pub fn fetch_assets(path: String) -> Result<FetchAssetsResponse, ErrorResponse> {
     let assets_dir = Application::get_assets_dir();
 
-    #[cfg(target_os = "windows")]
-    let normalized_path = path.replace("/", "\\");
+    let normalized_path = if cfg!(windows) {
+        path.replace("/", "\\")
+    } else {
+        path.clone()
+    };
 
     let current_path = if path == "/" {
         assets_dir
